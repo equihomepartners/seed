@@ -18,73 +18,80 @@ const Hero = () => {
         ))}
       </div>
 
-      <div className="container mx-auto px-4 pt-32 pb-16">
+      <div className="container mx-auto px-6 py-16">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-8">
             <motion.h1 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
-              className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight"
+              className="text-3xl md:text-4xl lg:text-5xl font-bold tracking-wide leading-tight mb-8"
             >
-              <div>Unlocking</div>
-              <div>Australia's</div>
-              <div><span className="text-blue-500">$5.5T</span></div>
-              <div>Home Equity</div>
-              <div>Market</div>
+              Unlocking Australia's<br />
+              <span className="text-blue-500">$5.5T</span> Home<br />
+              Equity Market
             </motion.h1>
 
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="text-lg md:text-xl text-gray-300 max-w-2xl leading-relaxed"
+              className="text-lg md:text-xl text-gray-300 max-w-2xl leading-relaxed mb-12"
             >
-              Revolutionizing home equity access through an innovative financial product, technology, and partnerships - creating a win-win-win for homeowners, investors, and the market.
+              Providing seamless equity access with no monthly payments to homeowners across Australia - creating a win-win for homeowners and investors alike.
             </motion.p>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-              className="flex flex-wrap gap-6 text-lg text-blue-400"
-            >
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-blue-500 rounded-full" />
+            <div className="flex flex-wrap items-center gap-8 mb-16">
+              <div className="flex items-center gap-3">
+                <span className="text-blue-400">•</span>
                 <span>No Monthly Payments</span>
               </div>
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-blue-500 rounded-full" />
+              <div className="flex items-center gap-3">
+                <span className="text-blue-400">•</span>
                 <span>10 Year Term</span>
               </div>
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-blue-500 rounded-full" />
+              <div className="flex items-center gap-3">
+                <span className="text-blue-400">•</span>
                 <span>Exit Whenever</span>
               </div>
-            </motion.div>
+            </div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.6 }}
-              className="flex flex-wrap gap-8 pt-4"
-            >
-              <div className="space-y-2">
-                <div className="text-4xl md:text-5xl font-bold text-blue-500">$5M</div>
-                <div className="text-sm text-gray-400">Capital Raise</div>
+            <div className="bg-gradient-to-r from-blue-500/10 via-purple-500/10 to-blue-500/10 rounded-lg px-6 py-3 inline-block mb-16">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 font-semibold">
+                AI/ML Driven Underwriting & Valuation System
+              </span>
+            </div>
+
+            <div className="grid grid-cols-3 gap-6">
+              <div className="bg-blue-500/10 rounded-xl p-6">
+                <div className="text-3xl md:text-4xl font-bold text-blue-400 mb-2">$5M</div>
+                <div className="text-gray-400">
+                  Operational Raise<br />
+                  (Current Round)
+                </div>
               </div>
-              <div className="space-y-2">
-                <div className="text-4xl md:text-5xl font-bold text-blue-500">18x</div>
-                <div className="text-sm text-gray-400">Target Return Multiple</div>
+              <div className="bg-blue-500/10 rounded-xl p-6">
+                <div className="text-3xl md:text-4xl font-bold text-blue-400 mb-2">18x</div>
+                <div className="text-gray-400">
+                  Target Return<br />
+                  Multiple
+                </div>
               </div>
-            </motion.div>
+              <div className="bg-purple-500/10 rounded-xl p-6">
+                <div className="text-3xl md:text-4xl font-bold text-purple-400 mb-2">$500M</div>
+                <div className="text-gray-400">
+                  Sovereign Fund<br />
+                  Commitment
+                </div>
+              </div>
+            </div>
           </div>
 
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1 }}
-            className="relative lg:pt-12"
+            className="relative hidden lg:block"
           >
             <div className="w-full aspect-square relative">
               <div className="absolute inset-0 flex items-center justify-center">

@@ -12,6 +12,7 @@ import Contact from './components/Contact'
 import Navigation from './components/Navigation'
 import LoadingScreen from './components/LoadingScreen'
 import SplashScreen from './components/SplashScreen'
+import CurrentOptions from './components/CurrentOptions'
 
 function App() {
   const [showSplash, setShowSplash] = useState(true)
@@ -31,6 +32,7 @@ function App() {
         <>
           <Navigation />
           <Hero />
+          <CurrentOptions />
           <Solution />
           <AustralianMarket />
           <BusinessModel />
