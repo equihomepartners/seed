@@ -13,6 +13,7 @@ import Navigation from './components/Navigation'
 import LoadingScreen from './components/LoadingScreen'
 import SplashScreen from './components/SplashScreen'
 import CurrentOptions from './components/CurrentOptions'
+import ChatBot from './components/ChatBot'
 
 function App() {
   const [showSplash, setShowSplash] = useState(true)
@@ -42,6 +43,7 @@ function App() {
           <StrategicBacking />
           <InvestmentOpportunity />
           <Contact />
+          <ChatBot />
         </>
       )}
     </div>

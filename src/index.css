@@ -5,10 +5,11 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
   }
 
   body {
-    @apply bg-gradient-to-b from-[#0A0A0A] to-[#1A1A1A] text-white min-h-screen;
+    @apply bg-gradient-to-b from-[#0A0A0A] to-[#1A1A1A] text-white min-h-screen overflow-x-hidden;
     font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   }
 
@@ -30,5 +31,29 @@
 
   input[type="range"]::-webkit-slider-thumb {
     @apply appearance-none w-4 h-4 rounded-full bg-blue-500 cursor-pointer;
+  }
+
+  @media (max-width: 640px) {
+    html {
+      font-size: 14px;
+    }
+  }
+
+  @media (min-width: 641px) and (max-width: 1024px) {
+    html {
+      font-size: 15px;
+    }
+  }
+
+  @media (min-width: 1025px) {
+    html {
+      font-size: 16px;
+    }
+  }
+
+  @media (hover: none) {
+    ::-webkit-scrollbar {
+      display: none;
+    }
   }
 }
