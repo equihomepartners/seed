@@ -28,13 +28,25 @@ const transporter = nodemailer.createTransport({
   }
 })
 
-app.use(cors())
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST'],
+  credentials: true
+}))
 app.use(express.json())
 
 // Request logging middleware
 app.use((req, res, next) => {
   console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`)
+  console.log('Request headers:', req.headers)
   next()
+})
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+  console.log('Health check request received')
+  res.setHeader('Access-Control-Allow-Origin', '*')
+  res.json({ status: 'ok', timestamp: new Date().toISOString() })
 })
 
 // OpenAI Chat endpoint
@@ -103,11 +115,6 @@ app.post('/api/schedule-call', async (req, res) => {
     console.error('Email error:', error)
     res.status(500).json({ message: 'Failed to send request' })
   }
-})
-
-// Health check endpoint
-app.get('/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() })
 })
 
 app.listen(port, () => {

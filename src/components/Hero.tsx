@@ -71,10 +71,12 @@ const Hero = () => {
                 </div>
               </div>
               <div className="bg-blue-500/10 rounded-xl p-6">
-                <div className="text-3xl md:text-4xl font-bold text-blue-400 mb-2">18x</div>
-                <div className="text-gray-400">
-                  Target Return<br />
-                  Multiple
+                <div className="text-center">
+                  <div className="text-3xl md:text-4xl font-bold text-blue-400 mb-2">8-26x+</div>
+                  <div className="text-sm text-gray-400">
+                    Target Return<br />
+                    (5-7 Years)
+                  </div>
                 </div>
               </div>
               <div className="bg-purple-500/10 rounded-xl p-6">

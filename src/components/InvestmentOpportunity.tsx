@@ -47,7 +47,7 @@ const InvestmentOpportunity = () => {
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold text-blue-400 mb-3">Target Return</div>
-              <div className="text-5xl font-bold mb-2">12-18x ROI</div>
+              <div className="text-5xl font-bold mb-2">8-26x+ ROI</div>
               <div className="text-gray-400">Projected Return</div>
             </div>
           </motion.div>

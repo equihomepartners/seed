@@ -83,6 +83,8 @@ const SplashScreen = ({ onEnter }: { onEnter: () => void }) => {
         const parsedData = JSON.parse(data);
         const updatedData = { ...parsedData, email };
         localStorage.setItem('analytics_data', JSON.stringify(updatedData));
+        // Store the session ID as the user ID
+        localStorage.setItem('userId', parsedData.sessionId);
       }
 
       // Store lead in your backend

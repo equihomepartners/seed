@@ -53,10 +53,10 @@ const Partnerships = () => {
               transition={{ duration: 0.5 }}
               className="bg-[#111827] rounded-2xl p-8 flex flex-col items-center text-center"
             >
-              <div className="bg-blue-500/10 p-4 rounded-xl mb-6">
-                <FaRocket className="text-blue-500 text-3xl" />
+              <div className="bg-blue-500/20 p-3 rounded-xl mb-6">
+                <FaRocket className="text-3xl text-blue-400" />
               </div>
-              <div className="text-4xl font-bold text-blue-500 mb-4">12-18x</div>
+              <div className="text-4xl font-bold text-blue-400 mb-4">8-26x+</div>
               <div className="text-xl font-semibold mb-3">Target Return</div>
               <p className="text-gray-400 text-sm">
                 Based on conservative modeling with $500M fund

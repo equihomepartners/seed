@@ -1,96 +1,110 @@
 import { useState, useRef, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { FaComments, FaTimes, FaRobot, FaUser } from 'react-icons/fa'
+import { FaComments, FaTimes, FaUser, FaCalendar, FaArrowRight } from 'react-icons/fa'
+import { Link, useLocation } from 'react-router-dom'
 import axios from 'axios'
 
-const systemPrompt = `You are the Equihome AI Agent. Keep your responses short, clear, and easy to understand - no more than 2-3 sentences unless asked for more detail.
+const getContextFromPath = (pathname: string) => {
+  switch (pathname) {
+    case '/pitch':
+      return `You are currently in the Business Pitch section. This section provides a complete overview of Equihome's business model, vision, and investment opportunity. Feel free to ask about our business model, team, market opportunity, or investment thesis.`
+    case '/book-call':
+      return `You are currently in the Investment Discussion section. Here you can schedule a private call with our team to discuss investment opportunities. I can help you understand what to expect from the call or assist with scheduling.`
+    case '/portfolio':
+      return `You are currently in the Tech Demo section. This section showcases our AI-driven platform and portfolio OS. Note: This section requires completing the investment discussion first.`
+    case '/deal-room':
+      return `You are currently in the Deal Room section. This contains detailed investment documents and financial models. Note: This section requires completing the tech demo first.`
+    default:
+      return `You are in the main Launchpad section. This is your central hub for exploring investment opportunities with Equihome. You can access various sections like Business Pitch, Investment Discussion, Tech Demo, and Deal Room from here.`
+  }
+}
+
+const systemPromptTemplate = (currentContext: string) => `You are the Equihome AI Agent. Keep all responses to 3 sentences or less.
+
+CURRENT CONTEXT:
+${currentContext}
+
+CORE BUSINESS MODEL:
+- We manage a residential mortgage fund deploying institutional capital
+- Our mortgages have a floor rate plus property upside sharing
+- No monthly payments required from homeowners
+
+TWO DISTINCT OPPORTUNITIES:
+1. Operational Company (Equihome Partners)
+   - Building Australia's leading fund manager
+   - Value through technology and scale
+   - Current $5M raise to grow the business
+
+2. Fund Investment (Institutional Only)
+   - Returns from mortgages and property upside
+   - $500M sovereign commitment
+   - Premium Sydney house focus
+
+INVESTMENT STRUCTURE:
+- SAFE (Simple Agreement for Future Equity)
+  • Most common startup investment vehicle in US
+  • $50,000 minimum
+  • 18-26x+ potential ROI
+  
+- Convertible Note
+  • $100,000 minimum
+  • 8% interest rate
+  • 15-22x+ potential ROI
+  
+- Direct Equity
+  • $250,000 minimum
+  • Immediate shareholder rights
+  • 8-18x+ potential ROI
+
+PLATFORM SECTIONS:
+1. Business Pitch (/pitch)
+   - Complete business overview
+   - Investment strategy
+   - Team and backing
+
+2. Investment Discussion (/book-call)
+   - Schedule team consultation
+   - Investment structure details
+   - Due diligence process
+
+3. Tech Demo (/portfolio) [Requires Investment Discussion]
+   - AI Underwriting Engine
+   - Portfolio Intelligence
+   - Market Predictions
+
+4. Deal Room (/deal-room) [Requires Tech Demo]
+   - Financial Models
+   - Term Sheets
+   - Due Diligence Pack
 
 RESPONSE STYLE:
-- Keep it simple and jargon-free
-- Use everyday language
-- Be direct and concise
-- Only give detailed technical/financial explanations if specifically asked
-- Start with the main point
-- Break complex topics into simple parts
-
-CORE KNOWLEDGE:
-1. Business Model
-   - We invest in Australian homes
-   - Partner with property owners
-   - Use AI to pick the best properties
-   - Manage everything professionally
-
-2. Market Opportunity
-   - Large Australian property market
-   - Strong growth history
-   - Safe investment environment
-
-3. Technology Edge
-   - Smart AI for property selection
-   - Data-driven decisions
-   - Real-time market tracking
-
-4. Investment Highlights
-   - Professional property management
-   - Focus on major cities
-   - Clear reporting
-   - Expert team
-
-When someone asks about scheduling:
-"I'll help you set up a call with our team. Just share your preferred time (Sydney time), name, email, and what you'd like to discuss."
+- Maximum 3 sentences per response
+- Simple, clear language
+- Guide users to relevant sections based on their questions
 
 KEY RULES:
-1. Keep responses under 3 sentences unless asked for more
-2. Use simple language first, only use technical terms if requested
-3. If unsure, offer to connect with the team
-4. Be friendly but professional`
+1. Never mix up operational company vs fund returns
+2. No specific return numbers beyond what's listed
+3. For fund queries, direct to institutional team
+4. Keep responses brief and clear
+5. Guide users to relevant sections
+6. If unsure, suggest booking a call
+
+When asked about scheduling:
+"Would you like to book a call with our team? Just share your preferred time (Sydney time), email, and what you'd like to discuss."
+
+For locked sections:
+"That section requires completing previous steps first. Let's start with the Business Pitch and Investment Discussion to get you access."`;
 
 const ChatBot = () => {
-  // Start with chat open
-  const [isOpen, setIsOpen] = useState(true)
-  const [messages, setMessages] = useState<Array<{type: 'user' | 'bot', text: string}>>([
-    {
-      type: 'bot',
-      text: `Hi! I'm here to tell you about investing with Equihome. What would you like to know?`
-    }
-  ])
-  const [inputValue, setInputValue] = useState('')
-  const messagesEndRef = useRef<HTMLDivElement>(null)
-  const [isTyping, setIsTyping] = useState(false)
-  const [isError, setIsError] = useState(false)
-
-  // Update system prompt to include enhanced tech messaging
-  const enhancedSystemPrompt = systemPrompt + `
-
-TECHNOLOGY EXCELLENCE:
-1. Predictive Analytics
-   - Market frontrunning capabilities
-   - AI-driven portfolio optimization
-   - Real-time market movement prediction
-   - Risk-return optimization algorithms
-   - Automated valuation adjustments
-
-2. Data Advantage
-   - Access to 4+ trillion data points
-   - Strategic partnerships for data access
-   - Real-time property market insights
-   - Comprehensive market coverage
-   - Historical trend analysis
-   - Predictive modeling capabilities
-
-3. Competitive Edge
-   - First-mover advantage in tech
-   - Proprietary algorithms
-   - Real-time market analysis
-   - Automated decision-making
-   - Scalable infrastructure
-
-When discussing technology, emphasize:
-1. Our ability to frontrun market movements
-2. Access to vast data through partnerships
-3. Predictive analytics capabilities
-4. Real-time valuation and analysis
-5. Market-leading technological advantage`
+  const location = useLocation();
+  const [isOpen, setIsOpen] = useState(false);
+  const [messages, setMessages] = useState<Array<{type: 'user' | 'bot', text: string}>>([{
+    type: 'bot',
+    text: `Hi! I'm Simon, your Equihome Business Agent. Ask me any questions you have about Equihome.`
+  }]);
+  const [inputValue, setInputValue] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -99,21 +113,6 @@ When discussing technology, emphasize:
   useEffect(() => {
     scrollToBottom()
   }, [messages])
-
-  // Check server health
-  useEffect(() => {
-    const checkHealth = async () => {
-      try {
-        const response = await axios.get('http://localhost:3001/health')
-        console.log('Server health:', response.data)
-        setIsError(false)
-      } catch (error) {
-        console.error('Server health check failed:', error)
-        setIsError(true)
-      }
-    }
-    checkHealth()
-  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -125,9 +124,10 @@ When discussing technology, emphasize:
     setIsTyping(true)
 
     try {
+      const currentContext = getContextFromPath(location.pathname);
       const response = await axios.post('http://localhost:3001/api/chat', {
         messages: [
-          { role: 'system', content: enhancedSystemPrompt },
+          { role: 'system', content: systemPromptTemplate(currentContext) },
           ...messages.map(msg => ({
             role: msg.type === 'user' ? 'user' : 'assistant',
             content: msg.text
@@ -140,15 +140,12 @@ When discussing technology, emphasize:
         type: 'bot' as const,
         text: response.data.message
       }
-
       setMessages(prev => [...prev, botResponse])
-      setIsError(false)
     } catch (error) {
       console.error('Chat error:', error)
-      setIsError(true)
       const errorResponse = {
         type: 'bot' as const,
-        text: "I apologize, but I'm having trouble connecting to my knowledge base right now. Please try again in a moment or reach out to our team directly for immediate assistance."
+        text: "I apologize, but I'm having trouble connecting right now. Please try again in a moment or book a call with our team for immediate assistance."
       }
       setMessages(prev => [...prev, errorResponse])
     } finally {
@@ -157,122 +154,126 @@ When discussing technology, emphasize:
   }
 
   return (
-    <>
-      {/* Chat Button - only show when chat is closed */}
-      {!isOpen && (
-        <motion.button
-          className="fixed bottom-8 right-8 w-16 h-16 rounded-full bg-blue-600 text-white flex items-center justify-center shadow-xl hover:bg-blue-700 transition-colors duration-300 z-50"
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
+    <div className="fixed bottom-4 right-4 z-50">
+      {!isOpen ? (
+        <button
           onClick={() => setIsOpen(true)}
+          className="bg-white hover:bg-gray-50 rounded-2xl p-4 shadow-lg transition-all duration-300 flex items-center gap-3 border border-gray-200 group"
         >
-          <FaComments className="text-2xl" />
-          <div className="absolute w-3 h-3 bg-blue-400 rounded-full animate-ping" />
-        </motion.button>
-      )}
-
-      {/* Chat Window */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            className="fixed bottom-8 right-8 w-[400px] h-[550px] bg-[#111827] rounded-xl shadow-2xl overflow-hidden border-2 border-[#2563eb] z-50"
-          >
-            {/* Header */}
-            <div className="bg-[#2563eb] p-4 flex justify-between items-center border-b-2 border-[#2563eb]">
-              <div className="flex items-center space-x-3">
-                <img
-                  src="/Equihome Logo.png"
-                  alt="Equihome AI"
-                  className="w-8 h-8 rounded-full bg-white p-1"
-                />
-                <div>
-                  <h3 className="text-lg font-bold text-white">Investment Advisor</h3>
-                  <p className="text-xs text-blue-100">Online 24/7</p>
-                </div>
-              </div>
-              <button
-                onClick={() => setIsOpen(false)}
-                className="text-white hover:text-gray-200 transition-colors"
-              >
-                <FaTimes className="text-lg" />
-              </button>
+          <div className="w-10 h-10 flex-shrink-0">
+            <img src="/Equihome Logo.png" alt="Equihome" className="w-full h-full object-contain" />
+          </div>
+          <div className="text-left">
+            <div className="text-sm font-semibold text-gray-900">Ask Simon</div>
+            <div className="text-xs text-gray-500">about Equihome</div>
+          </div>
+          <FaArrowRight className="text-blue-600 opacity-0 group-hover:opacity-100 transition-opacity ml-2" />
+        </button>
+      ) : (
+        <div className="bg-white rounded-3xl shadow-2xl w-[420px] max-w-full border border-gray-100 overflow-hidden">
+          <div className="flex items-center p-6 border-b border-gray-100">
+            <div className="w-8 h-8 flex-shrink-0">
+              <img src="/Equihome Logo.png" alt="Equihome" className="w-full h-full object-contain" />
             </div>
-
-            {/* Messages */}
-            <div className="h-[calc(100%-8rem)] overflow-y-auto p-4 space-y-4 bg-[#111827]">
+            <div className="ml-3 flex-1">
+              <h3 className="text-xl font-semibold text-gray-900">Simon</h3>
+              <p className="text-gray-500">Equihome Business Agent</p>
+            </div>
+            <button
+              onClick={() => setIsOpen(false)}
+              className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+            >
+              <FaTimes className="text-gray-400 text-lg" />
+            </button>
+          </div>
+          
+          <div className="relative">
+            <div 
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                backgroundImage: 'url("/Equihome Logo.png")',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat',
+                backgroundSize: '25%',
+                opacity: 0.03
+              }}
+            />
+            <div 
+              className="h-[500px] overflow-y-auto p-6 bg-gradient-to-b from-gray-50 to-white relative" 
+              ref={messagesEndRef}
+            >
               {messages.map((message, index) => (
-                <motion.div
+                <div
                   key={index}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
+                  className={`mb-6 flex ${
+                    message.type === 'user' ? 'justify-end' : 'justify-start'
+                  }`}
                 >
                   <div
-                    className={`max-w-[85%] p-3 rounded-xl flex items-start space-x-2 ${
+                    className={`max-w-[80%] p-4 ${
                       message.type === 'user'
-                        ? 'bg-[#2563eb] text-white'
-                        : 'bg-[#1f2937] text-white'
+                        ? 'bg-blue-600 text-white rounded-t-2xl rounded-l-2xl'
+                        : 'bg-gray-100 text-gray-800 rounded-t-2xl rounded-r-2xl'
                     }`}
                   >
-                    {message.type === 'bot' && (
-                      <img
-                        src="/Equihome Logo.png"
-                        alt="Equihome AI"
-                        className="w-6 h-6 rounded-full bg-white p-0.5 mt-1 flex-shrink-0"
-                      />
-                    )}
-                    {message.type === 'user' && <FaUser className="mt-1 flex-shrink-0 text-sm" />}
-                    <p className="text-sm leading-relaxed">{message.text}</p>
+                    <div className="flex items-center gap-2 mb-1">
+                      {message.type === 'user' ? (
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-medium text-blue-100">You</span>
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-2">
+                          <div className="w-5 h-5 flex-shrink-0">
+                            <img src="/Equihome Logo.png" alt="Simon" className="w-full h-full object-contain" />
+                          </div>
+                          <span className="text-xs font-medium text-gray-600">Simon</span>
+                        </div>
+                      )}
+                    </div>
+                    <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.text}</p>
                   </div>
-                </motion.div>
+                </div>
               ))}
               {isTyping && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="flex justify-start"
-                >
-                  <div className="bg-[#1f2937] text-white p-3 rounded-xl flex items-center space-x-2">
-                    <img
-                      src="/Equihome Logo.png"
-                      alt="Equihome AI"
-                      className="w-6 h-6 rounded-full bg-white p-0.5"
-                    />
-                    <span className="text-sm animate-pulse">Typing...</span>
+                <div className="flex justify-start mb-6">
+                  <div className="bg-gray-100 p-4 rounded-t-2xl rounded-r-2xl">
+                    <div className="flex items-center gap-2 mb-1">
+                      <div className="w-5 h-5 flex-shrink-0">
+                        <img src="/Equihome Logo.png" alt="Simon" className="w-full h-full object-contain" />
+                      </div>
+                      <span className="text-xs font-medium text-gray-600">Simon</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                      <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                      <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                    </div>
                   </div>
-                </motion.div>
+                </div>
               )}
-              <div ref={messagesEndRef} />
             </div>
-
-            {/* Input */}
-            <form onSubmit={handleSubmit} className="p-3 bg-[#1f2937] border-t-2 border-[#2563eb]">
-              <div className="flex space-x-2">
-                <input
-                  type="text"
-                  value={inputValue}
-                  onChange={(e) => setInputValue(e.target.value)}
-                  placeholder="Ask about our investment opportunities..."
-                  className="flex-1 px-4 py-2 rounded-lg bg-[#111827] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#2563eb] text-sm"
-                />
-                <button
-                  type="submit"
-                  className="px-4 py-2 bg-[#2563eb] text-white rounded-lg hover:bg-[#1d4ed8] transition-colors flex items-center space-x-1.5 text-sm font-medium"
-                >
-                  <span>Send</span>
-                  <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                  </svg>
-                </button>
-              </div>
+          </div>
+          
+          <div className="p-6 border-t border-gray-100">
+            <form onSubmit={handleSubmit} className="relative">
+              <input
+                type="text"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                placeholder="Ask Simon anything..."
+                className="w-full p-4 pr-12 bg-gray-50 rounded-2xl border border-gray-200 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-sm text-gray-900 placeholder-gray-500"
+              />
+              <button
+                type="submit"
+                className="absolute right-3 top-1/2 -translate-y-1/2 p-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition-colors"
+              >
+                <FaArrowRight className="text-sm" />
+              </button>
             </form>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </>
+          </div>
+        </div>
+      )}
+    </div>
   )
 }
 

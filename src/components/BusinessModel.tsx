@@ -102,7 +102,7 @@ const BusinessModel = () => {
                 <ul className="space-y-3">
                   <li className="flex items-center justify-between">
                     <span className="text-gray-300">Return on Investment</span>
-                    <span className="text-blue-400 font-bold">12-18x ROI</span>
+                    <span className="text-blue-400 font-bold">8-26x+ ROI</span>
                   </li>
                   <li className="flex items-center justify-between">
                     <span className="text-gray-300">Investment Period</span>
