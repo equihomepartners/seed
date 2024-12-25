@@ -7,14 +7,20 @@ import BusinessInfo from './components/BusinessInfo'
 import PortfolioOS from './components/PortfolioOS'
 
 function App() {
-  const [hasCompletedSplash, setHasCompletedSplash] = useState<boolean>(false)
-  const [isLoading, setIsLoading] = useState<boolean>(true)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    const splashCompleted = localStorage.getItem('hasCompletedSplash') === 'true'
-    const sessionActive = localStorage.getItem('sessionActive') === 'true'
-    setHasCompletedSplash(splashCompleted && sessionActive)
-    setIsLoading(false)
+    const checkAuth = () => {
+      const sessionActive = localStorage.getItem('sessionActive') === 'true'
+      const userEmail = localStorage.getItem('userEmail')
+      setIsAuthenticated(sessionActive && !!userEmail)
+      setIsLoading(false)
+    }
+
+    checkAuth()
+    window.addEventListener('storage', checkAuth)
+    return () => window.removeEventListener('storage', checkAuth)
   }, [])
 
   if (isLoading) {
@@ -27,17 +33,17 @@ function App() {
         <Route
           path="/"
           element={
-            hasCompletedSplash ? (
+            isAuthenticated ? (
               <Navigate to="/launchpad" replace />
             ) : (
-              <SplashScreen onComplete={() => setHasCompletedSplash(true)} />
+              <SplashScreen />
             )
           }
         />
         <Route
           path="/launchpad"
           element={
-            hasCompletedSplash ? (
+            isAuthenticated ? (
               <Launchpad />
             ) : (
               <Navigate to="/" replace />
@@ -47,7 +53,7 @@ function App() {
         <Route
           path="/book-call"
           element={
-            hasCompletedSplash ? (
+            isAuthenticated ? (
               <BookCall />
             ) : (
               <Navigate to="/" replace />
@@ -57,7 +63,7 @@ function App() {
         <Route
           path="/business-info"
           element={
-            hasCompletedSplash ? (
+            isAuthenticated ? (
               <BusinessInfo />
             ) : (
               <Navigate to="/" replace />
@@ -67,7 +73,7 @@ function App() {
         <Route
           path="/portfolio-os"
           element={
-            hasCompletedSplash ? (
+            isAuthenticated ? (
               <PortfolioOS />
             ) : (
               <Navigate to="/" replace />

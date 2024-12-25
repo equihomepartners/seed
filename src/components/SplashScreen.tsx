@@ -1,12 +1,6 @@
 import { motion } from 'framer-motion'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-
-interface AnalyticsData {
-  email: string;
-  startTime: number;
-  sessionId: string;
-}
 
 const generateSessionId = () => {
   return Math.random().toString(36).substring(2) + Date.now().toString(36);
@@ -18,55 +12,6 @@ const SplashScreen = () => {
   const [email, setEmail] = useState('')
   const [emailError, setEmailError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
-
-  // Check for existing session
-  useEffect(() => {
-    const existingEmail = localStorage.getItem('userEmail');
-    const existingSession = localStorage.getItem('sessionActive');
-    if (existingEmail && existingSession === 'true') {
-      navigate('/launchpad');
-    }
-  }, [navigate]);
-
-  // Initialize analytics data
-  useEffect(() => {
-    const sessionId = generateSessionId();
-    const startTime = Date.now();
-    
-    // Store initial analytics data
-    const analyticsData: AnalyticsData = {
-      email: '',
-      startTime,
-      sessionId
-    };
-    
-    localStorage.setItem('analytics_data', JSON.stringify(analyticsData));
-
-    // Set up page leave tracking
-    const trackTimeSpent = () => {
-      const data = localStorage.getItem('analytics_data');
-      if (data) {
-        const parsedData = JSON.parse(data);
-        const timeSpent = Date.now() - parsedData.startTime;
-        
-        // Send analytics data to your backend
-        fetch('https://seed.equihome.com.au/api/analytics', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            ...parsedData,
-            timeSpent,
-            endTime: Date.now()
-          }),
-        }).catch(console.error);
-      }
-    };
-
-    window.addEventListener('beforeunload', trackTimeSpent);
-    return () => window.removeEventListener('beforeunload', trackTimeSpent);
-  }, []);
 
   const validateEmail = (email: string) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -88,33 +33,19 @@ const SplashScreen = () => {
 
     setIsSubmitting(true);
     try {
-      // Update analytics data with email
-      const data = localStorage.getItem('analytics_data');
-      if (data) {
-        const parsedData = JSON.parse(data);
-        const updatedData = { ...parsedData, email };
-        localStorage.setItem('analytics_data', JSON.stringify(updatedData));
-        // Store the session ID as the user ID
-        localStorage.setItem('userId', parsedData.sessionId);
-      }
-
-      // Store email and session state
+      const sessionId = generateSessionId();
+      
+      // Store session data
       localStorage.setItem('userEmail', email);
       localStorage.setItem('sessionActive', 'true');
-      localStorage.setItem('hasCompletedSplash', 'true');
+      localStorage.setItem('userId', sessionId);
 
-      // Store lead in your backend
-      await fetch('https://seed.equihome.com.au/api/leads', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email }),
-      });
-
-      navigate('/launchpad');
+      // Trigger a storage event for App.tsx to detect
+      window.dispatchEvent(new Event('storage'));
+      
+      navigate('/launchpad', { replace: true });
     } catch (error) {
-      console.error('Error storing lead:', error);
+      console.error('Error:', error);
       setEmailError('Something went wrong. Please try again.');
     } finally {
       setIsSubmitting(false);
