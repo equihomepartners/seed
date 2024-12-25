@@ -1,14 +1,13 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import GlobalHeader from './GlobalHeader'
-import { FaLock, FaChartLine, FaHandshake, FaClock, FaShieldAlt, FaUsers, FaRocket, FaChartBar } from 'react-icons/fa'
+import { FaLock, FaHandshake, FaClock, FaUsers, FaRocket, FaCheckCircle } from 'react-icons/fa'
 
 interface FormData {
   name: string
   email: string
   company: string
   investmentRange: string
-  message: string
 }
 
 const BookCall: React.FC = () => {
@@ -17,9 +16,16 @@ const BookCall: React.FC = () => {
     name: '',
     email: '',
     company: '',
-    investmentRange: '',
-    message: ''
+    investmentRange: ''
   })
+
+  // Initialize with stored email if available
+  useEffect(() => {
+    const storedEmail = localStorage.getItem('userEmail')
+    if (storedEmail) {
+      setFormData(prev => ({ ...prev, email: storedEmail }))
+    }
+  }, [])
 
   // Calculate progress percentage
   const totalRound = 5000000 // $5M
@@ -35,6 +41,9 @@ const BookCall: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setStep(2)
+    
+    // Store the form data
+    localStorage.setItem('bookingData', JSON.stringify(formData))
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -82,7 +91,7 @@ const BookCall: React.FC = () => {
               exit={{ opacity: 0, y: -20 }}
               className="max-w-6xl mx-auto"
             >
-              {/* Header Section */}
+              {/* Form content remains the same */}
               <div className="text-center mb-12">
                 <motion.h1 
                   className="text-4xl font-light text-white mb-4"
@@ -250,31 +259,12 @@ const BookCall: React.FC = () => {
                         </select>
                       </div>
 
-                      <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-2">Additional Information</label>
-                        <textarea
-                          name="message"
-                          value={formData.message}
-                          onChange={handleChange}
-                          rows={4}
-                          className="w-full bg-[#0d1117] border border-blue-500/10 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/30 transition-colors resize-none"
-                          placeholder="Any specific topics you'd like to discuss?"
-                        />
-                      </div>
-
-                      <motion.button
+                      <button
                         type="submit"
-                        className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg px-8 py-4 hover:from-blue-600 hover:to-blue-700 transition-all duration-200 font-medium"
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
+                        className="w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white py-3 px-6 rounded-lg font-medium hover:from-blue-600 hover:to-purple-600 transition-all shadow-lg shadow-purple-500/20"
                       >
-                        Request Private Discussion
-                      </motion.button>
-
-                      <div className="flex items-center justify-center space-x-2 text-sm text-gray-400">
-                        <FaShieldAlt className="text-blue-400" />
-                        <span>Your information will be kept strictly confidential</span>
-                      </div>
+                        Continue to Calendar
+                      </button>
                     </form>
                   </div>
                 </motion.div>
@@ -282,29 +272,34 @@ const BookCall: React.FC = () => {
             </motion.div>
           ) : (
             <motion.div
-              key="success"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="max-w-xl mx-auto text-center py-16"
+              key="calendar"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="max-w-4xl mx-auto"
             >
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ type: "spring", stiffness: 200, damping: 20 }}
-                className="w-16 h-16 rounded-full bg-green-500/20 flex items-center justify-center mx-auto mb-6"
-              >
-                <FaHandshake className="text-3xl text-green-400" />
-              </motion.div>
-              <h2 className="text-3xl font-light text-white mb-4">Thank You</h2>
-              <p className="text-gray-400 mb-8 text-lg">
-                Our investment team will contact you within 24 hours to schedule your private discussion.
-              </p>
-              <div className="text-gray-500">
-                For immediate assistance, please contact us at{' '}
-                <a href="mailto:invest@equihome.com.au" className="text-blue-400 hover:text-blue-300">
-                  invest@equihome.com.au
-                </a>
+              <div className="text-center mb-8">
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: "spring", duration: 0.5 }}
+                  className="w-16 h-16 mx-auto mb-6 rounded-full bg-green-500/20 flex items-center justify-center"
+                >
+                  <FaCheckCircle className="text-3xl text-green-400" />
+                </motion.div>
+                <h2 className="text-3xl font-light text-white mb-4">Select Your Preferred Time</h2>
+                <p className="text-gray-400">Choose a time that works best for you to discuss your investment opportunity.</p>
+              </div>
+
+              {/* Calendly inline widget */}
+              <div className="rounded-2xl overflow-hidden border border-blue-500/10 bg-[#1a2234]/80 backdrop-blur-xl">
+                <iframe
+                  src={`https://calendly.com/equihomeseed/seed?embed_domain=${window.location.host}&embed_type=inline&background_color=0a0f1a&text_color=ffffff&primary_color=3b82f6&name=${encodeURIComponent(formData.name)}&email=${encodeURIComponent(formData.email)}`}
+                  width="100%"
+                  height="700"
+                  frameBorder="0"
+                  title="Schedule a call"
+                />
               </div>
             </motion.div>
           )}
