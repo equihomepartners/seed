@@ -349,18 +349,12 @@ const ReferralCard = () => {
 
       {/* Incentives */}
       <div className="mb-6 bg-[#0a0f1a] rounded-lg p-4">
-        <h4 className="text-sm font-semibold text-white mb-3">Referral Reward</h4>
-        <div className="flex items-center space-x-3 mb-4">
-          <div className="w-12 h-12 rounded-lg bg-green-500/10 flex items-center justify-center">
-            <div className="text-lg font-bold text-green-400">0.5%</div>
-          </div>
+        <h4 className="text-sm font-semibold text-white mb-4">Referral Reward</h4>
+        <div className="flex items-center space-x-4">
           <div className="flex-1">
-            <div className="text-sm text-white">Additional Equity</div>
-            <div className="text-xs text-gray-400">For each successful referral</div>
+            <div className="text-2xl font-bold text-green-400 mb-2">Equity Rewards</div>
+            <div className="text-sm text-gray-400">Earn equity for each successful referral. No limit on referrals.</div>
           </div>
-        </div>
-        <div className="text-xs text-gray-400">
-          No limit on number of referrals. Each successful referral adds to your equity position.
         </div>
       </div>
 
