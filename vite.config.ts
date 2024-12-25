@@ -12,16 +12,6 @@ export default defineConfig({
     outDir: 'dist',
     assetsDir: 'assets',
     emptyOutDir: true,
-    rollupOptions: {
-      external: ['react-router-dom', 'react-leaflet', 'leaflet'],
-      output: {
-        globals: {
-          'react-router-dom': 'ReactRouterDOM',
-          'react-leaflet': 'ReactLeaflet',
-          'leaflet': 'L'
-        }
-      }
-    }
   },
   server: {
     proxy: {
