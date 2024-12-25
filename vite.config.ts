@@ -12,6 +12,14 @@ export default defineConfig({
     outDir: 'dist',
     assetsDir: 'assets',
     emptyOutDir: true,
+    rollupOptions: {
+      external: ['react-router-dom'],
+      output: {
+        globals: {
+          'react-router-dom': 'ReactRouterDOM'
+        }
+      }
+    }
   },
   server: {
     proxy: {
