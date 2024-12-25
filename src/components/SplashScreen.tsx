@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 interface AnalyticsData {
   email: string;
@@ -11,7 +12,8 @@ const generateSessionId = () => {
   return Math.random().toString(36).substring(2) + Date.now().toString(36);
 }
 
-const SplashScreen = ({ onEnter }: { onEnter: () => void }) => {
+const SplashScreen = () => {
+  const navigate = useNavigate()
   const [hasAgreed, setHasAgreed] = useState(false)
   const [email, setEmail] = useState('')
   const [emailError, setEmailError] = useState('')
@@ -22,9 +24,9 @@ const SplashScreen = ({ onEnter }: { onEnter: () => void }) => {
     const existingEmail = localStorage.getItem('userEmail');
     const existingSession = localStorage.getItem('sessionActive');
     if (existingEmail && existingSession === 'true') {
-      onEnter();
+      navigate('/launchpad');
     }
-  }, [onEnter]);
+  }, [navigate]);
 
   // Initialize analytics data
   useEffect(() => {
@@ -48,7 +50,7 @@ const SplashScreen = ({ onEnter }: { onEnter: () => void }) => {
         const timeSpent = Date.now() - parsedData.startTime;
         
         // Send analytics data to your backend
-        fetch('/api/analytics', {
+        fetch('https://seed.equihome.com.au/api/analytics', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -99,9 +101,10 @@ const SplashScreen = ({ onEnter }: { onEnter: () => void }) => {
       // Store email and session state
       localStorage.setItem('userEmail', email);
       localStorage.setItem('sessionActive', 'true');
+      localStorage.setItem('hasCompletedSplash', 'true');
 
       // Store lead in your backend
-      await fetch('/api/leads', {
+      await fetch('https://seed.equihome.com.au/api/leads', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -109,7 +112,7 @@ const SplashScreen = ({ onEnter }: { onEnter: () => void }) => {
         body: JSON.stringify({ email }),
       });
 
-      onEnter();
+      navigate('/launchpad');
     } catch (error) {
       console.error('Error storing lead:', error);
       setEmailError('Something went wrong. Please try again.');
