@@ -1,95 +1,81 @@
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import Hero from './components/Hero'
-import Solution from './components/Solution'
-import AustralianMarket from './components/AustralianMarket'
-import BusinessModel from './components/BusinessModel'
-import WinWinModel from './components/WinWinModel'
-import GrowthTrajectory from './components/GrowthTrajectory'
-import Team from './components/Team'
-import StrategicBacking from './components/StrategicBacking'
-import InvestmentOpportunity from './components/InvestmentOpportunity'
-import Contact from './components/Contact'
-import Navigation from './components/Navigation'
-import LoadingScreen from './components/LoadingScreen'
 import SplashScreen from './components/SplashScreen'
-import CurrentOptions from './components/CurrentOptions'
-import ChatBot from './components/ChatBot'
 import Launchpad from './components/Launchpad'
-import PortfolioOS from './components/PortfolioOS'
-import Pitch from './components/Pitch'
 import BookCall from './components/BookCall'
-import WebinarPage from './pages/webinar'
+import BusinessInfo from './components/BusinessInfo'
+import PortfolioOS from './components/PortfolioOS'
 
 function App() {
-  const [showSplash, setShowSplash] = useState(() => {
-    const hasCompletedSplash = localStorage.getItem('hasCompletedSplash')
-    return hasCompletedSplash !== 'true'
-  })
-  const [showLoading, setShowLoading] = useState(true)
+  const [hasCompletedSplash, setHasCompletedSplash] = useState<boolean>(false)
+  const [isLoading, setIsLoading] = useState<boolean>(true)
 
   useEffect(() => {
-    // Force set loading and splash to false for testing
-    setShowLoading(false)
-    setShowSplash(false)
-    console.log('App state:', { showSplash, showLoading })
+    const splashCompleted = localStorage.getItem('hasCompletedSplash') === 'true'
+    const sessionActive = localStorage.getItem('sessionActive') === 'true'
+    setHasCompletedSplash(splashCompleted && sessionActive)
+    setIsLoading(false)
   }, [])
 
-  const handleSplashComplete = () => {
-    setShowSplash(false)
-    localStorage.setItem('hasCompletedSplash', 'true')
+  if (isLoading) {
+    return null
   }
-
-  // Add debug log to check if ChatBot is being rendered
-  useEffect(() => {
-    console.log('ChatBot should be visible:', !showLoading && !showSplash)
-  }, [showLoading, showSplash])
 
   return (
     <Router>
-      <div className="bg-[#0B1121] text-white min-h-screen">
-        <Routes>
-          {/* Original Landing Page */}
-          <Route path="/" element={
-            <>
-              {showLoading && (
-                <LoadingScreen onComplete={() => setShowLoading(false)} />
-              )}
-              
-              {!showLoading && showSplash && (
-                <SplashScreen onEnter={handleSplashComplete} />
-              )}
-
-              {!showLoading && !showSplash && (
-                <>
-                  <Navigation />
-                  <Hero />
-                  <CurrentOptions />
-                  <Solution />
-                  <AustralianMarket />
-                  <BusinessModel />
-                  <WinWinModel />
-                  <GrowthTrajectory />
-                  <Team />
-                  <StrategicBacking />
-                  <InvestmentOpportunity />
-                  <Contact />
-                </>
-              )}
-            </>
-          } />
-
-          {/* Launchpad and Portfolio Routes */}
-          <Route path="/launchpad" element={<Launchpad />} />
-          <Route path="/portfolio" element={<PortfolioOS />} />
-          <Route path="/pitch" element={<Pitch />} />
-          <Route path="/book-call" element={<BookCall />} />
-          <Route path="/webinar" element={<WebinarPage />} />
-        </Routes>
-
-        {/* Force render ChatBot for testing */}
-        <ChatBot />
-      </div>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            hasCompletedSplash ? (
+              <Navigate to="/launchpad" replace />
+            ) : (
+              <SplashScreen onComplete={() => setHasCompletedSplash(true)} />
+            )
+          }
+        />
+        <Route
+          path="/launchpad"
+          element={
+            hasCompletedSplash ? (
+              <Launchpad />
+            ) : (
+              <Navigate to="/" replace />
+            )
+          }
+        />
+        <Route
+          path="/book-call"
+          element={
+            hasCompletedSplash ? (
+              <BookCall />
+            ) : (
+              <Navigate to="/" replace />
+            )
+          }
+        />
+        <Route
+          path="/business-info"
+          element={
+            hasCompletedSplash ? (
+              <BusinessInfo />
+            ) : (
+              <Navigate to="/" replace />
+            )
+          }
+        />
+        <Route
+          path="/portfolio-os"
+          element={
+            hasCompletedSplash ? (
+              <PortfolioOS />
+            ) : (
+              <Navigate to="/" replace />
+            )
+          }
+        />
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
     </Router>
   )
 }

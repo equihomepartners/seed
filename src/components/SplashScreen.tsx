@@ -17,6 +17,15 @@ const SplashScreen = ({ onEnter }: { onEnter: () => void }) => {
   const [emailError, setEmailError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
+  // Check for existing session
+  useEffect(() => {
+    const existingEmail = localStorage.getItem('userEmail');
+    const existingSession = localStorage.getItem('sessionActive');
+    if (existingEmail && existingSession === 'true') {
+      onEnter();
+    }
+  }, [onEnter]);
+
   // Initialize analytics data
   useEffect(() => {
     const sessionId = generateSessionId();
@@ -86,6 +95,10 @@ const SplashScreen = ({ onEnter }: { onEnter: () => void }) => {
         // Store the session ID as the user ID
         localStorage.setItem('userId', parsedData.sessionId);
       }
+
+      // Store email and session state
+      localStorage.setItem('userEmail', email);
+      localStorage.setItem('sessionActive', 'true');
 
       // Store lead in your backend
       await fetch('/api/leads', {
