@@ -1,9 +1,10 @@
 import { Link } from 'react-router-dom'
-import { FaArrowRight } from 'react-icons/fa'
+import { FaArrowRight, FaChevronDown } from 'react-icons/fa'
 import { useState, useEffect } from 'react'
 
 const GlobalHeader = ({ currentPage }: { currentPage: string }) => {
   const [userEmail, setUserEmail] = useState<string | null>(null)
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
 
   useEffect(() => {
     const email = localStorage.getItem('userEmail')
@@ -37,7 +38,7 @@ const GlobalHeader = ({ currentPage }: { currentPage: string }) => {
             
             <div className="flex items-center space-x-4">
               {currentPage !== 'launchpad' && (
-                <Link
+                <Link 
                   to="/launchpad" 
                   className="flex items-center space-x-2 px-2.5 py-1.5 bg-blue-500/10 hover:bg-blue-500/20 rounded-lg border border-blue-500/20 transition-colors"
                 >
@@ -81,14 +82,35 @@ const GlobalHeader = ({ currentPage }: { currentPage: string }) => {
               )}
               
               {userEmail && (
-                <div className="flex items-center space-x-4 pl-4 border-l border-white/10">
-                  <div className="text-sm text-white/80">{userEmail}</div>
+                <div className="relative">
                   <button
-                    onClick={handleSignOut}
-                    className="text-sm text-red-400 hover:text-red-300 transition-colors"
+                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                    className="flex items-center space-x-2 px-3 py-1.5 rounded-lg hover:bg-[#1a2234] transition-colors"
                   >
-                    Sign Out
+                    <span className="text-sm text-white/80">{userEmail}</span>
+                    <FaChevronDown className={`text-xs text-white/60 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
                   </button>
+
+                  {isDropdownOpen && (
+                    <div className="absolute right-0 mt-2 w-48 bg-[#111827] rounded-xl border border-blue-500/20 shadow-xl shadow-black/20 overflow-hidden">
+                      <Link
+                        to="/dashboard"
+                        className="block px-4 py-2 text-sm text-white/80 hover:bg-[#1a2234] transition-colors"
+                        onClick={() => setIsDropdownOpen(false)}
+                      >
+                        Investor Dashboard
+                      </Link>
+                      <button
+                        onClick={() => {
+                          setIsDropdownOpen(false)
+                          handleSignOut()
+                        }}
+                        className="w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-[#1a2234] transition-colors"
+                      >
+                        Sign Out
+                      </button>
+                    </div>
+                  )}
                 </div>
               )}
             </div>

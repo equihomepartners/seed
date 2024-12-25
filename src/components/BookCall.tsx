@@ -38,12 +38,44 @@ const BookCall: React.FC = () => {
   const today = new Date()
   const daysRemaining = Math.ceil((endDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
 
+  useEffect(() => {
+    // Add Calendly event listener
+    const handleCalendlyEvent = (e: any) => {
+      if (e.data.event === 'calendly.event_scheduled') {
+        // Get the scheduled date from the event
+        const scheduledDate = new Date(e.data.payload.event.start_time).toISOString()
+        
+        // Track that a call has been scheduled with the actual date
+        const currentProgress = JSON.parse(localStorage.getItem('investorProgress') || '{}')
+        const updatedProgress = {
+          ...currentProgress,
+          introCallScheduled: true,
+          scheduledCallDate: scheduledDate,
+          lastVisited: new Date().toISOString(),
+          visitHistory: [
+            ...(currentProgress.visitHistory || []),
+            {
+              page: 'introCallScheduled',
+              timestamp: new Date().toISOString(),
+              scheduledDate: scheduledDate
+            }
+          ]
+        }
+        localStorage.setItem('investorProgress', JSON.stringify(updatedProgress))
+      }
+    }
+
+    window.addEventListener('message', handleCalendlyEvent)
+    return () => window.removeEventListener('message', handleCalendlyEvent)
+  }, [])
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setStep(2)
     
     // Store the form data
     localStorage.setItem('bookingData', JSON.stringify(formData))
+    // Remove the progress tracking from here since we'll do it when the call is actually scheduled
   }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {

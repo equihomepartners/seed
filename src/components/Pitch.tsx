@@ -24,6 +24,23 @@ const Pitch = () => {
   const daysRemaining = Math.ceil((endDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
 
   useEffect(() => {
+    // Track that the pitch has been viewed
+    const currentProgress = JSON.parse(localStorage.getItem('investorProgress') || '{}')
+    const updatedProgress = {
+      ...currentProgress,
+      businessPitchViewed: true,
+      lastVisited: new Date().toISOString(),
+      visitHistory: [
+        ...(currentProgress.visitHistory || []),
+        {
+          page: 'businessPitchViewed',
+          timestamp: new Date().toISOString()
+        }
+      ]
+    }
+    localStorage.setItem('investorProgress', JSON.stringify(updatedProgress))
+
+    // Scroll to top
     window.scrollTo(0, 0)
   }, [])
 

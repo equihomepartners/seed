@@ -1,17 +1,93 @@
 import { motion } from 'framer-motion'
-import { FaLock, FaChartLine, FaBuilding, FaFileAlt, FaUsers, FaBrain, FaArrowRight, FaCalendar, FaDownload, FaPlay, FaNewspaper, FaLinkedin, FaGlobe, FaChartBar, FaMapMarkerAlt, FaCheck, FaHome, FaPhone, FaHandshake, FaKey, FaChartPie } from 'react-icons/fa'
+import { FaLock, FaChartLine, FaBuilding, FaFileAlt, FaUsers, FaBrain, FaArrowRight, FaCalendar, FaDownload, FaPlay, FaNewspaper, FaLinkedin, FaGlobe, FaChartBar, FaMapMarkerAlt, FaCheck, FaHome, FaPhone, FaHandshake, FaKey, FaChartPie, FaUser, FaEnvelope } from 'react-icons/fa'
 import { useState, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import axios from 'axios'
 import GlobalHeader from './GlobalHeader'
 import InvestmentBreakdownCard from './InvestmentBreakdownCard'
 
+interface StepProgress {
+  businessPitchViewed: boolean
+  portfolioOSViewed: boolean
+  introCallScheduled: boolean
+  interestRegistered: boolean
+  lastVisited?: string
+  scheduledCallDate?: string
+  visitHistory?: Array<{
+    page: string
+    timestamp: string
+    scheduledDate?: string
+  }>
+}
+
 const InvestorJourney = () => {
-  const userProgress = {
-    businessOverview: localStorage.getItem('completed_business_overview') === 'true',
-    portfolioOS: localStorage.getItem('completed_portfolio_os') === 'true',
-    techDemo: localStorage.getItem('completed_tech_demo') === 'true',
-    dealRoom: localStorage.getItem('completed_deal_room') === 'true'
+  const location = useLocation()
+
+  // Get progress from localStorage
+  const getProgress = () => {
+    const investorProgress = localStorage.getItem('investorProgress')
+    if (investorProgress) {
+      const progress = JSON.parse(investorProgress)
+      return {
+        businessOverview: progress.businessPitchViewed || false,
+        portfolioOS: progress.portfolioOSViewed || false,
+        introCallScheduled: progress.scheduledCallDate ? true : false,
+        interestRegistered: progress.interestRegistered || false,
+        scheduledCallDate: progress.scheduledCallDate || null
+      }
+    }
+    return {
+      businessOverview: false,
+      portfolioOS: false,
+      introCallScheduled: false,
+      interestRegistered: false,
+      scheduledCallDate: null
+    }
+  }
+
+  const [userProgress, setUserProgress] = useState(getProgress())
+
+  // Track route changes and update progress
+  useEffect(() => {
+    const trackPageView = () => {
+      switch (location.pathname) {
+        case '/pitch':
+          updateProgress('businessPitchViewed')
+          break
+        case '/portfolio-os':
+          updateProgress('portfolioOSViewed')
+          break
+        case '/register-interest':
+          updateProgress('interestRegistered')
+          break
+      }
+    }
+
+    // Update progress when returning to launchpad
+    if (location.pathname === '/') {
+      setUserProgress(getProgress())
+    } else {
+      trackPageView()
+    }
+  }, [location.pathname])
+
+  // Function to update progress
+  const updateProgress = (key: string) => {
+    const currentProgress = JSON.parse(localStorage.getItem('investorProgress') || '{}')
+    const updatedProgress = {
+      ...currentProgress,
+      [key]: true,
+      lastVisited: new Date().toISOString(),
+      visitHistory: [
+        ...(currentProgress.visitHistory || []),
+        {
+          page: key,
+          timestamp: new Date().toISOString()
+        }
+      ]
+    }
+    localStorage.setItem('investorProgress', JSON.stringify(updatedProgress))
+    setUserProgress(getProgress())
   }
 
   const steps = [
@@ -30,16 +106,16 @@ const InvestorJourney = () => {
       description: "Schedule a call to discuss investment opportunity",
       action: "/book-call",
       isLocked: false,
-      isCompleted: userProgress.portfolioOS,
+      isCompleted: userProgress.introCallScheduled,
       gradient: "from-indigo-600 to-purple-600"
     },
     {
       icon: FaChartPie,
       title: "Portfolio OS",
       description: "View a simulation of our first $50M Sydney Portfolio",
-      action: "/portfolio",
+      action: "/portfolio-os",
       isLocked: false,
-      isCompleted: userProgress.techDemo,
+      isCompleted: userProgress.portfolioOS,
       gradient: "from-purple-600 to-pink-600",
       info: "• Premium Sydney Houses\n• Return Scenarios\n• Portfolio Distribution"
     },
@@ -47,9 +123,9 @@ const InvestorJourney = () => {
       icon: FaBrain,
       title: "Tech Demo",
       description: "Experience our AI-driven platform and portfolio OS",
-      action: userProgress.techDemo ? "/tech-demo" : "#",
-      isLocked: !userProgress.techDemo,
-      isCompleted: userProgress.techDemo,
+      action: "#",
+      isLocked: true,
+      isCompleted: false,
       gradient: "from-pink-600 to-red-600",
       info: "• AI Underwriting Engine\n• Portfolio Intelligence\n• Market Predictions"
     },
@@ -57,9 +133,9 @@ const InvestorJourney = () => {
       icon: FaFileAlt,
       title: "Deal Room",
       description: "Access investment documents and financial models",
-      action: userProgress.techDemo ? "/deal-room" : "#",
-      isLocked: !userProgress.techDemo,
-      isCompleted: userProgress.dealRoom,
+      action: "#",
+      isLocked: true,
+      isCompleted: false,
       gradient: "from-red-600 to-orange-600",
       info: "• Financial Models\n• Term Sheets\n• Due Diligence Pack"
     }
@@ -495,6 +571,68 @@ const PlatformOSPreview = () => {
 
 const Launchpad = () => {
   const navigate = useNavigate()
+  const [newsletterEmail, setNewsletterEmail] = useState('')
+  const [isSubscribing, setIsSubscribing] = useState(false)
+  const [subscriptionStatus, setSubscriptionStatus] = useState(() => {
+    const status = localStorage.getItem('newsletterStatus')
+    return status ? JSON.parse(status) : { isSubscribed: false }
+  })
+
+  useEffect(() => {
+    // Check if user is already subscribed
+    const userEmail = localStorage.getItem('userEmail')
+    if (userEmail) {
+      const subscribers = JSON.parse(localStorage.getItem('newsletterSubscribers') || '[]')
+      const isSubscribed = subscribers.some((sub: any) => sub.email.toLowerCase() === userEmail.toLowerCase())
+      if (isSubscribed) {
+        setSubscriptionStatus({
+          isSubscribed: true,
+          nextNewsletter: 'January 21st, 2025'
+        })
+      }
+    }
+  }, [])
+
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsSubscribing(true)
+
+    try {
+      // Get existing subscribers or initialize empty array
+      const existingSubscribers = JSON.parse(localStorage.getItem('newsletterSubscribers') || '[]')
+      
+      // Check if email already exists
+      if (!existingSubscribers.some((sub: any) => sub.email === newsletterEmail)) {
+        // Add new subscriber
+        const newSubscriber = {
+          email: newsletterEmail,
+          subscribedAt: new Date().toISOString()
+        }
+        
+        existingSubscribers.push(newSubscriber)
+        localStorage.setItem('newsletterSubscribers', JSON.stringify(existingSubscribers))
+        
+        // Update subscription status
+        const status = {
+          isSubscribed: true,
+          nextNewsletter: 'January 21st, 2025'
+        }
+        localStorage.setItem('newsletterStatus', JSON.stringify(status))
+        setSubscriptionStatus(status)
+        
+        // Clear input
+        setNewsletterEmail('')
+        alert('Thank you for subscribing! Our first newsletter will be sent on January 21st, 2025.')
+      } else {
+        alert('This email is already subscribed to our newsletter. The next newsletter will be sent on January 21st, 2025.')
+      }
+    } catch (error) {
+      console.error('Error subscribing to newsletter:', error)
+      alert('There was an error subscribing to the newsletter. Please try again.')
+    } finally {
+      setIsSubscribing(false)
+    }
+  }
 
   useEffect(() => {
     const startTime = Date.now()
@@ -643,17 +781,124 @@ const Launchpad = () => {
               </div>
             </div>
 
-            {/* Footer */}
-            <div className="max-w-7xl mx-auto mt-16 pt-8 border-t border-white/10">
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-white/40">© 2024 Equihome Partners</span>
-                <div className="flex items-center space-x-4">
-                  <button className="text-sm text-white/40 hover:text-white transition-colors">Support</button>
-                  <button className="text-sm text-white/40 hover:text-white transition-colors">Privacy</button>
-                  <button className="text-sm text-white/40 hover:text-white transition-colors">Terms</button>
+            {/* Dashboard Access */}
+            <div className="max-w-7xl mx-auto mb-16">
+              <div className="bg-[#111827] rounded-xl border border-blue-500/20 p-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center">
+                      <FaKey className="text-2xl text-blue-400" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold text-white">Investor Dashboard</h3>
+                      <p className="text-sm text-gray-400">Track your investment journey and manage your participation</p>
+                    </div>
+                  </div>
+                  <Link
+                    to="/dashboard"
+                    className="px-6 py-3 bg-[#0a0f1a] text-blue-400 rounded-xl text-sm font-medium transition-all hover:bg-[#1a2234] flex items-center space-x-2"
+                  >
+                    <span>Access Dashboard</span>
+                    <FaArrowRight className="text-xs" />
+                  </Link>
                 </div>
               </div>
             </div>
+
+            {/* Newsletter Section */}
+            <div className="relative mt-24 rounded-xl overflow-hidden">
+              <div className="absolute inset-0">
+                <img
+                  src="https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
+                  alt="Sydney Skyline"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-[#0B1121]/90 to-[#0B1121]/70" />
+              </div>
+              <div className="relative py-24 px-8">
+                <div className="max-w-3xl mx-auto text-center">
+                  <h2 className="text-3xl font-bold text-white mb-4">Stay Updated with EquiHome</h2>
+                  <p className="text-lg text-gray-300 mb-8">
+                    Join our monthly newsletter to receive the latest updates on PropTech innovation, investment opportunities, and market insights.
+                  </p>
+                  {subscriptionStatus.isSubscribed ? (
+                    <div className="bg-green-500/20 border border-green-500/30 rounded-lg p-6 max-w-md mx-auto">
+                      <div className="flex items-center justify-center space-x-2 text-green-400 mb-2">
+                        <FaCheck className="text-lg" />
+                        <span className="font-medium">You're subscribed!</span>
+                      </div>
+                      <p className="text-gray-300 text-sm">
+                        The next newsletter will be sent on {subscriptionStatus.nextNewsletter}
+                      </p>
+                    </div>
+                  ) : (
+                    <form onSubmit={handleNewsletterSubmit} className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+                      <input
+                        type="email"
+                        value={newsletterEmail}
+                        onChange={(e) => setNewsletterEmail(e.target.value)}
+                        placeholder="Enter your email"
+                        required
+                        className="flex-1 px-4 py-3 rounded-lg bg-[#111827] border border-blue-500/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      />
+                      <button
+                        type="submit"
+                        disabled={isSubscribing}
+                        className={`px-6 py-3 bg-blue-500 text-white font-medium rounded-lg hover:bg-blue-600 transition-colors ${
+                          isSubscribing ? 'opacity-50 cursor-not-allowed' : ''
+                        }`}
+                      >
+                        {isSubscribing ? 'Subscribing...' : 'Subscribe'}
+                      </button>
+                    </form>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Footer */}
+            <footer className="mt-24 border-t border-blue-500/20 pt-16 pb-8">
+              <div className="max-w-7xl mx-auto px-8">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+                  <div>
+                    <h3 className="text-xl font-semibold text-white mb-4">Our Vision</h3>
+                    <p className="text-gray-400">
+                      To revolutionize real estate investment through cutting-edge technology, making property ownership more accessible, transparent, and efficient for everyone.
+                    </p>
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-semibold text-white mb-4">Our Mission</h3>
+                    <p className="text-gray-400">
+                      Empowering investors with innovative PropTech solutions that streamline the investment process and maximize returns through data-driven insights and automation.
+                    </p>
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-semibold text-white mb-4">Contact Us</h3>
+                    <div className="space-y-2 text-gray-400">
+                      <p className="flex items-center space-x-2">
+                        <FaUser className="text-blue-400" />
+                        <span>Sujay Namburi</span>
+                      </p>
+                      <p className="flex items-center space-x-2">
+                        <FaPhone className="text-blue-400" />
+                        <a href="tel:+15713761551" className="hover:text-white transition-colors">
+                          +1 (571) 376-1551
+                        </a>
+                      </p>
+                      <p className="flex items-center space-x-2">
+                        <FaEnvelope className="text-blue-400" />
+                        <a href="mailto:sujay@equihome.com.au" className="hover:text-white transition-colors">
+                          sujay@equihome.com.au
+                        </a>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="mt-16 pt-8 border-t border-blue-500/20 text-center text-gray-400">
+                  <p>&copy; {new Date().getFullYear()} EquiHome. All rights reserved.</p>
+                </div>
+              </div>
+            </footer>
           </div>
         </div>
       </div>

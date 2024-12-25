@@ -146,92 +146,25 @@ const investmentHighlights = [
   }
 ]
 
-// Replace SydneyMapBackground with Leaflet map
-const SydneyMap = () => {
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  if (!mounted) return null
-
-  return (
-    <div className="bg-[#111827] rounded-xl border border-blue-500/20 p-6">
-      <h3 className="text-lg font-semibold text-white mb-6">Sydney Portfolio Distribution</h3>
-      <div className="relative w-full aspect-[4/3] bg-[#0a0f1a] rounded-xl overflow-hidden">
-        <MapContainer
-          center={[-33.8688, 151.2093]}
-          zoom={11}
-          style={{ height: '100%', width: '100%', background: '#0a0f1a' }}
-          zoomControl={false}
-          attributionControl={false}
-        >
-          <TileLayer
-            url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
-            className="map-tiles"
-          />
-          {Object.entries(sydneyRegions).map(([region, data]) => (
-            <CircleMarker
-              key={region}
-              center={data.coordinates as [number, number]}
-              radius={25}
-              pathOptions={{
-                fillColor: '#3b82f6',
-                fillOpacity: 0.3,
-                color: '#3b82f6',
-                weight: 2,
-              }}
-            >
-              <div className="circle-label">
-                <div className="text-lg font-bold text-white">{data.percentage}%</div>
-                <div className="text-sm text-blue-400">{data.properties}</div>
-              </div>
-              <Popup className="custom-popup">
-                <div className="bg-[#1a2234] rounded-lg p-3 text-white">
-                  <div className="text-sm font-bold mb-2">{region}</div>
-                  <div className="text-base font-bold text-blue-400 mb-1">{data.percentage}%</div>
-                  <div className="text-xs text-gray-400">{data.properties} properties</div>
-                  <div className="grid grid-cols-2 gap-3 mt-2">
-                    <div>
-                      <div className="text-xs text-gray-400">Median Price</div>
-                      <div className="text-sm font-semibold text-blue-400">{data.medianPrice}</div>
-                    </div>
-                    <div>
-                      <div className="text-xs text-gray-400">Growth</div>
-                      <div className="text-sm font-semibold text-green-400">{data.appreciation}</div>
-                    </div>
-                  </div>
-                  <div className="mt-2 text-xs text-gray-400">{data.forecast}</div>
-                </div>
-              </Popup>
-            </CircleMarker>
-          ))}
-        </MapContainer>
-      </div>
-
-      {/* Legend */}
-      <div className="mt-6 bg-[#0a0f1a] rounded-xl p-4">
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <h4 className="text-sm font-semibold text-white mb-2">Distribution Strategy</h4>
-            <p className="text-sm text-gray-400">
-              Strategic allocation across Sydney's premium suburbs, focusing on established areas with strong growth potential.
-            </p>
-          </div>
-          <div>
-            <h4 className="text-sm font-semibold text-white mb-2">Selection Criteria</h4>
-            <ul className="text-sm text-gray-400 space-y-1">
-              <li>• High owner-occupier ratio</li>
-              <li>• Strong historical growth</li>
-              <li>• Premium infrastructure</li>
-            </ul>
-          </div>
+// Add SydneyMap component
+const SydneyMap = () => (
+  <div className="bg-[#111827] rounded-xl border border-blue-500/20 p-6">
+    <h3 className="text-lg font-semibold text-white mb-6">Target Investment Areas</h3>
+    <div className="aspect-video bg-[#0a0f1a] rounded-xl p-4 flex items-center justify-center">
+      <div className="text-center">
+        <FaMapMarkerAlt className="text-4xl text-blue-400 mx-auto mb-4" />
+        <p className="text-sm text-gray-400">Interactive map coming soon</p>
+        <p className="text-xs text-gray-500 mt-2">Currently targeting premium suburbs in:</p>
+        <div className="mt-4 grid grid-cols-2 gap-2 text-sm">
+          <div className="bg-blue-500/10 rounded-lg p-2 text-blue-400">Eastern Suburbs</div>
+          <div className="bg-blue-500/10 rounded-lg p-2 text-blue-400">North Shore</div>
+          <div className="bg-blue-500/10 rounded-lg p-2 text-blue-400">Northern Beaches</div>
+          <div className="bg-blue-500/10 rounded-lg p-2 text-blue-400">Inner West</div>
         </div>
       </div>
     </div>
-  )
-}
+  </div>
+)
 
 // Add custom styles for the map
 const mapStyles = `
@@ -449,6 +382,24 @@ const SectionHeader: React.FC<{ title: string }> = ({ title }) => (
 )
 
 const PortfolioOS: React.FC = () => {
+  useEffect(() => {
+    // Track that PortfolioOS has been viewed
+    const currentProgress = JSON.parse(localStorage.getItem('investorProgress') || '{}')
+    const updatedProgress = {
+      ...currentProgress,
+      portfolioOSViewed: true,
+      lastVisited: new Date().toISOString(),
+      visitHistory: [
+        ...(currentProgress.visitHistory || []),
+        {
+          page: 'portfolioOSViewed',
+          timestamp: new Date().toISOString()
+        }
+      ]
+    }
+    localStorage.setItem('investorProgress', JSON.stringify(updatedProgress))
+  }, [])
+
   // Calculate progress percentage
   const totalRound = 5000000 // $5M
   const currentRaised = 550000 // $550K
@@ -505,7 +456,7 @@ const PortfolioOS: React.FC = () => {
       </div>
 
       {/* Main Content */}
-      <div className="pt-[180px]">
+      <div className="pt-[180px] pb-24">
         <div className="max-w-7xl mx-auto px-8">
           {/* Title and Description */}
           <div className="text-center max-w-4xl mx-auto mb-24">
@@ -863,7 +814,7 @@ const PortfolioOS: React.FC = () => {
           </div>
 
           {/* Portfolio Distribution */}
-          <div className="mb-16">
+          <div className="mb-8">
             <SectionHeader title="Portfolio Distribution" />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
@@ -889,39 +840,6 @@ const PortfolioOS: React.FC = () => {
                   </ul>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Footer */}
-      <div className="border-t border-blue-500/20 bg-[#0a0f1a]/80 backdrop-blur-sm">
-        <div className="max-w-7xl mx-auto px-8 py-12">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div>
-              <h4 className="text-sm font-semibold text-white mb-4">About Equihome</h4>
-              <p className="text-sm text-gray-400">
-                Revolutionizing residential real estate investment through institutional-grade portfolio management and technology.
-              </p>
-            </div>
-            <div>
-              <h4 className="text-sm font-semibold text-white mb-4">Contact</h4>
-              <p className="text-sm text-gray-400">
-                For investor inquiries:<br />
-                invest@equihome.com
-              </p>
-            </div>
-            <div>
-              <h4 className="text-sm font-semibold text-white mb-4">Location</h4>
-              <p className="text-sm text-gray-400">
-                Sydney, Australia<br />
-                Serving institutional and sophisticated investors globally
-              </p>
-            </div>
-          </div>
-          <div className="mt-8 pt-8 border-t border-blue-500/20">
-            <div className="text-xs text-gray-400">
-              © 2024 Equihome. All rights reserved.
             </div>
           </div>
         </div>

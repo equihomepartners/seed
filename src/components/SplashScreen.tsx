@@ -18,39 +18,71 @@ const SplashScreen = () => {
     return re.test(email);
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    setEmailError('')
+    
     if (!email) {
-      setEmailError('Email is required');
-      return;
+      setEmailError('Please enter your email')
+      return
     }
+
     if (!validateEmail(email)) {
-      setEmailError('Please enter a valid email');
-      return;
+      setEmailError('Please enter a valid email')
+      return
     }
+
     if (!hasAgreed) {
-      return;
+      setEmailError('Please agree to the terms')
+      return
     }
 
-    setIsSubmitting(true);
+    setIsSubmitting(true)
+    
     try {
-      const sessionId = generateSessionId();
-      
-      // Store session data
-      localStorage.setItem('userEmail', email);
-      localStorage.setItem('sessionActive', 'true');
-      localStorage.setItem('userId', sessionId);
+      // Track user sign-in
+      const signInData = {
+        email: email,
+        signInTime: new Date().toISOString(),
+        userId: generateSessionId()
+      }
 
-      // Trigger a storage event for App.tsx to detect
-      window.dispatchEvent(new Event('storage'));
+      // Get existing sign-ins or initialize empty array
+      const existingSignIns = JSON.parse(localStorage.getItem('userSignIns') || '[]')
+      existingSignIns.push(signInData)
+      localStorage.setItem('userSignIns', JSON.stringify(existingSignIns))
+
+      // Check if user is already subscribed to newsletter
+      const newsletterSubscribers = JSON.parse(localStorage.getItem('newsletterSubscribers') || '[]')
+      const isSubscribed = newsletterSubscribers.some((sub: any) => sub.email.toLowerCase() === email.toLowerCase())
       
-      navigate('/launchpad', { replace: true });
+      if (isSubscribed) {
+        localStorage.setItem('newsletterStatus', JSON.stringify({
+          isSubscribed: true,
+          nextNewsletter: 'January 21st, 2025'
+        }))
+      }
+
+      // If it's admin email, handle admin authentication
+      if (email.toLowerCase() === 'sujay@equihome.com.au') {
+        localStorage.setItem('adminAuthenticated', 'true')
+        localStorage.setItem('adminEmail', email)
+        localStorage.setItem('sessionActive', 'true')
+        localStorage.setItem('userEmail', email)
+        localStorage.setItem('userId', signInData.userId)
+        navigate('/admin')
+      } else {
+        // Handle regular user
+        localStorage.setItem('sessionActive', 'true')
+        localStorage.setItem('userEmail', email)
+        localStorage.setItem('userId', signInData.userId)
+        window.location.reload()
+      }
     } catch (error) {
-      console.error('Error:', error);
-      setEmailError('Something went wrong. Please try again.');
-    } finally {
-      setIsSubmitting(false);
+      setEmailError('An error occurred. Please try again.')
+      setIsSubmitting(false)
     }
-  };
+  }
 
   return (
     <motion.div

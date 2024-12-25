@@ -5,16 +5,28 @@ import Launchpad from './components/Launchpad'
 import BookCall from './components/BookCall'
 import BusinessInfo from './components/BusinessInfo'
 import PortfolioOS from './components/PortfolioOS'
+import InvestorDashboard from './components/dashboard/InvestorDashboard'
+import ChatBot from './components/ChatBot'
+import Pitch from './components/Pitch'
+import InterestRegistration from './components/forms/InterestRegistration'
+import AdminDashboard from './components/admin/AdminDashboard'
+import AdminSignIn from './components/admin/AdminSignIn'
+import WebinarRegistration from './components/WebinarRegistration'
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     const checkAuth = () => {
       const sessionActive = localStorage.getItem('sessionActive') === 'true'
       const userEmail = localStorage.getItem('userEmail')
+      const adminAuthenticated = localStorage.getItem('adminAuthenticated') === 'true'
+      const adminEmail = localStorage.getItem('adminEmail')?.toLowerCase() === 'sujay@equihome.com.au'
+
       setIsAuthenticated(sessionActive && !!userEmail)
+      setIsAdminAuthenticated(adminAuthenticated && adminEmail)
       setIsLoading(false)
     }
 
@@ -30,11 +42,34 @@ function App() {
   return (
     <Router>
       <Routes>
+        {/* Admin Routes */}
+        <Route
+          path="/admin/signin"
+          element={
+            !isAdminAuthenticated ? (
+              <AdminSignIn />
+            ) : (
+              <Navigate to="/admin" replace />
+            )
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            isAdminAuthenticated ? (
+              <AdminDashboard />
+            ) : (
+              <Navigate to="/admin/signin" replace />
+            )
+          }
+        />
+
+        {/* Regular User Routes */}
         <Route
           path="/"
           element={
             isAuthenticated ? (
-              <Navigate to="/launchpad" replace />
+              <Launchpad />
             ) : (
               <SplashScreen />
             )
@@ -80,8 +115,49 @@ function App() {
             )
           }
         />
+        <Route
+          path="/pitch"
+          element={
+            isAuthenticated ? (
+              <Pitch />
+            ) : (
+              <Navigate to="/" replace />
+            )
+          }
+        />
+        <Route
+          path="/dashboard"
+          element={
+            isAuthenticated ? (
+              <InvestorDashboard />
+            ) : (
+              <Navigate to="/" replace />
+            )
+          }
+        />
+        <Route
+          path="/register-interest"
+          element={
+            isAuthenticated ? (
+              <InterestRegistration />
+            ) : (
+              <Navigate to="/" replace />
+            )
+          }
+        />
+        <Route
+          path="/webinar"
+          element={
+            isAuthenticated ? (
+              <WebinarRegistration />
+            ) : (
+              <Navigate to="/" replace />
+            )
+          }
+        />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      {isAuthenticated && <ChatBot />}
     </Router>
   )
 }
