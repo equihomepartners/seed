@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import Hero from './Hero'
+import Vision from './Vision'
 import Solution from './Solution'
 import AustralianMarket from './AustralianMarket'
 import BusinessModel from './BusinessModel'
@@ -14,7 +15,7 @@ import GlobalHeader from './GlobalHeader'
 const Pitch = () => {
   // Calculate progress percentage
   const totalRound = 5000000 // $5M
-  const currentRaised = 550000 // $550K
+  const currentRaised = 700000 // $700K
   const progressPercentage = (currentRaised / totalRound) * 100
 
   // Calculate days remaining
@@ -72,6 +73,7 @@ const Pitch = () => {
       {/* Main Content */}
       <div className="relative pt-16">
         <Hero />
+        <Vision />
         <CurrentOptions />
         <Solution />
         <AustralianMarket />

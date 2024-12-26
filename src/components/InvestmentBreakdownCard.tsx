@@ -227,6 +227,12 @@ const InvestmentBreakdownCard = () => {
               <div className="text-2xl font-bold text-green-400">8-26x+</div>
             </div>
           </div>
+
+          <div className="mt-4 bg-[#0a0f1a] p-4 rounded-xl group-hover:bg-[#0d1424] transition-colors duration-300">
+            <div className="text-gray-400 text-sm mb-1">Investment Entity</div>
+            <div className="text-lg font-bold text-white">Equihome Capital Group Inc.</div>
+            <div className="text-sm text-blue-400">US C-Corporation</div>
+          </div>
         </div>
 
         {/* Expanded Content */}

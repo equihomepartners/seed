@@ -4,7 +4,7 @@ import GlobalHeader from './GlobalHeader'
 const BusinessInfo = () => {
   // Calculate progress percentage
   const totalRound = 5000000 // $5M
-  const currentRaised = 550000 // $550K
+  const currentRaised = 700000 // $700K
   const progressPercentage = (currentRaised / totalRound) * 100
 
   // Calculate days remaining

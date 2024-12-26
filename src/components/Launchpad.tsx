@@ -658,7 +658,7 @@ const Launchpad = () => {
 
   // Calculate progress percentage
   const totalRound = 5000000 // $5M
-  const currentRaised = 550000 // $550K
+  const currentRaised = 700000 // $700K
   const progressPercentage = (currentRaised / totalRound) * 100
 
   // Calculate days remaining
@@ -700,7 +700,7 @@ const Launchpad = () => {
               {/* Welcome Message */}
               <div className="text-center max-w-3xl mx-auto">
                 <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 text-transparent bg-clip-text">Welcome to our Seed Round Launchpad</h1>
-                <p className="text-white/60 text-lg">Complete each step to unlock the next stage of your investment journey.</p>
+                <p className="text-white/60 text-lg">Your guided investment portal to explore our $5M seed round opportunity. Access our business pitch, portfolio technology, and schedule private discussions with our team.</p>
               </div>
 
               {/* Closing Notice */}

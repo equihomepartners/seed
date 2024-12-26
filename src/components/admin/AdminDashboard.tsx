@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { FaUsers, FaCalendar, FaNewspaper, FaChartLine, FaSignOutAlt } from 'react-icons/fa'
+import { FaUsers, FaCalendar, FaNewspaper, FaChartLine, FaSignOutAlt, FaPlay } from 'react-icons/fa'
 import { useNavigate } from 'react-router-dom'
 
 interface UserActivity {
@@ -11,6 +11,7 @@ interface UserActivity {
     portfolioOSViewed: boolean
     introCallScheduled: boolean
     interestRegistered: boolean
+    webinarRegistered?: boolean
     scheduledCallDate?: string
   }
   visitHistory: Array<{
@@ -77,6 +78,7 @@ const AdminDashboard = () => {
       activeUsers: userActivities.filter(u => new Date(u.lastActive).getTime() > Date.now() - 24 * 60 * 60 * 1000).length,
       scheduledCalls: userActivities.filter(u => u.progress.introCallScheduled).length,
       registeredInterest: userActivities.filter(u => u.progress.interestRegistered).length,
+      webinarRegistrations: userActivities.filter(u => u.progress.webinarRegistered).length,
       newsletterSubscribers: newsletterSubscribers.length
     }
   }
@@ -86,7 +88,7 @@ const AdminDashboard = () => {
 
     return (
       <div className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-6">
           <div className="bg-[#111827] rounded-xl p-6 border border-blue-500/20">
             <div className="flex items-center space-x-4">
               <div className="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center">
@@ -126,11 +128,35 @@ const AdminDashboard = () => {
           <div className="bg-[#111827] rounded-xl p-6 border border-blue-500/20">
             <div className="flex items-center space-x-4">
               <div className="w-12 h-12 rounded-xl bg-pink-500/20 flex items-center justify-center">
-                <FaNewspaper className="text-2xl text-pink-400" />
+                <FaPlay className="text-2xl text-pink-400" />
+              </div>
+              <div>
+                <div className="text-sm text-gray-400">Webinar Signups</div>
+                <div className="text-2xl font-bold text-white">{stats.webinarRegistrations}</div>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-[#111827] rounded-xl p-6 border border-blue-500/20">
+            <div className="flex items-center space-x-4">
+              <div className="w-12 h-12 rounded-xl bg-orange-500/20 flex items-center justify-center">
+                <FaNewspaper className="text-2xl text-orange-400" />
               </div>
               <div>
                 <div className="text-sm text-gray-400">Newsletter Subs</div>
                 <div className="text-2xl font-bold text-white">{stats.newsletterSubscribers}</div>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-[#111827] rounded-xl p-6 border border-blue-500/20">
+            <div className="flex items-center space-x-4">
+              <div className="w-12 h-12 rounded-xl bg-cyan-500/20 flex items-center justify-center">
+                <FaUsers className="text-2xl text-cyan-400" />
+              </div>
+              <div>
+                <div className="text-sm text-gray-400">Active Users</div>
+                <div className="text-2xl font-bold text-white">{stats.activeUsers}</div>
               </div>
             </div>
           </div>
@@ -148,6 +174,7 @@ const AdminDashboard = () => {
                     <th className="pb-4">Last Active</th>
                     <th className="pb-4">Progress</th>
                     <th className="pb-4">Call Status</th>
+                    <th className="pb-4">Webinar</th>
                   </tr>
                 </thead>
                 <tbody className="text-sm">
@@ -180,6 +207,13 @@ const AdminDashboard = () => {
                           </span>
                         ) : (
                           <span className="text-gray-400">Not Scheduled</span>
+                        )}
+                      </td>
+                      <td className="py-4">
+                        {user.progress.webinarRegistered ? (
+                          <span className="text-pink-400">Registered</span>
+                        ) : (
+                          <span className="text-gray-400">Not Registered</span>
                         )}
                       </td>
                     </tr>

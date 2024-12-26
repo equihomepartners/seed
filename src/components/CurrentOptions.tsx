@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
-import { FaDollarSign, FaHome, FaChartLine, FaClock, FaPercent, FaUserClock } from 'react-icons/fa'
+import { FaDollarSign, FaHome, FaChartLine, FaClock, FaPercent, FaUserClock, FaChartBar, FaExclamationTriangle, FaArrowDown, FaArrowUp } from 'react-icons/fa'
 
 const CurrentOptions = () => {
   const [ref, inView] = useInView({
@@ -88,6 +88,102 @@ const CurrentOptions = () => {
         >
           <h2 className="text-5xl font-bold mb-6">Current Options</h2>
           <p className="text-xl text-gray-400">Traditional approaches to accessing home equity</p>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8 }}
+          className="mb-24"
+        >
+          <div className="text-center mb-12">
+            <h3 className="text-3xl font-bold mb-4">The Mortgage Wall</h3>
+            <p className="text-xl text-gray-400">Understanding the unique challenges in the Australian market</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+            <div className="bg-[#111827] rounded-2xl p-8">
+              <div className="flex items-center mb-6">
+                <div className="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center mr-4">
+                  <FaHome className="text-blue-400 text-xl" />
+                </div>
+                <div>
+                  <h4 className="text-2xl font-bold">US Market</h4>
+                  <p className="text-gray-400">30-Year Fixed Rate Mortgages</p>
+                </div>
+              </div>
+              <div className="space-y-4">
+                <div className="bg-[#0a0f1a] rounded-xl p-4">
+                  <div className="flex items-center text-green-400 mb-2">
+                    <FaChartBar className="mr-2" />
+                    <span className="font-semibold">Predictable Payments</span>
+                  </div>
+                  <p className="text-gray-300 text-sm">Fixed monthly payments for the entire loan term</p>
+                </div>
+                <div className="bg-[#0a0f1a] rounded-xl p-4">
+                  <div className="flex items-center text-green-400 mb-2">
+                    <FaPercent className="mr-2" />
+                    <span className="font-semibold">Rate Stability</span>
+                  </div>
+                  <p className="text-gray-300 text-sm">Interest rate locked for 30 years</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-[#111827] rounded-2xl p-8">
+              <div className="flex items-center mb-6">
+                <div className="w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center mr-4">
+                  <FaExclamationTriangle className="text-red-400 text-xl" />
+                </div>
+                <div>
+                  <h4 className="text-2xl font-bold">Australian Market</h4>
+                  <p className="text-gray-400">Variable Rate Mortgages</p>
+                </div>
+              </div>
+              <div className="space-y-4">
+                <div className="bg-[#0a0f1a] rounded-xl p-4">
+                  <div className="flex items-center text-red-400 mb-2">
+                    <FaArrowUp className="mr-2" />
+                    <span className="font-semibold">Rising Payments</span>
+                  </div>
+                  <p className="text-gray-300 text-sm">Monthly payments increase with interest rates</p>
+                </div>
+                <div className="bg-[#0a0f1a] rounded-xl p-4">
+                  <div className="flex items-center text-red-400 mb-2">
+                    <FaArrowDown className="mr-2" />
+                    <span className="font-semibold">Payment Uncertainty</span>
+                  </div>
+                  <p className="text-gray-300 text-sm">Variable rates create financial stress</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-gradient-to-br from-red-500/10 to-orange-500/10 rounded-2xl p-8 mb-12">
+            <h4 className="text-2xl font-bold mb-4 text-center">The Mortgage Wall Challenge</h4>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="bg-[#111827] rounded-xl p-6">
+                <h5 className="text-lg font-semibold mb-3">Rising Rates Impact</h5>
+                <p className="text-gray-300 text-sm">Homeowners face increasing monthly payments as interest rates rise, creating financial strain</p>
+              </div>
+              <div className="bg-[#111827] rounded-xl p-6">
+                <h5 className="text-lg font-semibold mb-3">Limited Solutions</h5>
+                <p className="text-gray-300 text-sm">Current second mortgage options add to monthly payment burden instead of providing relief</p>
+              </div>
+              <div className="bg-[#111827] rounded-xl p-6">
+                <h5 className="text-lg font-semibold mb-3">Perfect Timing</h5>
+                <p className="text-gray-300 text-sm">When rates eventually drop, homeowners can refinance, providing natural exit opportunities</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-[#111827] rounded-2xl p-8 text-center">
+            <h4 className="text-2xl font-bold mb-4">Unprecedented Market Need</h4>
+            <p className="text-gray-300 text-lg leading-relaxed max-w-3xl mx-auto">
+              The need for innovative equity release solutions is at an all-time high. Our product addresses homeowners' 
+              immediate needs without adding to their monthly burden, while benefiting from natural market cycles for exits.
+            </p>
+          </div>
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">

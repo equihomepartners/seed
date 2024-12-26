@@ -6,33 +6,62 @@
   html {
     scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
   }
 
   body {
     @apply bg-gradient-to-b from-[#0A0A0A] to-[#1A1A1A] text-white min-h-screen overflow-x-hidden;
     font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
   }
 
-  ::-webkit-scrollbar {
-    width: 8px;
+  /* Better touch targets for mobile */
+  @media (max-width: 640px) {
+    button, a, input, select {
+      @apply min-h-[44px] min-w-[44px];
+    }
+    
+    /* Adjust spacing for mobile */
+    .px-8 {
+      @apply px-4;
+    }
+    
+    .gap-8 {
+      @apply gap-4;
+    }
+    
+    /* Adjust text sizes for mobile */
+    h1 {
+      @apply text-3xl;
+    }
+    
+    h2 {
+      @apply text-2xl;
+    }
+    
+    h3 {
+      @apply text-xl;
+    }
+    
+    /* Better card padding on mobile */
+    .p-8 {
+      @apply p-4;
+    }
   }
 
-  ::-webkit-scrollbar-track {
-    @apply bg-gray-900;
+  /* Tablet optimizations */
+  @media (min-width: 641px) and (max-width: 1024px) {
+    .grid-cols-3 {
+      @apply grid-cols-2;
+    }
+    
+    .gap-8 {
+      @apply gap-6;
+    }
   }
 
-  ::-webkit-scrollbar-thumb {
-    @apply bg-blue-500 rounded-full;
-  }
-
-  input[type="range"] {
-    @apply appearance-none bg-gray-700 h-2 rounded-lg;
-  }
-
-  input[type="range"]::-webkit-slider-thumb {
-    @apply appearance-none w-4 h-4 rounded-full bg-blue-500 cursor-pointer;
-  }
-
+  /* Responsive font sizes */
   @media (max-width: 640px) {
     html {
       font-size: 14px;
@@ -51,9 +80,55 @@
     }
   }
 
+  /* Hide scrollbar on touch devices */
   @media (hover: none) {
     ::-webkit-scrollbar {
       display: none;
     }
+  }
+
+  /* Safe area insets for notched devices */
+  .safe-padding {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  /* Better scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-gray-900;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-blue-500 rounded-full;
+  }
+
+  /* Form elements */
+  input[type="range"] {
+    @apply appearance-none bg-gray-700 h-2 rounded-lg;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    @apply appearance-none w-4 h-4 rounded-full bg-blue-500 cursor-pointer;
+  }
+}
+
+/* Responsive utilities */
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .safe-top {
+    margin-top: env(safe-area-inset-top);
+  }
+  
+  .safe-bottom {
+    margin-bottom: env(safe-area-inset-bottom);
   }
 }

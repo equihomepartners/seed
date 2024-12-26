@@ -47,10 +47,38 @@ const WebinarRegistration = () => {
     setSubmitStatus('idle')
 
     try {
-      setSubmitStatus('success')
+      // Store registration in localStorage
+      const userId = localStorage.getItem('userId')
+      const progress = JSON.parse(localStorage.getItem('investorProgress') || '{}')
       
-      // Don't reset the form immediately - let the success message display first
-      // The form will be hidden anyway when showing the success screen
+      // Update progress to include webinar registration
+      const updatedProgress = {
+        ...progress,
+        webinarRegistered: true,
+        webinarRegistrationData: {
+          name,
+          email,
+          company,
+          registrationDate: new Date().toISOString(),
+          eventDetails
+        }
+      }
+      
+      localStorage.setItem('investorProgress', JSON.stringify(updatedProgress))
+      
+      // Track the registration in visit history
+      const visitHistory = progress.visitHistory || []
+      visitHistory.push({
+        page: 'webinar-registration',
+        timestamp: new Date().toISOString()
+      })
+      
+      localStorage.setItem('investorProgress', JSON.stringify({
+        ...updatedProgress,
+        visitHistory
+      }))
+
+      setSubmitStatus('success')
     } catch (error) {
       setSubmitStatus('error')
       console.error('Registration error:', error)
