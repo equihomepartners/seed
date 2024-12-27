@@ -1,0 +1,29 @@
+name: equihome-admin-backend
+region: sgp
+services:
+  - name: equihome-admin-api
+    git:
+      branch: main
+      repo_clone_url: https://github.com/equihomepartners/seed.git
+    source_dir: server
+    dockerfile_path: Dockerfile
+    http_port: 3002
+    instance_count: 1
+    instance_size_slug: basic-xxs
+    routes:
+      - path: /
+    envs:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        value: ${MONGODB_URI}
+      - key: JWT_SECRET
+        value: ${JWT_SECRET}
+      - key: ADMIN_EMAIL
+        value: ${ADMIN_EMAIL}
+      - key: ADMIN_PASSWORD
+        value: ${ADMIN_PASSWORD}
+      - key: FRONTEND_URL
+        value: https://seed.equihome.com.au
+      - key: CORS_ORIGIN
+        value: https://seed.equihome.com.au 
