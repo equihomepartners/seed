@@ -16,8 +16,8 @@ COPY package*.json ./
 RUN npm install --production
 
 COPY --from=builder /app/dist ./dist
-COPY .env .env
+COPY .env.example .env
 
 EXPOSE 3002
 
-CMD ["npm", "start"] 
+CMD ["node", "dist/index.js"] 
