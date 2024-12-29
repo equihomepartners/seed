@@ -639,19 +639,10 @@ const Launchpad = () => {
     const userId = localStorage.getItem('userId')
 
     if (userId) {
-      axios.post('http://localhost:3001/api/track-view', {
-        userId,
-        page: 'launchpad',
-        duration: 0
-      })
-
+      // Remove tracking code since it's now handled by PageTracker
       return () => {
         const duration = Math.floor((Date.now() - startTime) / 1000)
-        axios.post('http://localhost:3001/api/track-view', {
-          userId,
-          page: 'launchpad',
-          duration
-        })
+        // Remove tracking code since it's now handled by PageTracker
       }
     }
   }, [])

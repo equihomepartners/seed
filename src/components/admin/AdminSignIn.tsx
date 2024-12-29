@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { FaLock } from 'react-icons/fa'
 
+const API_URL = 'http://209.38.87.210:3002'
+
 const AdminSignIn = () => {
   const navigate = useNavigate()
   const [email, setEmail] = useState('')
@@ -12,28 +14,33 @@ const AdminSignIn = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
-    setIsLoading(true)
+
+    if (!email) {
+      setError('Please enter your email')
+      return
+    }
 
     try {
-      // Simple admin validation
-      if (email.toLowerCase() === 'sujay@equihome.com.au' && password === 'equihome2024') {
-        // Clear any existing session
-        localStorage.clear()
-        
-        // Set admin session
-        localStorage.setItem('adminAuthenticated', 'true')
-        localStorage.setItem('adminEmail', email)
-        localStorage.setItem('sessionActive', 'true')
-        
-        // Force page reload to update all components
-        window.location.href = '/admin'
-      } else {
-        setError('Invalid credentials')
+      const response = await fetch(`${API_URL}/admin/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email })
+      })
+
+      if (!response.ok) {
+        throw new Error('Invalid credentials')
       }
+
+      const { token } = await response.json()
+      localStorage.setItem('adminToken', token)
+      localStorage.setItem('adminEmail', email)
+      localStorage.setItem('adminAuthenticated', 'true')
+      
+      navigate('/admin')
     } catch (error) {
-      setError('An error occurred. Please try again.')
-    } finally {
-      setIsLoading(false)
+      setError('Invalid credentials')
     }
   }
 
@@ -48,59 +55,60 @@ const AdminSignIn = () => {
           <p className="mt-2 text-gray-400">Restricted to authorized personnel only</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="mt-8 space-y-6">
-          {error && (
-            <div className="bg-red-500/10 border border-red-500/20 text-red-400 px-4 py-3 rounded-lg text-sm">
-              {error}
-            </div>
-          )}
-
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-4">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-400 mb-2">
-                Email
+              <label htmlFor="email" className="sr-only">
+                Email address
               </label>
               <input
                 id="email"
+                name="email"
                 type="email"
+                autoComplete="email"
+                required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                required
-                className="w-full px-4 py-3 bg-[#111827] border border-blue-500/20 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="Enter your admin email"
+                className="appearance-none relative block w-full px-3 py-2 border border-gray-700 placeholder-gray-500 text-white rounded-lg bg-[#111827] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                placeholder="Email address"
               />
             </div>
-
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-400 mb-2">
+              <label htmlFor="password" className="sr-only">
                 Password
               </label>
               <input
                 id="password"
+                name="password"
                 type="password"
+                autoComplete="current-password"
+                required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                required
-                className="w-full px-4 py-3 bg-[#111827] border border-blue-500/20 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="Enter your password"
+                className="appearance-none relative block w-full px-3 py-2 border border-gray-700 placeholder-gray-500 text-white rounded-lg bg-[#111827] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                placeholder="Password"
               />
             </div>
           </div>
 
-          <button
-            type="submit"
-            disabled={isLoading}
-            className={`w-full px-6 py-3 bg-blue-500 text-white rounded-lg font-medium transition-colors ${
-              isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-600'
-            }`}
-          >
-            {isLoading ? 'Signing in...' : 'Sign In'}
-          </button>
-        </form>
+          {error && (
+            <div className="text-red-500 text-sm text-center">{error}</div>
+          )}
 
-        <p className="text-center text-sm text-gray-400">
-          This is a restricted area. Unauthorized access is prohibited.
-        </p>
+          <div>
+            <button
+              type="submit"
+              disabled={isLoading}
+              className={`group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-lg text-white ${
+                isLoading
+                  ? 'bg-blue-600 cursor-not-allowed'
+                  : 'bg-blue-600 hover:bg-blue-700'
+              } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}
+            >
+              {isLoading ? 'Signing in...' : 'Sign in'}
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   )

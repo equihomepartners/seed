@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import axios from 'axios'
 
 const generateSessionId = () => {
   return Math.random().toString(36).substring(2) + Date.now().toString(36);
@@ -18,7 +19,7 @@ const SplashScreen = () => {
     return re.test(email);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setEmailError('')
     
@@ -40,46 +41,53 @@ const SplashScreen = () => {
     setIsSubmitting(true)
     
     try {
+      // Generate session ID
+      const userId = generateSessionId()
+
       // Track user sign-in
+      const response = await axios.post('http://209.38.87.210:3002/api/track/signin', {
+        userId,
+        email
+      }, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      console.log('Sign-in response:', response.data);
+
+      if (!response.data) {
+        throw new Error('Failed to track sign-in');
+      }
+
+      // Track sign-in locally for fallback
       const signInData = {
         email: email,
         signInTime: new Date().toISOString(),
-        userId: generateSessionId()
+        userId
       }
 
-      // Get existing sign-ins or initialize empty array
-      const existingSignIns = JSON.parse(localStorage.getItem('userSignIns') || '[]')
-      existingSignIns.push(signInData)
-      localStorage.setItem('userSignIns', JSON.stringify(existingSignIns))
-
-      // Check if user is already subscribed to newsletter
-      const newsletterSubscribers = JSON.parse(localStorage.getItem('newsletterSubscribers') || '[]')
-      const isSubscribed = newsletterSubscribers.some((sub: any) => sub.email.toLowerCase() === email.toLowerCase())
-      
-      if (isSubscribed) {
-        localStorage.setItem('newsletterStatus', JSON.stringify({
-          isSubscribed: true,
-          nextNewsletter: 'January 21st, 2025'
-        }))
-      }
+      // Store user data
+      localStorage.setItem('sessionActive', 'true')
+      localStorage.setItem('userEmail', email)
+      localStorage.setItem('userId', userId)
 
       // If it's admin email, handle admin authentication
       if (email.toLowerCase() === 'sujay@equihome.com.au') {
         localStorage.setItem('adminAuthenticated', 'true')
         localStorage.setItem('adminEmail', email)
-        localStorage.setItem('sessionActive', 'true')
-        localStorage.setItem('userEmail', email)
-        localStorage.setItem('userId', signInData.userId)
         navigate('/admin')
       } else {
         // Handle regular user
-        localStorage.setItem('sessionActive', 'true')
-        localStorage.setItem('userEmail', email)
-        localStorage.setItem('userId', signInData.userId)
         window.location.reload()
       }
     } catch (error) {
+      console.error('Error during sign-in:', error)
+      if (axios.isAxiosError(error)) {
+        console.error('Axios error details:', error.response?.data)
+      }
       setEmailError('An error occurred. Please try again.')
+    } finally {
       setIsSubmitting(false)
     }
   }

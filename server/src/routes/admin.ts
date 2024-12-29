@@ -1,9 +1,31 @@
 import * as express from 'express';
+import * as jwt from 'jsonwebtoken';
 import { adminAuth } from '../middleware/adminAuth';
 import { UserActivity } from '../models/UserActivity';
 import { NewsletterSubscriber } from '../models/NewsletterSubscriber';
 
 const router = express.Router();
+
+// Admin login
+router.post('/login', async (req, res) => {
+  try {
+    const { email } = req.body;
+    
+    if (email !== 'sujay@equihome.com.au') {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    const token = jwt.sign(
+      { email },
+      process.env.JWT_SECRET || 'your-secret-key',
+      { expiresIn: '24h' }
+    );
+
+    res.json({ token });
+  } catch (error) {
+    res.status(500).json({ error: 'Server error' });
+  }
+});
 
 // Get admin dashboard metrics
 router.get('/metrics', adminAuth, async (req, res) => {

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { FaLock, FaChartLine, FaBuilding, FaFileAlt, FaUsers, FaBrain, FaArrowRight, FaCalendar, FaDownload, FaPlay, FaNewspaper, FaLinkedin, FaGlobe, FaChartBar, FaMapMarkerAlt, FaCheck, FaHome, FaPhone, FaHandshake, FaKey, FaChartPie, FaComments, FaShieldAlt, FaDollarSign, FaCog, FaBell, FaUserCircle, FaClipboardList, FaRocket, FaChartArea, FaInfoCircle, FaLightbulb, FaQuestionCircle, FaClock } from 'react-icons/fa'
 import { Link, useLocation } from 'react-router-dom'
 import GlobalHeader from '../GlobalHeader'
+import axios from 'axios'
 
 type InvestorState = 'pre-interest' | 'interest-registered' | 'active'
 
@@ -171,26 +172,6 @@ const InvestorDashboard = () => {
     }
   }
 
-  // Function to update progress and save to localStorage
-  const updateProgress = (key: keyof StepProgress, value: boolean = true) => {
-    setStepProgress(prev => {
-      const updated = {
-        ...prev,
-        [key]: value,
-        lastVisited: new Date().toISOString(),
-        visitHistory: [
-          ...(prev.visitHistory || []),
-          {
-            page: key,
-            timestamp: new Date().toISOString()
-          }
-        ]
-      }
-      localStorage.setItem('investorProgress', JSON.stringify(updated))
-      return updated
-    })
-  }
-
   // Track route changes and update progress
   useEffect(() => {
     const trackPageView = () => {
@@ -220,6 +201,25 @@ const InvestorDashboard = () => {
       trackPageView()
     }
   }, [location.pathname])
+
+  // Function to update progress and save to localStorage
+  const updateProgress = async (key: string) => {
+    const newProgress = { ...stepProgress, [key]: true }
+    setStepProgress(newProgress)
+    localStorage.setItem('investorProgress', JSON.stringify(newProgress))
+
+    const userId = localStorage.getItem('userId')
+    if (userId) {
+      try {
+        await axios.post('http://209.38.87.210:3002/api/track/progress', {
+          userId,
+          progress: newProgress
+        })
+      } catch (error) {
+        console.error('Error updating progress:', error)
+      }
+    }
+  }
 
   // Function to get progress status text
   const getProgressStatus = () => {

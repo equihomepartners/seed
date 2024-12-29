@@ -6,6 +6,7 @@ interface UserActivity {
   userId: string
   email: string
   lastActive: string
+  createdAt?: string
   progress: {
     businessPitchViewed: boolean
     portfolioOSViewed: boolean
@@ -31,55 +32,76 @@ interface UserSignIn {
   userId: string
 }
 
+const API_URL = 'http://209.38.87.210:3002/api'
+
 const AdminDashboard = () => {
   const navigate = useNavigate()
   const [userActivities, setUserActivities] = useState<UserActivity[]>([])
   const [newsletterSubscribers, setNewsletterSubscribers] = useState<NewsletterSubscriber[]>([])
   const [userSignIns, setUserSignIns] = useState<UserSignIn[]>([])
   const [selectedTab, setSelectedTab] = useState('overview')
+  const [metrics, setMetrics] = useState({
+    totalUsers: 0,
+    activeUsers: 0,
+    scheduledCalls: 0,
+    registeredInterest: 0,
+    webinarRegistrations: 0,
+    newsletterSubscribers: 0
+  })
 
   useEffect(() => {
-    // Fetch data from localStorage for demo
-    const fetchData = () => {
-      const activities: UserActivity[] = []
-      const subscribers: NewsletterSubscriber[] = JSON.parse(localStorage.getItem('newsletterSubscribers') || '[]')
-      const signIns: UserSignIn[] = JSON.parse(localStorage.getItem('userSignIns') || '[]')
-
-      // Iterate through localStorage to find user data
-      for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i)
-        if (key?.startsWith('user_')) {
-          const userData = JSON.parse(localStorage.getItem(key) || '{}')
-          const progress = JSON.parse(localStorage.getItem('investorProgress_' + key.split('_')[1]) || '{}')
-          
-          activities.push({
-            userId: key.split('_')[1],
-            email: userData.email,
-            lastActive: userData.lastActive || 'Unknown',
-            progress: progress,
-            visitHistory: progress.visitHistory || []
-          })
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem('adminToken');
+        if (!token) {
+          navigate('/admin/signin');
+          return;
         }
+
+        const headers = {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        };
+
+        const [metricsRes, activitiesRes, subscribersRes] = await Promise.all([
+          fetch(`${API_URL}/admin/metrics`, { headers }),
+          fetch(`${API_URL}/admin/user-activity`, { headers }),
+          fetch(`${API_URL}/admin/newsletter-subscribers`, { headers })
+        ]);
+
+        if (!metricsRes.ok || !activitiesRes.ok || !subscribersRes.ok) {
+          if (metricsRes.status === 401) {
+            navigate('/admin/signin');
+            return;
+          }
+          throw new Error('Failed to fetch data');
+        }
+
+        const metricsData = await metricsRes.json();
+        const activitiesData = await activitiesRes.json();
+        const subscribersData = await subscribersRes.json();
+
+        setMetrics(metricsData);
+        setUserActivities(activitiesData);
+        setNewsletterSubscribers(subscribersData);
+      } catch (error) {
+        console.error('Error fetching data:', error);
       }
+    };
 
-      setUserActivities(activities)
-      setNewsletterSubscribers(subscribers)
-      setUserSignIns(signIns)
-    }
-
-    fetchData()
-    const interval = setInterval(fetchData, 30000) // Refresh every 30 seconds
-    return () => clearInterval(interval)
-  }, [])
+    fetchData();
+    const interval = setInterval(fetchData, 30000); // Refresh every 30 seconds
+    return () => clearInterval(interval);
+  }, [navigate]);
 
   const getOverviewStats = () => {
     return {
-      totalUsers: userSignIns.length,
-      activeUsers: userActivities.filter(u => new Date(u.lastActive).getTime() > Date.now() - 24 * 60 * 60 * 1000).length,
-      scheduledCalls: userActivities.filter(u => u.progress.introCallScheduled).length,
+      totalUsers: metrics.totalUsers,
+      activeUsers: metrics.activeUsers,
+      scheduledCalls: metrics.scheduledCalls,
       registeredInterest: userActivities.filter(u => u.progress.interestRegistered).length,
-      webinarRegistrations: userActivities.filter(u => u.progress.webinarRegistered).length,
-      newsletterSubscribers: newsletterSubscribers.length
+      webinarRegistrations: metrics.webinarRegistrations,
+      newsletterSubscribers: metrics.newsletterSubscribers
     }
   }
 
@@ -265,17 +287,21 @@ const AdminDashboard = () => {
               <tr className="text-left text-sm text-gray-400">
                 <th className="pb-4">Email</th>
                 <th className="pb-4">Sign-in Time</th>
+                <th className="pb-4">Last Active</th>
                 <th className="pb-4">Newsletter Status</th>
               </tr>
             </thead>
             <tbody className="text-sm">
-              {userSignIns.sort((a, b) => new Date(b.signInTime).getTime() - new Date(a.signInTime).getTime()).map((signIn, index) => {
-                const isSubscribed = newsletterSubscribers.some(sub => sub.email.toLowerCase() === signIn.email.toLowerCase())
+              {userActivities.sort((a, b) => new Date(b.lastActive).getTime() - new Date(a.lastActive).getTime()).map((user) => {
+                const isSubscribed = newsletterSubscribers.some(sub => sub.email.toLowerCase() === user.email.toLowerCase())
                 return (
-                  <tr key={index} className="border-t border-blue-500/10">
-                    <td className="py-4 text-white">{signIn.email}</td>
+                  <tr key={user.userId} className="border-t border-blue-500/10">
+                    <td className="py-4 text-white">{user.email}</td>
                     <td className="py-4 text-gray-400">
-                      {new Date(signIn.signInTime).toLocaleString()}
+                      {new Date(user.createdAt || user.lastActive).toLocaleString()}
+                    </td>
+                    <td className="py-4 text-gray-400">
+                      {new Date(user.lastActive).toLocaleString()}
                     </td>
                     <td className="py-4">
                       {isSubscribed ? (
@@ -358,7 +384,40 @@ const AdminDashboard = () => {
           </nav>
         </div>
 
-        <div className="space-y-8">
+        <div className="space-y-6">
+          <div className="flex space-x-4 border-b border-blue-500/20">
+            <button
+              onClick={() => setSelectedTab('overview')}
+              className={`px-4 py-2 text-sm font-medium ${
+                selectedTab === 'overview'
+                  ? 'text-blue-400 border-b-2 border-blue-400'
+                  : 'text-gray-400 hover:text-gray-300'
+              }`}
+            >
+              Overview
+            </button>
+            <button
+              onClick={() => setSelectedTab('signins')}
+              className={`px-4 py-2 text-sm font-medium ${
+                selectedTab === 'signins'
+                  ? 'text-blue-400 border-b-2 border-blue-400'
+                  : 'text-gray-400 hover:text-gray-300'
+              }`}
+            >
+              Sign-ins
+            </button>
+            <button
+              onClick={() => setSelectedTab('newsletter')}
+              className={`px-4 py-2 text-sm font-medium ${
+                selectedTab === 'newsletter'
+                  ? 'text-blue-400 border-b-2 border-blue-400'
+                  : 'text-gray-400 hover:text-gray-300'
+              }`}
+            >
+              Newsletter Subscribers
+            </button>
+          </div>
+
           {selectedTab === 'overview' && renderOverview()}
           {selectedTab === 'signins' && renderUserSignIns()}
           {selectedTab === 'newsletter' && renderNewsletterSubscribers()}

@@ -18,14 +18,7 @@ const PortfolioOS: React.FC = () => {
     const updatedProgress = {
       ...currentProgress,
       portfolioOSViewed: true,
-      lastVisited: new Date().toISOString(),
-      visitHistory: [
-        ...(currentProgress.visitHistory || []),
-        {
-          page: 'portfolioOSViewed',
-          timestamp: new Date().toISOString()
-        }
-      ]
+      lastVisited: new Date().toISOString()
     }
     localStorage.setItem('investorProgress', JSON.stringify(updatedProgress))
   }, [])

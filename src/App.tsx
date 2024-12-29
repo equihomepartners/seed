@@ -12,6 +12,7 @@ import InterestRegistration from './components/forms/InterestRegistration'
 import AdminDashboard from './components/admin/AdminDashboard'
 import AdminSignIn from './components/admin/AdminSignIn'
 import WebinarRegistration from './components/WebinarRegistration'
+import PageTracker from './components/PageTracker'
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
@@ -41,6 +42,7 @@ function App() {
 
   return (
     <Router>
+      {isAuthenticated && <PageTracker />}
       <Routes>
         {/* Admin Routes */}
         <Route
