@@ -1,7 +1,7 @@
-import * as express from 'express';
-import * as mongoose from 'mongoose';
-import * as cors from 'cors';
-import * as dotenv from 'dotenv';
+import express, { Request, Response } from 'express';
+import mongoose from 'mongoose';
+import cors from 'cors';
+import dotenv from 'dotenv';
 import adminRoutes from './routes/admin';
 import trackingRoutes from './routes/tracking';
 
@@ -23,7 +23,9 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/equihome'
 })
 .then(() => {
   console.log('Connected to MongoDB successfully');
-  console.log('Database:', mongoose.connection.db.databaseName);
+  if (mongoose.connection.db) {
+    console.log('Database:', mongoose.connection.db.databaseName);
+  }
 })
 .catch(err => {
   console.error('MongoDB connection error:', err);
@@ -39,7 +41,7 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/track', trackingRoutes);
 
 // Health check
-app.get('/health', (req, res) => {
+app.get('/health', (req: Request, res: Response) => {
   res.json({ status: 'ok' });
 });
 
