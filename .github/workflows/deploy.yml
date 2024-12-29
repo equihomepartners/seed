@@ -1,8 +1,8 @@
 name: Deploy to DigitalOcean
+
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
     paths:
       - 'server/**'
 
@@ -17,6 +17,20 @@ jobs:
         with:
           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
           
-      - name: Deploy to DigitalOcean App Platform
-        run: |
-          doctl apps create --spec server/.do/app.yaml || doctl apps update --spec server/.do/app.yaml
+      - name: Build container image
+        run: docker build -t registry.digitalocean.com/equihome/admin-backend:$(echo $GITHUB_SHA | head -c7) ./server
+        
+      - name: Log in to DigitalOcean Container Registry
+        run: doctl registry login --expiry-seconds 600
+        
+      - name: Push image to registry
+        run: docker push registry.digitalocean.com/equihome/admin-backend:$(echo $GITHUB_SHA | head -c7)
+        
+      - name: Update deployment file
+        run: TAG=$(echo $GITHUB_SHA | head -c7) && sed -i 's|<IMAGE>|registry.digitalocean.com/equihome/admin-backend:'${TAG}'|' $GITHUB_WORKSPACE/server/config/deployment.yml
+        
+      - name: Deploy to DigitalOcean Kubernetes
+        run: kubectl apply -f $GITHUB_WORKSPACE/server/config/deployment.yml
+        
+      - name: Verify deployment
+        run: kubectl rollout status deployment/admin-backend
