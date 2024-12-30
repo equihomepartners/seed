@@ -4,11 +4,6 @@ on:
   push:
     branches: [ main ]
 
-permissions:
-  contents: write
-  pages: write
-  id-token: write
-
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -26,8 +21,12 @@ jobs:
       - name: Build
         run: npm run build
         
-      - name: Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@v4
+      - name: Deploy to Server
+        uses: appleboy/scp-action@v0.1.4
         with:
-          folder: dist
-          branch: gh-pages
+          host: "209.38.87.210"
+          username: "root"
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "dist/*"
+          target: "/var/www/html"
+          strip_components: 1
