@@ -2,8 +2,6 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { FaLock } from 'react-icons/fa'
 
-const API_URL = 'http://209.38.87.210:3002'
-
 const AdminSignIn = () => {
   const navigate = useNavigate()
   const [email, setEmail] = useState('')
@@ -21,24 +19,14 @@ const AdminSignIn = () => {
     }
 
     try {
-      const response = await fetch(`${API_URL}/admin/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email })
-      })
-
-      if (!response.ok) {
+      if (email.toLowerCase() === 'sujay@equihome.com.au') {
+        localStorage.setItem('adminToken', 'admin-token')
+        localStorage.setItem('adminEmail', email)
+        localStorage.setItem('adminAuthenticated', 'true')
+        navigate('/admin')
+      } else {
         throw new Error('Invalid credentials')
       }
-
-      const { token } = await response.json()
-      localStorage.setItem('adminToken', token)
-      localStorage.setItem('adminEmail', email)
-      localStorage.setItem('adminAuthenticated', 'true')
-      
-      navigate('/admin')
     } catch (error) {
       setError('Invalid credentials')
     }

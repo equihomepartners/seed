@@ -1,6 +1,5 @@
 import { useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
-import axios from 'axios'
 
 const PageTracker = () => {
   const location = useLocation()
@@ -11,22 +10,28 @@ const PageTracker = () => {
     const email = localStorage.getItem('userEmail')
 
     if (userId && email) {
-      // Track page view on mount
-      axios.post('http://209.38.87.210:3002/api/track/activity', {
+      // Track page view in localStorage
+      const views = JSON.parse(localStorage.getItem('pageViews') || '[]')
+      views.push({
         userId,
         email,
-        page: location.pathname.substring(1) || 'home'
+        page: location.pathname.substring(1) || 'home',
+        timestamp: new Date().toISOString()
       })
+      localStorage.setItem('pageViews', JSON.stringify(views))
 
       // Track duration on unmount
       return () => {
         const duration = Math.floor((Date.now() - startTime) / 1000)
-        axios.post('http://209.38.87.210:3002/api/track/activity', {
+        const durations = JSON.parse(localStorage.getItem('pageDurations') || '[]')
+        durations.push({
           userId,
           email,
           page: location.pathname.substring(1) || 'home',
-          duration
+          duration,
+          timestamp: new Date().toISOString()
         })
+        localStorage.setItem('pageDurations', JSON.stringify(durations))
       }
     }
   }, [location.pathname])

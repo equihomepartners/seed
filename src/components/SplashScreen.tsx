@@ -1,7 +1,6 @@
 import { motion } from 'framer-motion'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import axios from 'axios'
 
 const generateSessionId = () => {
   return Math.random().toString(36).substring(2) + Date.now().toString(36);
@@ -44,33 +43,11 @@ const SplashScreen = () => {
       // Generate session ID
       const userId = generateSessionId()
 
-      // Track user sign-in
-      const response = await axios.post('http://209.38.87.210:3002/api/track/signin', {
-        userId,
-        email
-      }, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-
-      console.log('Sign-in response:', response.data);
-
-      if (!response.data) {
-        throw new Error('Failed to track sign-in');
-      }
-
-      // Track sign-in locally for fallback
-      const signInData = {
-        email: email,
-        signInTime: new Date().toISOString(),
-        userId
-      }
-
       // Store user data
       localStorage.setItem('sessionActive', 'true')
       localStorage.setItem('userEmail', email)
       localStorage.setItem('userId', userId)
+      localStorage.setItem('signInTime', new Date().toISOString())
 
       // If it's admin email, handle admin authentication
       if (email.toLowerCase() === 'sujay@equihome.com.au') {
@@ -83,9 +60,6 @@ const SplashScreen = () => {
       }
     } catch (error) {
       console.error('Error during sign-in:', error)
-      if (axios.isAxiosError(error)) {
-        console.error('Axios error details:', error.response?.data)
-      }
       setEmailError('An error occurred. Please try again.')
     } finally {
       setIsSubmitting(false)
