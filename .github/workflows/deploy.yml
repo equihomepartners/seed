@@ -21,12 +21,13 @@ jobs:
       - name: Build
         run: npm run build
         
+      - name: Install sshpass
+        run: sudo apt-get install sshpass
+        
       - name: Deploy to Server
-        uses: appleboy/scp-action@v0.1.4
-        with:
-          host: "209.38.87.210"
-          username: "root"
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "dist/*"
-          target: "/var/www/html"
-          strip_components: 1
+        env:
+          DEPLOY_PASS: ${{ secrets.DEPLOY_PASS }}
+        run: |
+          cd dist && tar czf ../dist.tar.gz . && cd ..
+          sshpass -p "$DEPLOY_PASS" scp -o StrictHostKeyChecking=no dist.tar.gz root@209.38.87.210:/var/www/html/
+          sshpass -p "$DEPLOY_PASS" ssh -o StrictHostKeyChecking=no root@209.38.87.210 'cd /var/www/html && tar xzf dist.tar.gz && rm dist.tar.gz'
