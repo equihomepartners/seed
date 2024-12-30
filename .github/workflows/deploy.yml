@@ -21,13 +21,12 @@ jobs:
       - name: Build
         run: npm run build
         
-      - name: Install sshpass
-        run: sudo apt-get install sshpass
-        
       - name: Deploy to Server
-        env:
-          DEPLOY_PASS: ${{ secrets.DEPLOY_PASS }}
-        run: |
-          cd dist && tar czf ../dist.tar.gz . && cd ..
-          sshpass -p "$DEPLOY_PASS" scp -o StrictHostKeyChecking=no dist.tar.gz root@209.38.87.210:/var/www/html/
-          sshpass -p "$DEPLOY_PASS" ssh -o StrictHostKeyChecking=no root@209.38.87.210 'cd /var/www/html && tar xzf dist.tar.gz && rm dist.tar.gz'
+        uses: burnett01/rsync-deployments@6.0.0
+        with:
+          switches: -avzr --delete
+          path: dist/
+          remote_path: /var/www/html/
+          remote_host: 209.38.87.210
+          remote_user: root
+          remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
