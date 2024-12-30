@@ -4,8 +4,13 @@ on:
   push:
     branches: [ main ]
 
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -21,13 +26,8 @@ jobs:
       - name: Build
         run: npm run build
         
-      - name: Install sshpass
-        run: sudo apt-get install sshpass
-        
-      - name: Deploy to DigitalOcean
-        env:
-          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
-          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
-          DEPLOY_PASS: ${{ secrets.DEPLOY_PASS }}
-        run: |
-          sshpass -p "$DEPLOY_PASS" scp -o StrictHostKeyChecking=no -r dist/* $DEPLOY_USER@$DEPLOY_HOST:/var/www/html/
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: dist
+          branch: gh-pages
