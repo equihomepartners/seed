@@ -1,10 +1,8 @@
-name: Deploy to DigitalOcean
+name: Deploy Frontend
 
 on:
   push:
     branches: [ main ]
-    paths:
-      - 'server/**'
 
 jobs:
   deploy:
@@ -12,25 +10,24 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       
-      - name: Install doctl
-        uses: digitalocean/action-doctl@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
-          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+          node-version: '18'
           
-      - name: Build container image
-        run: docker build -t registry.digitalocean.com/equihome/admin-backend:$(echo $GITHUB_SHA | head -c7) ./server
+      - name: Install Dependencies
+        run: npm install
         
-      - name: Log in to DigitalOcean Container Registry
-        run: doctl registry login --expiry-seconds 600
+      - name: Build
+        run: npm run build
         
-      - name: Push image to registry
-        run: docker push registry.digitalocean.com/equihome/admin-backend:$(echo $GITHUB_SHA | head -c7)
+      - name: Install sshpass
+        run: sudo apt-get install sshpass
         
-      - name: Update deployment file
-        run: TAG=$(echo $GITHUB_SHA | head -c7) && sed -i 's|<IMAGE>|registry.digitalocean.com/equihome/admin-backend:'${TAG}'|' $GITHUB_WORKSPACE/server/config/deployment.yml
-        
-      - name: Deploy to DigitalOcean Kubernetes
-        run: kubectl apply -f $GITHUB_WORKSPACE/server/config/deployment.yml
-        
-      - name: Verify deployment
-        run: kubectl rollout status deployment/admin-backend
+      - name: Deploy to DigitalOcean
+        env:
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_PASS: ${{ secrets.DEPLOY_PASS }}
+        run: |
+          sshpass -p "$DEPLOY_PASS" scp -o StrictHostKeyChecking=no -r dist/* $DEPLOY_USER@$DEPLOY_HOST:/var/www/html/
