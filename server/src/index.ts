@@ -8,6 +8,7 @@ import trackingRoutes from './routes/tracking';
 dotenv.config();
 
 const app = express();
+const PORT = process.env.PORT || 3002;
 
 // Middleware
 app.use(express.json());
@@ -61,15 +62,7 @@ const connectDB = async () => {
   }
 };
 
-// Start server only after attempting database connection
-connectDB().then(() => {
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-    console.log(`Environment: ${process.env.NODE_ENV}`);
-    console.log(`CORS Origin: ${process.env.CORS_ORIGIN}`);
-  });
-});
-
+// MongoDB error handler
 mongoose.connection.on('error', err => {
   console.error('MongoDB error:', err);
 });
@@ -79,10 +72,11 @@ app.use((req: Request, res: Response) => {
   res.status(404).json({ error: 'Not found' });
 });
 
-const PORT = process.env.PORT || 3002;
-
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log(`Environment: ${process.env.NODE_ENV}`);
-  console.log(`CORS Origin: ${process.env.CORS_ORIGIN}`);
+// Start server only after attempting database connection
+connectDB().then(() => {
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+    console.log(`Environment: ${process.env.NODE_ENV}`);
+    console.log(`CORS Origin: ${process.env.CORS_ORIGIN}`);
+  });
 }); 
