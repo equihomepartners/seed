@@ -62,7 +62,11 @@ const connectDB = async () => {
       maxPoolSize: 10,
       minPoolSize: 2,
       retryWrites: true,
-      retryReads: true
+      retryReads: true,
+      replicaSet: 'atlas-zx4uoh-shard-0',
+      authSource: 'admin',
+      directConnection: false,
+      ssl: true
     });
 
     // Wait for connection to be ready
@@ -82,6 +86,13 @@ const connectDB = async () => {
     return true;
   } catch (error) {
     console.error('MongoDB connection error:', error);
+    if (error instanceof Error) {
+      console.error('Error details:', {
+        name: error.name,
+        message: error.message,
+        stack: error.stack
+      });
+    }
     console.log('Attempting to reconnect in 5 seconds...');
     await new Promise(resolve => setTimeout(resolve, 5000));
     return connectDB();
