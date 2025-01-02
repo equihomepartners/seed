@@ -52,7 +52,11 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/equihome', {
-  serverSelectionTimeoutMS: 5000
+  serverSelectionTimeoutMS: 5000,
+  retryWrites: true,
+  w: 'majority',
+  directConnection: true,
+  replicaSet: 'atlas-zx4uoh-shard-0'
 })
 .then(() => {
   console.log('Connected to MongoDB successfully');
