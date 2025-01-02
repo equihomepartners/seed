@@ -54,38 +54,37 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 // Connect to MongoDB
 const connectDB = async () => {
   try {
+    console.log('Attempting to connect to MongoDB...');
     const conn = await mongoose.connect(process.env.MONGODB_URI || '', {
-      serverSelectionTimeoutMS: 30000, // Timeout after 30 seconds
-      socketTimeoutMS: 45000, // Close sockets after 45 seconds
+      serverSelectionTimeoutMS: 30000,
+      socketTimeoutMS: 45000,
       connectTimeoutMS: 30000,
       maxPoolSize: 10,
       minPoolSize: 2,
       retryWrites: true,
       retryReads: true
     });
+
+    // Wait for connection to be ready
+    await new Promise((resolve, reject) => {
+      const db = mongoose.connection;
+      db.on('error', (error) => {
+        console.error('MongoDB connection error:', error);
+        reject(error);
+      });
+      db.once('open', () => {
+        console.log('MongoDB connection opened');
+        resolve(true);
+      });
+    });
+
     console.log(`MongoDB Connected: ${conn.connection.host}`);
-
-    // Set up global configuration
-    mongoose.set('bufferCommands', true);
-    mongoose.set('bufferTimeoutMS', 30000);
-    
-    // Add connection error handler
-    mongoose.connection.on('error', err => {
-      console.error('MongoDB connection error:', err);
-      // Try to reconnect
-      setTimeout(connectDB, 5000);
-    });
-
-    // Add disconnection handler
-    mongoose.connection.on('disconnected', () => {
-      console.log('MongoDB disconnected, attempting to reconnect...');
-      setTimeout(connectDB, 5000);
-    });
-
+    return true;
   } catch (error) {
     console.error('MongoDB connection error:', error);
     console.log('Attempting to reconnect in 5 seconds...');
-    setTimeout(connectDB, 5000);
+    await new Promise(resolve => setTimeout(resolve, 5000));
+    return connectDB();
   }
 };
 
@@ -94,11 +93,27 @@ app.use((req: Request, res: Response) => {
   res.status(404).json({ error: 'Not found' });
 });
 
-// Start server only after attempting database connection
-connectDB().then(() => {
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-    console.log(`Environment: ${process.env.NODE_ENV}`);
-    console.log(`CORS Origin: ${process.env.CORS_ORIGIN}`);
-  });
-}); 
+// Start server
+const startServer = async () => {
+  try {
+    // Try to connect to MongoDB first
+    const isConnected = await connectDB();
+    if (!isConnected) {
+      console.error('Failed to connect to MongoDB');
+      process.exit(1);
+    }
+
+    // Start Express server only after MongoDB is connected
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+      console.log(`Environment: ${process.env.NODE_ENV}`);
+      console.log(`CORS Origin: ${process.env.CORS_ORIGIN}`);
+    });
+  } catch (error) {
+    console.error('Server startup error:', error);
+    process.exit(1);
+  }
+};
+
+// Start the server
+startServer(); 

@@ -1,5 +1,6 @@
 import express from 'express';
 import { UserActivity } from '../models/UserActivity';
+import mongoose from 'mongoose';
 
 const router = express.Router();
 
@@ -26,10 +27,16 @@ router.post('/activity', async (req, res) => {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
+    // Check MongoDB connection
+    if (mongoose.connection.readyState !== 1) {
+      console.error('MongoDB not connected. Current state:', mongoose.connection.readyState);
+      return res.status(503).json({ error: 'Database connection unavailable' });
+    }
+
     await retryOperation(async () => {
       console.log('Looking for existing user activity:', userId);
       // Find or create user activity document with timeout
-      let userActivity = await UserActivity.findOne({ userId }).maxTimeMS(5000);
+      let userActivity = await UserActivity.findOne({ userId }).maxTimeMS(5000).exec();
 
       if (!userActivity) {
         console.log('Creating new user activity record for:', userId);
@@ -54,7 +61,7 @@ router.post('/activity', async (req, res) => {
       userActivity.email = email; // Keep email up to date
 
       console.log('Saving user activity...');
-      await userActivity.save({ wtimeout: 5000 });
+      await userActivity.save();
       console.log('User activity saved successfully');
     });
 
@@ -66,7 +73,8 @@ router.post('/activity', async (req, res) => {
       console.error('Error details:', {
         name: error.name,
         message: error.message,
-        stack: error.stack
+        stack: error.stack,
+        mongoState: mongoose.connection.readyState
       });
     }
     res.status(500).json({ error: 'Error tracking activity' });
