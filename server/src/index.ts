@@ -51,17 +51,23 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 });
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/equihome')
-.then(() => {
-  console.log('Connected to MongoDB successfully');
-  if (mongoose.connection.db) {
-    console.log('Database:', mongoose.connection.db.databaseName);
+const connectDB = async () => {
+  try {
+    const conn = await mongoose.connect(process.env.MONGODB_URI || '');
+    console.log(`MongoDB Connected: ${conn.connection.host}`);
+  } catch (error) {
+    console.error('MongoDB connection error:', error);
+    console.log('Attempting to continue without database connection');
   }
-})
-.catch(err => {
-  console.error('MongoDB connection error:', err);
-  // Don't exit process on connection error, just log it
-  console.error('Continuing without database connection');
+};
+
+// Start server only after attempting database connection
+connectDB().then(() => {
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+    console.log(`Environment: ${process.env.NODE_ENV}`);
+    console.log(`CORS Origin: ${process.env.CORS_ORIGIN}`);
+  });
 });
 
 mongoose.connection.on('error', err => {
