@@ -42,7 +42,7 @@ function App() {
 
   return (
     <Router>
-      {isAuthenticated && <PageTracker />}
+      <PageTracker />
       <Routes>
         {/* Admin Routes */}
         <Route
