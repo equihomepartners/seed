@@ -30,6 +30,7 @@ router.post('/login', async (req, res) => {
 // Get admin dashboard metrics
 router.get('/metrics', adminAuth, async (req, res) => {
   try {
+    console.log('Fetching admin metrics...');
     const [
       totalUsers,
       activeUsers,
@@ -46,6 +47,14 @@ router.get('/metrics', adminAuth, async (req, res) => {
       NewsletterSubscriber.countDocuments()
     ]);
 
+    console.log('Admin metrics:', {
+      totalUsers,
+      activeUsers,
+      scheduledCalls,
+      webinarRegistrations,
+      newsletterSubscribers
+    });
+
     res.json({
       totalUsers,
       activeUsers,
@@ -54,6 +63,7 @@ router.get('/metrics', adminAuth, async (req, res) => {
       newsletterSubscribers
     });
   } catch (error) {
+    console.error('Error fetching metrics:', error);
     res.status(500).json({ error: 'Server error' });
   }
 });
@@ -61,12 +71,15 @@ router.get('/metrics', adminAuth, async (req, res) => {
 // Get recent user activity
 router.get('/user-activity', adminAuth, async (req, res) => {
   try {
+    console.log('Fetching user activities...');
     const activities = await UserActivity.find()
       .sort({ lastActive: -1 })
       .limit(50);
     
+    console.log(`Found ${activities.length} user activities`);
     res.json(activities);
   } catch (error) {
+    console.error('Error fetching user activities:', error);
     res.status(500).json({ error: 'Server error' });
   }
 });

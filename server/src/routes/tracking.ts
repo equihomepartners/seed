@@ -18,23 +18,29 @@ const retryOperation = async (operation: () => Promise<any>, maxRetries = 3) => 
 // Track user activity (page views, etc)
 router.post('/activity', async (req, res) => {
   try {
+    console.log('Received activity tracking request:', req.body);
     const { userId, email, page } = req.body;
 
     if (!userId || !email || !page) {
+      console.log('Missing required fields:', { userId, email, page });
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
     await retryOperation(async () => {
+      console.log('Looking for existing user activity:', userId);
       // Find or create user activity document with timeout
       let userActivity = await UserActivity.findOne({ userId }).maxTimeMS(5000);
 
       if (!userActivity) {
+        console.log('Creating new user activity record for:', userId);
         userActivity = new UserActivity({
           userId,
           email,
           lastActive: new Date(),
           visitHistory: []
         });
+      } else {
+        console.log('Found existing user activity:', userActivity._id);
       }
 
       // Add page view to history
@@ -47,12 +53,22 @@ router.post('/activity', async (req, res) => {
       userActivity.lastActive = new Date();
       userActivity.email = email; // Keep email up to date
 
+      console.log('Saving user activity...');
       await userActivity.save({ wtimeout: 5000 });
+      console.log('User activity saved successfully');
     });
 
     res.json({ success: true });
   } catch (error) {
     console.error('Error tracking activity:', error);
+    // Log more details about the error
+    if (error instanceof Error) {
+      console.error('Error details:', {
+        name: error.name,
+        message: error.message,
+        stack: error.stack
+      });
+    }
     res.status(500).json({ error: 'Error tracking activity' });
   }
 });
