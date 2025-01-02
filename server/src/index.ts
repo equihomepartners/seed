@@ -51,13 +51,7 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 });
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/equihome', {
-  serverSelectionTimeoutMS: 5000,
-  retryWrites: true,
-  w: 'majority',
-  directConnection: true,
-  replicaSet: 'atlas-zx4uoh-shard-0'
-})
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/equihome')
 .then(() => {
   console.log('Connected to MongoDB successfully');
   if (mongoose.connection.db) {
@@ -66,7 +60,8 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/equihome'
 })
 .catch(err => {
   console.error('MongoDB connection error:', err);
-  process.exit(1);
+  // Don't exit process on connection error, just log it
+  console.error('Continuing without database connection');
 });
 
 mongoose.connection.on('error', err => {
