@@ -3,6 +3,18 @@ import { UserActivity } from '../models/UserActivity';
 
 const router = express.Router();
 
+// Helper function to retry database operations
+const retryOperation = async (operation: () => Promise<any>, maxRetries = 3) => {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      return await operation();
+    } catch (error) {
+      if (attempt === maxRetries) throw error;
+      await new Promise(resolve => setTimeout(resolve, 1000 * attempt));
+    }
+  }
+};
+
 // Track user activity (page views, etc)
 router.post('/activity', async (req, res) => {
   try {
@@ -12,28 +24,31 @@ router.post('/activity', async (req, res) => {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
-    // Find or create user activity document
-    let userActivity = await UserActivity.findOne({ userId });
+    await retryOperation(async () => {
+      // Find or create user activity document with timeout
+      let userActivity = await UserActivity.findOne({ userId }).maxTimeMS(5000);
 
-    if (!userActivity) {
-      userActivity = new UserActivity({
-        userId,
-        email,
-        lastActive: new Date(),
-        visitHistory: []
+      if (!userActivity) {
+        userActivity = new UserActivity({
+          userId,
+          email,
+          lastActive: new Date(),
+          visitHistory: []
+        });
+      }
+
+      // Add page view to history
+      userActivity.visitHistory.push({
+        page,
+        timestamp: new Date()
       });
-    }
 
-    // Add page view to history
-    userActivity.visitHistory.push({
-      page,
-      timestamp: new Date()
+      // Update last active
+      userActivity.lastActive = new Date();
+      userActivity.email = email; // Keep email up to date
+
+      await userActivity.save({ wtimeout: 5000 });
     });
-
-    // Update last active
-    userActivity.lastActive = new Date();
-
-    await userActivity.save();
 
     res.json({ success: true });
   } catch (error) {
@@ -51,20 +66,22 @@ router.post('/progress', async (req, res) => {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
-    // Find or create user activity document
-    let userActivity = await UserActivity.findOne({ userId });
+    await retryOperation(async () => {
+      // Find or create user activity document with timeout
+      let userActivity = await UserActivity.findOne({ userId }).maxTimeMS(5000);
 
-    if (!userActivity) {
-      return res.status(404).json({ error: 'User not found' });
-    }
+      if (!userActivity) {
+        return res.status(404).json({ error: 'User not found' });
+      }
 
-    // Update progress
-    userActivity.progress = {
-      ...userActivity.progress,
-      ...progress
-    };
+      // Update progress
+      userActivity.progress = {
+        ...userActivity.progress,
+        ...progress
+      };
 
-    await userActivity.save();
+      await userActivity.save({ wtimeout: 5000 });
+    });
 
     res.json({ success: true });
   } catch (error) {
@@ -82,21 +99,24 @@ router.post('/signin', async (req, res) => {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
-    // Find or create user activity document
-    let userActivity = await UserActivity.findOne({ userId });
+    await retryOperation(async () => {
+      // Find or create user activity document with timeout
+      let userActivity = await UserActivity.findOne({ userId }).maxTimeMS(5000);
 
-    if (!userActivity) {
-      userActivity = new UserActivity({
-        userId,
-        email,
-        lastActive: new Date(),
-        visitHistory: []
-      });
-    }
+      if (!userActivity) {
+        userActivity = new UserActivity({
+          userId,
+          email,
+          lastActive: new Date(),
+          visitHistory: []
+        });
+      }
 
-    // Update last sign in
-    userActivity.lastSignIn = new Date();
-    await userActivity.save();
+      // Update last sign in
+      userActivity.lastSignIn = new Date();
+      userActivity.email = email; // Keep email up to date
+      await userActivity.save({ wtimeout: 5000 });
+    });
 
     res.json({ success: true });
   } catch (error) {

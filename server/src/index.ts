@@ -54,18 +54,40 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 // Connect to MongoDB
 const connectDB = async () => {
   try {
-    const conn = await mongoose.connect(process.env.MONGODB_URI || '');
+    const conn = await mongoose.connect(process.env.MONGODB_URI || '', {
+      serverSelectionTimeoutMS: 30000, // Timeout after 30 seconds
+      socketTimeoutMS: 45000, // Close sockets after 45 seconds
+      connectTimeoutMS: 30000,
+      maxPoolSize: 10,
+      minPoolSize: 2,
+      retryWrites: true,
+      retryReads: true
+    });
     console.log(`MongoDB Connected: ${conn.connection.host}`);
+
+    // Set up global configuration
+    mongoose.set('bufferCommands', true);
+    mongoose.set('bufferTimeoutMS', 30000);
+    
+    // Add connection error handler
+    mongoose.connection.on('error', err => {
+      console.error('MongoDB connection error:', err);
+      // Try to reconnect
+      setTimeout(connectDB, 5000);
+    });
+
+    // Add disconnection handler
+    mongoose.connection.on('disconnected', () => {
+      console.log('MongoDB disconnected, attempting to reconnect...');
+      setTimeout(connectDB, 5000);
+    });
+
   } catch (error) {
     console.error('MongoDB connection error:', error);
-    console.log('Attempting to continue without database connection');
+    console.log('Attempting to reconnect in 5 seconds...');
+    setTimeout(connectDB, 5000);
   }
 };
-
-// MongoDB error handler
-mongoose.connection.on('error', err => {
-  console.error('MongoDB error:', err);
-});
 
 // 404 handler
 app.use((req: Request, res: Response) => {
