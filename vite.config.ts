@@ -7,7 +7,7 @@ dotenv.config()
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: '/',
+  base: '/equihome-dashboard/',
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
