@@ -1,12 +1,33 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema, Document } from 'mongoose';
 
-const visitHistorySchema = new mongoose.Schema({
-  page: String,
-  timestamp: Date,
-  scheduledDate: Date
-});
+interface IVisitHistory {
+  page: string;
+  timestamp: Date;
+  scheduledDate?: Date;
+}
 
-const userActivitySchema = new mongoose.Schema({
+interface IProgress {
+  businessPitchViewed?: boolean;
+  portfolioOSViewed?: boolean;
+  introCallScheduled?: boolean;
+  interestRegistered?: boolean;
+  webinarRegistered?: boolean;
+  scheduledCallDate?: Date;
+  [key: string]: any;
+}
+
+export interface IUserActivity extends Document {
+  userId: string;
+  email: string;
+  lastActive: Date;
+  lastSignIn: Date;
+  visitHistory: IVisitHistory[];
+  progress: IProgress;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const UserActivitySchema = new Schema({
   userId: {
     type: String,
     required: true,
@@ -20,17 +41,43 @@ const userActivitySchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
-  progress: {
-    businessPitchViewed: Boolean,
-    portfolioOSViewed: Boolean,
-    introCallScheduled: Boolean,
-    interestRegistered: Boolean,
-    webinarRegistered: Boolean,
-    scheduledCallDate: Date
+  lastSignIn: {
+    type: Date,
+    default: Date.now
   },
-  visitHistory: [visitHistorySchema]
+  visitHistory: [{
+    page: String,
+    timestamp: {
+      type: Date,
+      default: Date.now
+    },
+    scheduledDate: Date
+  }],
+  progress: {
+    businessPitchViewed: {
+      type: Boolean,
+      default: false
+    },
+    portfolioOSViewed: {
+      type: Boolean,
+      default: false
+    },
+    introCallScheduled: {
+      type: Boolean,
+      default: false
+    },
+    interestRegistered: {
+      type: Boolean,
+      default: false
+    },
+    webinarRegistered: {
+      type: Boolean,
+      default: false
+    },
+    scheduledCallDate: Date
+  }
 }, {
   timestamps: true
 });
 
-export const UserActivity = mongoose.model('UserActivity', userActivitySchema); 
+export const UserActivity = mongoose.model<IUserActivity>('UserActivity', UserActivitySchema); 

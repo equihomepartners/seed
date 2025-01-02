@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import GlobalHeader from './GlobalHeader'
 import { FaLock, FaHandshake, FaClock, FaUsers, FaRocket, FaCheckCircle } from 'react-icons/fa'
+import axios from 'axios'
 
 interface FormData {
   name: string
@@ -9,6 +10,8 @@ interface FormData {
   company: string
   investmentRange: string
 }
+
+const API_URL = 'http://209.38.87.210:3002/api'
 
 const BookCall: React.FC = () => {
   const [step, setStep] = useState<number>(1)
@@ -38,6 +41,23 @@ const BookCall: React.FC = () => {
   const today = new Date()
   const daysRemaining = Math.ceil((endDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
 
+  // Function to sync progress with backend
+  const syncProgress = async (progress: any) => {
+    const userId = localStorage.getItem('userId')
+    const email = localStorage.getItem('userEmail')
+
+    if (userId && email) {
+      try {
+        await axios.post(`${API_URL}/track/progress`, {
+          userId,
+          progress
+        })
+      } catch (error) {
+        console.error('Error syncing progress:', error)
+      }
+    }
+  }
+
   useEffect(() => {
     // Add Calendly event listener
     const handleCalendlyEvent = (e: any) => {
@@ -62,6 +82,9 @@ const BookCall: React.FC = () => {
           ]
         }
         localStorage.setItem('investorProgress', JSON.stringify(updatedProgress))
+
+        // Sync with backend
+        syncProgress(updatedProgress)
       }
     }
 

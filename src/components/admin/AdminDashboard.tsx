@@ -32,7 +32,7 @@ interface UserSignIn {
   userId: string
 }
 
-const API_URL = 'http://209.38.87.210:3002/api'
+const API_URL = 'https://equihome-seed-api-pnk9i.ondigitalocean.app/api'
 
 const AdminDashboard = () => {
   const navigate = useNavigate()

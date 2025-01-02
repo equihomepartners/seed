@@ -20,6 +20,8 @@ interface StepProgress {
   }>
 }
 
+const API_URL = 'http://209.38.87.210:3002/api'
+
 const InvestorJourney = () => {
   const location = useLocation()
 
@@ -46,6 +48,23 @@ const InvestorJourney = () => {
   }
 
   const [userProgress, setUserProgress] = useState(getProgress())
+
+  // Function to sync progress with backend
+  const syncProgress = async (progress: any) => {
+    const userId = localStorage.getItem('userId')
+    const email = localStorage.getItem('userEmail')
+
+    if (userId && email) {
+      try {
+        await axios.post(`${API_URL}/track/progress`, {
+          userId,
+          progress
+        })
+      } catch (error) {
+        console.error('Error syncing progress:', error)
+      }
+    }
+  }
 
   // Track route changes and update progress
   useEffect(() => {
@@ -88,6 +107,9 @@ const InvestorJourney = () => {
     }
     localStorage.setItem('investorProgress', JSON.stringify(updatedProgress))
     setUserProgress(getProgress())
+    
+    // Sync with backend
+    syncProgress(updatedProgress)
   }
 
   const steps = [

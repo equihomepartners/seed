@@ -63,11 +63,13 @@ const InvestorDashboard = () => {
   const [showInterestForm, setShowInterestForm] = useState(false)
   const [showProfileSettings, setShowProfileSettings] = useState(false)
   const [selectedSection, setSelectedSection] = useState('overview')
+  const [showSettings, setShowSettings] = useState(false)
+  const [showNotifications, setShowNotifications] = useState(false)
+  const [emailNotifications, setEmailNotifications] = useState(true)
   
   // User profile state
   const [profile, setProfile] = useState({
-    name: 'John Smith',
-    email: 'john@example.com',
+    email: localStorage.getItem('userEmail') || 'Unknown User',
     company: 'Smith Investments',
     investorType: 'Sophisticated Investor',
     preferredInstrument: 'SAFE',
@@ -227,6 +229,65 @@ const InvestorDashboard = () => {
     const completed = Object.values(stepProgress).filter(v => v === true).length
     return `${completed} of ${total} steps completed`
   }
+
+  const handleSignOut = () => {
+    localStorage.clear()
+    window.location.href = '/'
+  }
+
+  const renderSettingsMenu = () => (
+    <div className="absolute right-0 mt-2 w-64 rounded-md shadow-lg bg-[#111827] ring-1 ring-black ring-opacity-5">
+      <div className="py-1" role="menu" aria-orientation="vertical" aria-labelledby="settings-menu">
+        <div className="px-4 py-2 text-sm text-gray-400 border-b border-gray-700">Notification Preferences</div>
+        <button
+          onClick={() => setEmailNotifications(!emailNotifications)}
+          className="w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-blue-500/10 flex items-center justify-between"
+          role="menuitem"
+        >
+          Investment Updates
+          <span className="text-xs text-gray-500">(Coming Soon)</span>
+        </button>
+        <button
+          className="w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-blue-500/10 flex items-center justify-between"
+          role="menuitem"
+        >
+          Due Diligence Alerts
+          <span className="text-xs text-gray-500">(Coming Soon)</span>
+        </button>
+        <button
+          className="w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-blue-500/10 flex items-center justify-between"
+          role="menuitem"
+        >
+          Meeting Reminders
+          <span className="text-xs text-gray-500">(Coming Soon)</span>
+        </button>
+        <div className="border-t border-gray-700 mt-2"></div>
+        <div className="px-4 py-2 text-sm text-gray-400">Account Settings</div>
+        <button
+          className="w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-blue-500/10 flex items-center justify-between"
+          role="menuitem"
+        >
+          Change Password
+          <span className="text-xs text-gray-500">(Coming Soon)</span>
+        </button>
+        <button
+          className="w-full text-left px-4 py-2 text-sm text-gray-300 hover:bg-blue-500/10 flex items-center justify-between"
+          role="menuitem"
+        >
+          Two-Factor Auth
+          <span className="text-xs text-gray-500">(Coming Soon)</span>
+        </button>
+        <div className="border-t border-gray-700 mt-2"></div>
+        <button
+          onClick={handleSignOut}
+          className="w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-red-500/10"
+          role="menuitem"
+        >
+          Sign Out
+        </button>
+      </div>
+    </div>
+  )
 
   const renderWelcomeGuide = () => (
     <div className="bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-xl p-8 border border-blue-500/20 mb-12">
@@ -470,18 +531,33 @@ const InvestorDashboard = () => {
           <div className="flex items-center justify-between mb-12">
             <div>
               <h1 className="text-4xl font-bold text-white mb-2">Investor Dashboard</h1>
-              <p className="text-gray-400">Welcome back, {profile.name}</p>
+              <p className="text-gray-400">Welcome back, {profile.email}</p>
             </div>
             <div className="flex items-center space-x-4">
-              <button className="p-2 rounded-lg bg-[#111827] text-gray-400 hover:text-white transition-colors">
-                <FaBell className="text-xl" />
-              </button>
-              <button 
-                onClick={() => setShowProfileSettings(true)}
-                className="p-2 rounded-lg bg-[#111827] text-gray-400 hover:text-white transition-colors"
-              >
-                <FaCog className="text-xl" />
-              </button>
+              <div className="relative">
+                <button
+                  onClick={() => setShowNotifications(!showNotifications)}
+                  className="p-2 text-gray-400 hover:text-white rounded-lg hover:bg-blue-500/10"
+                >
+                  <FaBell className="text-xl" />
+                </button>
+                {showNotifications && (
+                  <div className="absolute right-0 mt-2 w-80 rounded-md shadow-lg bg-[#111827] ring-1 ring-black ring-opacity-5">
+                    <div className="p-4">
+                      <p className="text-gray-400 text-sm">No new notifications</p>
+                    </div>
+                  </div>
+                )}
+              </div>
+              <div className="relative">
+                <button
+                  onClick={() => setShowSettings(!showSettings)}
+                  className="p-2 text-gray-400 hover:text-white rounded-lg hover:bg-blue-500/10"
+                >
+                  <FaCog className="text-xl" />
+                </button>
+                {showSettings && renderSettingsMenu()}
+              </div>
             </div>
           </div>
 
