@@ -67,7 +67,8 @@ const AdminDashboard = () => {
 
         const headers = {
           'Content-Type': 'application/json',
-          'Accept': 'application/json'
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
         }
 
         const fetchWithTimeout = async (url: string) => {
@@ -78,6 +79,7 @@ const AdminDashboard = () => {
             const response = await fetch(url, { 
               headers,
               credentials: 'include',
+              mode: 'cors',
               signal: controller.signal
             })
             clearTimeout(timeout)
