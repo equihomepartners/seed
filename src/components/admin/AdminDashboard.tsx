@@ -57,31 +57,40 @@ const AdminDashboard = () => {
         setLoading(true)
         setError('')
 
-        // Super simple fetch without any auth
-        const response = await fetch(`${API_URL}/admin/user-activity?key=equihome-admin-2024`, {
-          method: 'GET',
-          headers: { 
-            'Content-Type': 'application/json'
+        // Hardcoded data for now
+        const mockData = [
+          {
+            userId: '1',
+            email: 'sujay@equihome.com.au',
+            lastActive: new Date().toISOString(),
+            createdAt: new Date().toISOString(),
+            progress: {
+              businessPitchViewed: true,
+              portfolioOSViewed: true,
+              introCallScheduled: true,
+              interestRegistered: true,
+              webinarRegistered: true
+            },
+            visitHistory: [
+              {
+                page: '/admin',
+                timestamp: new Date().toISOString()
+              }
+            ]
           }
-        })
+        ]
 
-        if (!response.ok) {
-          throw new Error('Failed to fetch data')
-        }
-
-        const data = await response.json()
-        setUserActivities(data || [])
+        setUserActivities(mockData)
         
-        // Calculate metrics from the user activities
-        const metrics = {
-          totalUsers: data.length,
-          activeUsers: data.filter((u: any) => new Date(u.lastActive) > new Date(Date.now() - 24*60*60*1000)).length,
-          scheduledCalls: data.filter((u: any) => u.progress?.introCallScheduled).length,
-          registeredInterest: data.filter((u: any) => u.progress?.interestRegistered).length,
-          webinarRegistrations: data.filter((u: any) => u.progress?.webinarRegistered).length,
-          newsletterSubscribers: data.filter((u: any) => u.progress?.newsletterSubscribed).length
-        }
-        setMetrics(metrics)
+        // Set basic metrics
+        setMetrics({
+          totalUsers: 1,
+          activeUsers: 1,
+          scheduledCalls: 1,
+          registeredInterest: 1,
+          webinarRegistrations: 1,
+          newsletterSubscribers: 1
+        })
 
       } catch (error) {
         console.error('Error:', error)
