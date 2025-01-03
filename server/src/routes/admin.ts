@@ -11,18 +11,22 @@ router.post('/login', async (req, res) => {
   try {
     const { email } = req.body;
     
-    if (email !== 'sujay@equihome.com.au') {
+    if (email.toLowerCase() !== 'sujay@equihome.com.au') {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
     const token = jwt.sign(
-      { email },
+      { email: email.toLowerCase(), role: 'admin' },
       process.env.JWT_SECRET || 'your-secret-key',
       { expiresIn: '24h' }
     );
 
-    res.json({ token });
+    res.json({ 
+      token,
+      email: email.toLowerCase()
+    });
   } catch (error) {
+    console.error('Admin login error:', error);
     res.status(500).json({ error: 'Server error' });
   }
 });

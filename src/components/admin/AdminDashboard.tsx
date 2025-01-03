@@ -32,7 +32,7 @@ interface UserSignIn {
   userId: string
 }
 
-const API_URL = 'https://equihome-seed-api-pnk9i.ondigitalocean.app/api'
+const API_URL = process.env.REACT_APP_API_URL || 'https://equihome-seed-api-pnk9i.ondigitalocean.app/api'
 
 const AdminDashboard = () => {
   const navigate = useNavigate()
@@ -48,51 +48,78 @@ const AdminDashboard = () => {
     webinarRegistrations: 0,
     newsletterSubscribers: 0
   })
+  const [error, setError] = useState<string>('')
+  const [loading, setLoading] = useState<boolean>(true)
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const token = localStorage.getItem('adminToken');
+        setLoading(true)
+        setError('')
+        
+        const token = localStorage.getItem('adminToken')
         if (!token) {
-          navigate('/admin/signin');
-          return;
+          navigate('/admin/signin')
+          return
         }
 
         const headers = {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
-        };
+        }
 
         const [metricsRes, activitiesRes, subscribersRes] = await Promise.all([
           fetch(`${API_URL}/admin/metrics`, { headers }),
           fetch(`${API_URL}/admin/user-activity`, { headers }),
           fetch(`${API_URL}/admin/newsletter-subscribers`, { headers })
-        ]);
+        ])
 
         if (!metricsRes.ok || !activitiesRes.ok || !subscribersRes.ok) {
-          if (metricsRes.status === 401) {
-            navigate('/admin/signin');
-            return;
+          if (metricsRes.status === 401 || activitiesRes.status === 401 || subscribersRes.status === 401) {
+            localStorage.removeItem('adminToken')
+            navigate('/admin/signin')
+            return
           }
-          throw new Error('Failed to fetch data');
+          throw new Error('Failed to fetch data')
         }
 
-        const metricsData = await metricsRes.json();
-        const activitiesData = await activitiesRes.json();
-        const subscribersData = await subscribersRes.json();
+        const [metricsData, activitiesData, subscribersData] = await Promise.all([
+          metricsRes.json(),
+          activitiesRes.json(),
+          subscribersRes.json()
+        ])
 
-        setMetrics(metricsData);
-        setUserActivities(activitiesData);
-        setNewsletterSubscribers(subscribersData);
+        setMetrics(metricsData)
+        setUserActivities(activitiesData)
+        setNewsletterSubscribers(subscribersData)
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error('Error fetching data:', error)
+        setError('Failed to load dashboard data. Please try again.')
+      } finally {
+        setLoading(false)
       }
-    };
+    }
 
-    fetchData();
-    const interval = setInterval(fetchData, 30000); // Refresh every 30 seconds
-    return () => clearInterval(interval);
-  }, [navigate]);
+    fetchData()
+    const interval = setInterval(fetchData, 30000) // Refresh every 30 seconds
+    return () => clearInterval(interval)
+  }, [navigate])
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#0B1121] flex items-center justify-center">
+        <div className="text-white">Loading...</div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-[#0B1121] flex items-center justify-center">
+        <div className="text-red-500">{error}</div>
+      </div>
+    )
+  }
 
   const getOverviewStats = () => {
     return {
