@@ -38,8 +38,9 @@ router.get('/metrics', adminAuth, async (req, res) => {
       webinarRegistrations,
       newsletterSubscribers
     ] = await Promise.all([
-      UserActivity.countDocuments(),
+      UserActivity.countDocuments({ email: { $ne: 'anonymous' } }),
       UserActivity.countDocuments({
+        email: { $ne: 'anonymous' },
         lastActive: { $gte: new Date(Date.now() - 24 * 60 * 60 * 1000) }
       }),
       UserActivity.countDocuments({ 'progress.introCallScheduled': true }),
@@ -72,7 +73,18 @@ router.get('/metrics', adminAuth, async (req, res) => {
 router.get('/user-activity', adminAuth, async (req, res) => {
   try {
     console.log('Fetching user activities...');
-    const activities = await UserActivity.find()
+    const activities = await UserActivity.find({
+      email: { $ne: 'anonymous' } // Exclude anonymous users
+    })
+      .select({
+        userId: 1,
+        email: 1,
+        lastActive: 1,
+        lastSignIn: 1,
+        visitHistory: 1,
+        progress: 1,
+        createdAt: 1
+      })
       .sort({ lastActive: -1 })
       .limit(50);
     
