@@ -7,6 +7,7 @@ const API_URL = process.env.REACT_APP_API_URL || 'https://equihome-seed-api-pnk9
 const AdminSignIn = () => {
   const navigate = useNavigate()
   const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
 
@@ -16,8 +17,8 @@ const AdminSignIn = () => {
     setIsLoading(true)
 
     try {
-      if (!email) {
-        setError('Please enter your email')
+      if (!email || !password) {
+        setError('Please enter your email and password')
         return
       }
 
@@ -28,7 +29,10 @@ const AdminSignIn = () => {
           'Accept': 'application/json'
         },
         credentials: 'include',
-        body: JSON.stringify({ email: email.toLowerCase() }),
+        body: JSON.stringify({ 
+          email: email.toLowerCase(),
+          password 
+        }),
       })
 
       if (!response.ok) {
@@ -72,21 +76,40 @@ const AdminSignIn = () => {
         </div>
 
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div>
-            <label htmlFor="email" className="sr-only">
-              Email address
-            </label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              autoComplete="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="appearance-none relative block w-full px-3 py-2 border border-gray-700 placeholder-gray-500 text-white rounded-lg bg-[#111827] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-              placeholder="Email address"
-            />
+          <div className="space-y-4">
+            <div>
+              <label htmlFor="email" className="sr-only">
+                Email address
+              </label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                autoComplete="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="appearance-none relative block w-full px-3 py-2 border border-gray-700 placeholder-gray-500 text-white rounded-lg bg-[#111827] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                placeholder="Email address"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="password" className="sr-only">
+                Password
+              </label>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                autoComplete="current-password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="appearance-none relative block w-full px-3 py-2 border border-gray-700 placeholder-gray-500 text-white rounded-lg bg-[#111827] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+                placeholder="Password"
+              />
+            </div>
           </div>
 
           {error && (

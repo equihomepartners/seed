@@ -9,10 +9,17 @@ const router = express.Router();
 // Admin login
 router.post('/login', async (req, res) => {
   try {
-    const { email } = req.body;
+    const { email, password } = req.body;
     
-    if (email.toLowerCase() !== 'sujay@equihome.com.au') {
-      return res.status(401).json({ error: 'Unauthorized' });
+    if (!email || !password) {
+      return res.status(400).json({ error: 'Email and password are required' });
+    }
+
+    // Check if email and password match
+    if (email.toLowerCase() !== process.env.ADMIN_EMAIL?.toLowerCase() || 
+        password !== process.env.ADMIN_PASSWORD) {
+      console.log('Login attempt failed for:', email);
+      return res.status(401).json({ error: 'Invalid credentials' });
     }
 
     const token = jwt.sign(
@@ -21,6 +28,7 @@ router.post('/login', async (req, res) => {
       { expiresIn: '24h' }
     );
 
+    console.log('Admin login successful for:', email);
     res.json({ 
       token,
       email: email.toLowerCase()
