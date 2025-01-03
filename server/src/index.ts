@@ -59,27 +59,10 @@ const connectDB = async () => {
       serverSelectionTimeoutMS: 30000,
       socketTimeoutMS: 45000,
       connectTimeoutMS: 30000,
-      maxPoolSize: 10,
-      minPoolSize: 2,
       retryWrites: true,
-      retryReads: true,
-      replicaSet: 'atlas-zx4uoh-shard-0',
-      authSource: 'admin',
-      directConnection: false,
-      ssl: true
-    });
-
-    // Wait for connection to be ready
-    await new Promise((resolve, reject) => {
-      const db = mongoose.connection;
-      db.on('error', (error) => {
-        console.error('MongoDB connection error:', error);
-        reject(error);
-      });
-      db.once('open', () => {
-        console.log('MongoDB connection opened');
-        resolve(true);
-      });
+      w: 'majority',
+      ssl: true,
+      authSource: 'admin'
     });
 
     console.log(`MongoDB Connected: ${conn.connection.host}`);
