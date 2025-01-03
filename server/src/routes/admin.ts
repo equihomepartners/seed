@@ -23,16 +23,35 @@ router.post('/login', async (req, res) => {
     console.log('Checking credentials...');
     console.log('Admin email from env:', adminEmail);
     console.log('Provided email:', email.toLowerCase());
+    console.log('Admin password from env:', adminPassword);
+    console.log('Provided password:', password);
+
+    // Check if environment variables are set
+    if (!adminEmail || !adminPassword) {
+      console.error('Admin credentials not configured in environment');
+      return res.status(500).json({ error: 'Server configuration error' });
+    }
+
+    // Check if email matches (case insensitive)
+    const emailMatches = email.toLowerCase() === adminEmail.toLowerCase();
+    console.log('Email matches:', emailMatches);
+
+    // Check if password matches (case sensitive)
+    const passwordMatches = password === adminPassword;
+    console.log('Password matches:', passwordMatches);
 
     // Check if email and password match
-    if (email.toLowerCase() !== adminEmail?.toLowerCase() || 
-        password !== adminPassword) {
+    if (!emailMatches || !passwordMatches) {
       console.log('Login failed: Invalid credentials for:', email);
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
     const token = jwt.sign(
-      { email: email.toLowerCase(), role: 'admin' },
+      { 
+        email: email.toLowerCase(), 
+        role: 'admin',
+        timestamp: new Date().toISOString()
+      },
       process.env.JWT_SECRET || 'your-secret-key',
       { expiresIn: '24h' }
     );

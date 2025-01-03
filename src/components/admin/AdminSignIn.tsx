@@ -31,13 +31,14 @@ const AdminSignIn = () => {
           'Accept': 'application/json'
         },
         body: JSON.stringify({ 
-          email: email.toLowerCase(),
-          password 
+          email: email.toLowerCase().trim(),
+          password: password.trim()
         })
       })
 
       console.log('Login response status:', response.status);
       const data = await response.json()
+      console.log('Login response:', data);
 
       if (!response.ok) {
         console.error('Login failed:', data);
@@ -45,6 +46,7 @@ const AdminSignIn = () => {
       }
       
       if (!data.token) {
+        console.error('No token in response:', data);
         throw new Error('No token received')
       }
 
