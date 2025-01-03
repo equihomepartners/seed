@@ -60,7 +60,10 @@ const AdminDashboard = () => {
         // Super simple fetch without any auth
         const response = await fetch(`${API_URL}/admin/user-activity`, {
           method: 'GET',
-          headers: { 'Content-Type': 'application/json' }
+          headers: { 
+            'Content-Type': 'application/json',
+            'x-admin-key': 'equihome-admin-2024'
+          }
         })
 
         if (!response.ok) {

@@ -15,6 +15,7 @@ const AdminSignIn = () => {
 
     try {
       if (email.toLowerCase().trim() === 'sujay@equihome.com.au') {
+        localStorage.setItem('adminKey', 'equihome-admin-2024')
         window.location.href = '/admin'
       } else {
         setError('Invalid email')
