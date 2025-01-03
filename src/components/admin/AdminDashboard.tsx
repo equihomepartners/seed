@@ -65,30 +65,38 @@ const AdminDashboard = () => {
 
         const fetchWithTimeout = async (url: string) => {
           try {
+            const token = localStorage.getItem('adminToken')
             const response = await fetch(url, { 
               method: 'GET',
               headers: {
                 'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${token}`
               },
-              mode: 'no-cors'
+              credentials: 'include',
+              mode: 'cors'
             })
-            return response
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`)
+            }
+            return response.json()
           } catch (error) {
             console.error('Fetch error:', error)
             throw error
           }
         }
 
-        const [metricsRes, activitiesRes, subscribersRes] = await Promise.all([
-          fetchWithTimeout(`${API_URL}/admin/metrics`),
-          fetchWithTimeout(`${API_URL}/admin/user-activity`),
-          fetchWithTimeout(`${API_URL}/admin/newsletter-subscribers`)
-        ])
-
         const [metricsData, activitiesData, subscribersData] = await Promise.all([
-          { totalUsers: 0, activeUsers: 0, scheduledCalls: 0, registeredInterest: 0, webinarRegistrations: 0, newsletterSubscribers: 0 },
-          [],
-          []
+          fetchWithTimeout(`${API_URL}/admin/metrics`).catch(() => ({ 
+            totalUsers: 0, 
+            activeUsers: 0, 
+            scheduledCalls: 0, 
+            registeredInterest: 0,
+            webinarRegistrations: 0, 
+            newsletterSubscribers: 0 
+          })),
+          fetchWithTimeout(`${API_URL}/admin/user-activity`).catch(() => []),
+          fetchWithTimeout(`${API_URL}/admin/newsletter-subscribers`).catch(() => [])
         ])
 
         setMetrics(metricsData)
