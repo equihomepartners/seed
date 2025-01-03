@@ -371,15 +371,19 @@ const AdminDashboard = () => {
   )
 
   const handleSignOut = () => {
-    // Clear all session data
-    localStorage.removeItem('adminAuthenticated')
-    localStorage.removeItem('adminEmail')
-    localStorage.removeItem('sessionActive')
-    localStorage.removeItem('userEmail')
-    localStorage.removeItem('userId')
+    // Clear all storage
+    localStorage.clear();
+    sessionStorage.clear();
     
-    // Force page reload to clear React state
-    window.location.href = '/admin/signin'
+    // Clear all cookies
+    document.cookie.split(";").forEach((c) => {
+      document.cookie = c
+        .replace(/^ +/, "")
+        .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+    });
+    
+    // Redirect to splash screen
+    window.location.href = '/';
   }
 
   return (
