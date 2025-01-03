@@ -56,17 +56,40 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 const connectDB = async () => {
   try {
     console.log('Attempting to connect to MongoDB...');
-    const conn = await mongoose.connect(process.env.MONGODB_URI || '', {
+    const mongoUri = process.env.MONGODB_URI;
+    
+    if (!mongoUri) {
+      console.error('MONGODB_URI environment variable is not set');
+      return false;
+    }
+
+    console.log('Connecting to MongoDB with URI:', mongoUri.replace(/\/\/([^:]+):([^@]+)@/, '//***:***@'));
+    
+    const conn = await mongoose.connect(mongoUri, {
       serverSelectionTimeoutMS: 30000,
       socketTimeoutMS: 45000,
       connectTimeoutMS: 30000,
       retryWrites: true,
       w: 'majority',
       ssl: true,
-      authSource: 'admin'
+      authSource: 'admin',
+      maxPoolSize: 10,
+      minPoolSize: 5,
+      maxIdleTimeMS: 60000
     });
 
     console.log(`MongoDB Connected: ${conn.connection.host}`);
+    
+    // Set up connection error handlers
+    mongoose.connection.on('error', (err) => {
+      console.error('MongoDB connection error:', err);
+    });
+
+    mongoose.connection.on('disconnected', () => {
+      console.log('MongoDB disconnected. Attempting to reconnect...');
+      setTimeout(connectDB, 5000);
+    });
+
     return true;
   } catch (error) {
     console.error('MongoDB connection error:', error);
@@ -102,7 +125,7 @@ const startServer = async () => {
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`);
       console.log(`Environment: ${process.env.NODE_ENV}`);
-      console.log(`CORS Origin: ${process.env.CORS_ORIGIN}`);
+      console.log(`MongoDB URI: ${process.env.MONGODB_URI?.replace(/\/\/([^:]+):([^@]+)@/, '//***:***@')}`);
     });
   } catch (error) {
     console.error('Server startup error:', error);
