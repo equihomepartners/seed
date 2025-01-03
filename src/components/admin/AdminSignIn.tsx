@@ -18,8 +18,6 @@ const AdminSignIn = () => {
       
       if (email.toLowerCase().trim() === adminEmail) {
         localStorage.setItem('adminEmail', adminEmail)
-        localStorage.setItem('adminToken', 'admin-token-2024')
-        localStorage.setItem('adminAuthenticated', 'true')
         window.location.href = '/admin'
       } else {
         setError('Invalid email')
