@@ -27,11 +27,6 @@ router.post('/activity', async (req, res) => {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
-    // Skip tracking for anonymous users
-    if (email === 'anonymous') {
-      return res.json({ success: true });
-    }
-
     // Check MongoDB connection
     if (mongoose.connection.readyState !== 1) {
       console.error('MongoDB not connected. Current state:', mongoose.connection.readyState);
@@ -40,7 +35,12 @@ router.post('/activity', async (req, res) => {
 
     await retryOperation(async () => {
       // Find or create user activity document with timeout
-      let userActivity = await UserActivity.findOne({ userId }).maxTimeMS(5000);
+      let userActivity = await UserActivity.findOne({ 
+        $or: [
+          { userId },
+          { email }
+        ]
+      }).maxTimeMS(5000);
 
       if (!userActivity) {
         console.log('Creating new user activity record for:', userId);
@@ -61,6 +61,7 @@ router.post('/activity', async (req, res) => {
       // Update last active and email
       userActivity.lastActive = new Date();
       userActivity.email = email;
+      userActivity.userId = userId; // Ensure userId is up to date
 
       console.log('Saving user activity...');
       await userActivity.save({ wtimeout: 5000 });
@@ -84,7 +85,7 @@ router.post('/activity', async (req, res) => {
 // Track user progress
 router.post('/progress', async (req, res) => {
   try {
-    const { userId, progress } = req.body;
+    const { userId, email, progress } = req.body;
 
     if (!userId || !progress) {
       return res.status(400).json({ error: 'Missing required fields' });
@@ -92,10 +93,20 @@ router.post('/progress', async (req, res) => {
 
     await retryOperation(async () => {
       // Find or create user activity document with timeout
-      let userActivity = await UserActivity.findOne({ userId }).maxTimeMS(5000);
+      let userActivity = await UserActivity.findOne({ 
+        $or: [
+          { userId },
+          { email }
+        ]
+      }).maxTimeMS(5000);
 
       if (!userActivity) {
-        return res.status(404).json({ error: 'User not found' });
+        userActivity = new UserActivity({
+          userId,
+          email,
+          lastActive: new Date(),
+          visitHistory: []
+        });
       }
 
       // Update progress
@@ -106,6 +117,8 @@ router.post('/progress', async (req, res) => {
 
       // Update last active
       userActivity.lastActive = new Date();
+      if (email) userActivity.email = email;
+      userActivity.userId = userId; // Ensure userId is up to date
 
       await userActivity.save({ wtimeout: 5000 });
     });
@@ -126,14 +139,14 @@ router.post('/signin', async (req, res) => {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
-    // Skip tracking for anonymous users
-    if (email === 'anonymous') {
-      return res.json({ success: true });
-    }
-
     await retryOperation(async () => {
       // Find or create user activity document with timeout
-      let userActivity = await UserActivity.findOne({ userId }).maxTimeMS(5000);
+      let userActivity = await UserActivity.findOne({ 
+        $or: [
+          { userId },
+          { email }
+        ]
+      }).maxTimeMS(5000);
 
       if (!userActivity) {
         userActivity = new UserActivity({
@@ -148,6 +161,7 @@ router.post('/signin', async (req, res) => {
         userActivity.lastSignIn = new Date();
         userActivity.lastActive = new Date();
         userActivity.email = email;
+        userActivity.userId = userId; // Ensure userId is up to date
       }
 
       await userActivity.save({ wtimeout: 5000 });

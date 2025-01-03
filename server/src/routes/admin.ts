@@ -50,22 +50,18 @@ router.get('/metrics', adminAuth, async (req, res) => {
       webinarRegistrations,
       newsletterSubscribers
     ] = await Promise.all([
-      UserActivity.countDocuments({ 
-        email: { $ne: 'anonymous' },
-        userId: { $ne: null }
+      UserActivity.countDocuments({
+        email: { $exists: true, $ne: null }
       }),
       UserActivity.countDocuments({
-        email: { $ne: 'anonymous' },
-        userId: { $ne: null },
+        email: { $exists: true, $ne: null },
         lastActive: { $gte: new Date(Date.now() - 24 * 60 * 60 * 1000) }
       }),
       UserActivity.countDocuments({ 
-        'progress.introCallScheduled': true,
-        email: { $ne: 'anonymous' }
+        'progress.introCallScheduled': true
       }),
       UserActivity.countDocuments({ 
-        'progress.webinarRegistered': true,
-        email: { $ne: 'anonymous' }
+        'progress.webinarRegistered': true
       }),
       NewsletterSubscriber.countDocuments()
     ]);
@@ -96,8 +92,7 @@ router.get('/user-activity', adminAuth, async (req, res) => {
   try {
     console.log('Fetching user activities...');
     const activities = await UserActivity.find({
-      email: { $ne: 'anonymous' },
-      userId: { $ne: null }
+      email: { $exists: true, $ne: null }
     })
       .select({
         userId: 1,
