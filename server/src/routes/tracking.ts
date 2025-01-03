@@ -27,38 +27,45 @@ router.post('/activity', async (req, res) => {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
+    // Skip tracking for anonymous users
+    if (email === 'anonymous') {
+      return res.json({ success: true });
+    }
+
     // Check MongoDB connection
     if (mongoose.connection.readyState !== 1) {
       console.error('MongoDB not connected. Current state:', mongoose.connection.readyState);
       return res.status(503).json({ error: 'Database connection unavailable' });
     }
 
-    // Find or create user activity document
-    let userActivity = await UserActivity.findOne({ userId });
+    await retryOperation(async () => {
+      // Find or create user activity document with timeout
+      let userActivity = await UserActivity.findOne({ userId }).maxTimeMS(5000);
 
-    if (!userActivity) {
-      console.log('Creating new user activity record for:', userId);
-      userActivity = new UserActivity({
-        userId,
-        email,
-        lastActive: new Date(),
-        visitHistory: []
+      if (!userActivity) {
+        console.log('Creating new user activity record for:', userId);
+        userActivity = new UserActivity({
+          userId,
+          email,
+          lastActive: new Date(),
+          visitHistory: []
+        });
+      }
+
+      // Add page view to history
+      userActivity.visitHistory.push({
+        page,
+        timestamp: new Date()
       });
-    }
 
-    // Add page view to history
-    userActivity.visitHistory.push({
-      page,
-      timestamp: new Date()
+      // Update last active and email
+      userActivity.lastActive = new Date();
+      userActivity.email = email;
+
+      console.log('Saving user activity...');
+      await userActivity.save({ wtimeout: 5000 });
+      console.log('User activity saved successfully');
     });
-
-    // Update last active
-    userActivity.lastActive = new Date();
-    userActivity.email = email;
-
-    console.log('Saving user activity...');
-    await userActivity.save();
-    console.log('User activity saved successfully');
 
     res.json({ success: true });
   } catch (error) {
@@ -97,6 +104,9 @@ router.post('/progress', async (req, res) => {
         ...progress
       };
 
+      // Update last active
+      userActivity.lastActive = new Date();
+
       await userActivity.save({ wtimeout: 5000 });
     });
 
@@ -116,6 +126,11 @@ router.post('/signin', async (req, res) => {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
+    // Skip tracking for anonymous users
+    if (email === 'anonymous') {
+      return res.json({ success: true });
+    }
+
     await retryOperation(async () => {
       // Find or create user activity document with timeout
       let userActivity = await UserActivity.findOne({ userId }).maxTimeMS(5000);
@@ -125,13 +140,16 @@ router.post('/signin', async (req, res) => {
           userId,
           email,
           lastActive: new Date(),
+          lastSignIn: new Date(),
           visitHistory: []
         });
+      } else {
+        // Update last sign in and email
+        userActivity.lastSignIn = new Date();
+        userActivity.lastActive = new Date();
+        userActivity.email = email;
       }
 
-      // Update last sign in
-      userActivity.lastSignIn = new Date();
-      userActivity.email = email; // Keep email up to date
       await userActivity.save({ wtimeout: 5000 });
     });
 

@@ -124,9 +124,9 @@ const AdminDashboard = () => {
     }
 
     fetchData()
-    const interval = setInterval(fetchData, 30000) // Refresh every 30 seconds
+    const interval = setInterval(fetchData, 30000)
     return () => clearInterval(interval)
-  }, [navigate])
+  }, [navigate, selectedTab])
 
   if (loading) {
     return (
