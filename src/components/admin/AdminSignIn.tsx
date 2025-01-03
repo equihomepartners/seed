@@ -17,18 +17,10 @@ const AdminSignIn = () => {
     setIsLoading(true)
 
     try {
-      if (!email || !password) {
-        setError('Please enter your email and password')
-        setIsLoading(false)
-        return
-      }
-
-      console.log('Attempting login with:', { email });
       const response = await fetch(`${API_URL}/admin/login`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({ 
           email: email.toLowerCase().trim(),
@@ -36,30 +28,14 @@ const AdminSignIn = () => {
         })
       })
 
-      console.log('Login response status:', response.status);
       const data = await response.json()
-      console.log('Login response:', data);
 
       if (!response.ok) {
-        console.error('Login failed:', data);
         throw new Error(data.error || 'Invalid credentials')
       }
-      
-      if (!data.token) {
-        console.error('No token in response:', data);
-        throw new Error('No token received')
-      }
 
-      console.log('Login successful');
       localStorage.setItem('adminToken', data.token)
       localStorage.setItem('adminEmail', data.email)
-      
-      // Clear any existing session data
-      localStorage.removeItem('adminAuthenticated')
-      localStorage.removeItem('sessionActive')
-      localStorage.removeItem('userEmail')
-      localStorage.removeItem('userId')
-
       navigate('/admin')
     } catch (error) {
       console.error('Login error:', error)

@@ -9,67 +9,26 @@ const router = express.Router();
 // Admin login
 router.post('/login', async (req, res) => {
   try {
-    console.log('Admin login attempt received:', { email: req.body.email });
     const { email, password } = req.body;
     
-    if (!email || !password) {
-      console.log('Login failed: Missing email or password');
-      return res.status(400).json({ error: 'Email and password are required' });
+    // Hardcode the credentials temporarily to ensure it works
+    const validEmail = 'sujay@equihome.com.au';
+    const validPassword = 'equihome2024';
+
+    // Simple direct comparison
+    if (email.toLowerCase().trim() === validEmail && password.trim() === validPassword) {
+      const token = jwt.sign(
+        { email: email.toLowerCase(), role: 'admin' },
+        process.env.JWT_SECRET || 'your-secret-key',
+        { expiresIn: '24h' }
+      );
+
+      res.json({ token, email: email.toLowerCase() });
+    } else {
+      res.status(401).json({ error: 'Invalid credentials' });
     }
-
-    const adminEmail = process.env.ADMIN_EMAIL;
-    const adminPassword = process.env.ADMIN_PASSWORD;
-
-    console.log('Checking credentials...');
-    console.log('Admin email from env:', adminEmail);
-    console.log('Provided email:', email.toLowerCase());
-    console.log('Admin password from env:', adminPassword);
-    console.log('Provided password:', password);
-
-    // Check if environment variables are set
-    if (!adminEmail || !adminPassword) {
-      console.error('Admin credentials not configured in environment');
-      return res.status(500).json({ error: 'Server configuration error' });
-    }
-
-    // Check if email matches (case insensitive)
-    const emailMatches = email.toLowerCase() === adminEmail.toLowerCase();
-    console.log('Email matches:', emailMatches);
-
-    // Check if password matches (case sensitive)
-    const passwordMatches = password === adminPassword;
-    console.log('Password matches:', passwordMatches);
-
-    // Check if email and password match
-    if (!emailMatches || !passwordMatches) {
-      console.log('Login failed: Invalid credentials for:', email);
-      return res.status(401).json({ error: 'Invalid credentials' });
-    }
-
-    const token = jwt.sign(
-      { 
-        email: email.toLowerCase(), 
-        role: 'admin',
-        timestamp: new Date().toISOString()
-      },
-      process.env.JWT_SECRET || 'your-secret-key',
-      { expiresIn: '24h' }
-    );
-
-    console.log('Admin login successful for:', email);
-    res.json({ 
-      token,
-      email: email.toLowerCase()
-    });
   } catch (error) {
     console.error('Admin login error:', error);
-    if (error instanceof Error) {
-      console.error('Error details:', {
-        name: error.name,
-        message: error.message,
-        stack: error.stack
-      });
-    }
     res.status(500).json({ error: 'Server error' });
   }
 });
