@@ -57,14 +57,15 @@ const AdminDashboard = () => {
         setLoading(true)
         setError('')
         
-        const token = localStorage.getItem('adminToken')
-        if (!token) {
-          navigate('/admin/signin')
+        const adminAuthenticated = localStorage.getItem('adminAuthenticated')
+        const adminEmail = localStorage.getItem('adminEmail')
+        
+        if (!adminAuthenticated || !adminEmail || adminEmail !== 'sujay@equihome.com.au') {
+          window.location.href = '/admin/signin'
           return
         }
 
         const headers = {
-          'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
           'Accept': 'application/json'
         }
