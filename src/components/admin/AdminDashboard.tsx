@@ -58,11 +58,10 @@ const AdminDashboard = () => {
         setError('')
 
         // Super simple fetch without any auth
-        const response = await fetch(`${API_URL}/admin/user-activity`, {
+        const response = await fetch(`${API_URL}/admin/user-activity?key=equihome-admin-2024`, {
           method: 'GET',
           headers: { 
-            'Content-Type': 'application/json',
-            'x-admin-key': 'equihome-admin-2024'
+            'Content-Type': 'application/json'
           }
         })
 
