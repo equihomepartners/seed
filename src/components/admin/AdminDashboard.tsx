@@ -56,55 +56,34 @@ const AdminDashboard = () => {
       try {
         setLoading(true)
         setError('')
+
+        // Super simple fetch without any auth
+        const response = await fetch(`${API_URL}/admin/user-activity`, {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' }
+        })
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch data')
+        }
+
+        const data = await response.json()
+        setUserActivities(data || [])
         
-        const adminEmail = localStorage.getItem('adminEmail')
-        if (adminEmail !== 'sujay@equihome.com.au') {
-          window.location.href = '/admin/signin'
-          return
+        // Calculate metrics from the user activities
+        const metrics = {
+          totalUsers: data.length,
+          activeUsers: data.filter((u: any) => new Date(u.lastActive) > new Date(Date.now() - 24*60*60*1000)).length,
+          scheduledCalls: data.filter((u: any) => u.progress?.introCallScheduled).length,
+          registeredInterest: data.filter((u: any) => u.progress?.interestRegistered).length,
+          webinarRegistrations: data.filter((u: any) => u.progress?.webinarRegistered).length,
+          newsletterSubscribers: data.filter((u: any) => u.progress?.newsletterSubscribed).length
         }
+        setMetrics(metrics)
 
-        const fetchWithTimeout = async (url: string) => {
-          try {
-            const token = localStorage.getItem('adminToken')
-            const response = await fetch(url, { 
-              method: 'GET',
-              headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-                'Authorization': `Bearer ${token}`
-              },
-              credentials: 'include',
-              mode: 'cors'
-            })
-            if (!response.ok) {
-              throw new Error(`HTTP error! status: ${response.status}`)
-            }
-            return response.json()
-          } catch (error) {
-            console.error('Fetch error:', error)
-            throw error
-          }
-        }
-
-        const [metricsData, activitiesData, subscribersData] = await Promise.all([
-          fetchWithTimeout(`${API_URL}/admin/metrics`).catch(() => ({ 
-            totalUsers: 0, 
-            activeUsers: 0, 
-            scheduledCalls: 0, 
-            registeredInterest: 0,
-            webinarRegistrations: 0, 
-            newsletterSubscribers: 0 
-          })),
-          fetchWithTimeout(`${API_URL}/admin/user-activity`).catch(() => []),
-          fetchWithTimeout(`${API_URL}/admin/newsletter-subscribers`).catch(() => [])
-        ])
-
-        setMetrics(metricsData)
-        setUserActivities(activitiesData || [])
-        setNewsletterSubscribers(subscribersData || [])
       } catch (error) {
         console.error('Error:', error)
-        setError('Failed to load dashboard data. Please try again.')
+        setError('Failed to load data')
       } finally {
         setLoading(false)
       }
@@ -113,7 +92,7 @@ const AdminDashboard = () => {
     fetchData()
     const interval = setInterval(fetchData, 30000)
     return () => clearInterval(interval)
-  }, [selectedTab])
+  }, [])
 
   if (loading) {
     return (

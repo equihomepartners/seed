@@ -14,11 +14,7 @@ const AdminSignIn = () => {
     setIsLoading(true)
 
     try {
-      const adminEmail = 'sujay@equihome.com.au'
-      
-      if (email.toLowerCase().trim() === adminEmail) {
-        localStorage.setItem('adminEmail', adminEmail)
-        localStorage.setItem('adminToken', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InN1amF5QGVxdWlob21lLmNvbS5hdSIsImlhdCI6MTcwNDI2MjQ3NH0.0RJUFTGfGVPM9eKs4lLjBXO-XcgYTh_8M1G9RjqWQeY')
+      if (email.toLowerCase().trim() === 'sujay@equihome.com.au') {
         window.location.href = '/admin'
       } else {
         setError('Invalid email')
