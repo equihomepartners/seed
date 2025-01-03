@@ -65,13 +65,32 @@ const AdminDashboard = () => {
 
         const headers = {
           'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        }
+
+        const fetchWithTimeout = async (url: string) => {
+          const controller = new AbortController()
+          const timeout = setTimeout(() => controller.abort(), 10000)
+          
+          try {
+            const response = await fetch(url, { 
+              headers,
+              credentials: 'include',
+              signal: controller.signal
+            })
+            clearTimeout(timeout)
+            return response
+          } catch (error) {
+            clearTimeout(timeout)
+            throw error
+          }
         }
 
         const [metricsRes, activitiesRes, subscribersRes] = await Promise.all([
-          fetch(`${API_URL}/admin/metrics`, { headers }),
-          fetch(`${API_URL}/admin/user-activity`, { headers }),
-          fetch(`${API_URL}/admin/newsletter-subscribers`, { headers })
+          fetchWithTimeout(`${API_URL}/admin/metrics`),
+          fetchWithTimeout(`${API_URL}/admin/user-activity`),
+          fetchWithTimeout(`${API_URL}/admin/newsletter-subscribers`)
         ])
 
         if (!metricsRes.ok || !activitiesRes.ok || !subscribersRes.ok) {
@@ -94,7 +113,11 @@ const AdminDashboard = () => {
         setNewsletterSubscribers(subscribersData)
       } catch (error) {
         console.error('Error fetching data:', error)
-        setError('Failed to load dashboard data. Please try again.')
+        if (error instanceof Error && error.name === 'AbortError') {
+          setError('Request timed out. Please try again.')
+        } else {
+          setError('Failed to load dashboard data. Please try again.')
+        }
       } finally {
         setLoading(false)
       }

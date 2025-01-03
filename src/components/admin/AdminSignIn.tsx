@@ -25,21 +25,36 @@ const AdminSignIn = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json'
         },
-        body: JSON.stringify({ email }),
+        credentials: 'include',
+        body: JSON.stringify({ email: email.toLowerCase() }),
       })
 
       if (!response.ok) {
-        throw new Error('Invalid credentials')
+        const errorData = await response.json()
+        throw new Error(errorData.error || 'Invalid credentials')
       }
 
       const data = await response.json()
+      
+      if (!data.token) {
+        throw new Error('No token received')
+      }
+
       localStorage.setItem('adminToken', data.token)
       localStorage.setItem('adminEmail', data.email)
+      
+      // Clear any existing session data
+      localStorage.removeItem('adminAuthenticated')
+      localStorage.removeItem('sessionActive')
+      localStorage.removeItem('userEmail')
+      localStorage.removeItem('userId')
+
       navigate('/admin')
     } catch (error) {
       console.error('Login error:', error)
-      setError('Invalid credentials')
+      setError(error instanceof Error ? error.message : 'Invalid credentials')
     } finally {
       setIsLoading(false)
     }
