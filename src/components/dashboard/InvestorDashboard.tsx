@@ -213,7 +213,7 @@ const InvestorDashboard = () => {
     const userId = localStorage.getItem('userId')
     if (userId) {
       try {
-        await axios.post('http://209.38.87.210:3002/api/track/progress', {
+        await axios.post('https://equihome-seed-api-pnk9i.ondigitalocean.app/api/track/progress', {
           userId,
           progress: newProgress
         })

@@ -33,48 +33,41 @@ router.post('/activity', async (req, res) => {
       return res.status(503).json({ error: 'Database connection unavailable' });
     }
 
-    await retryOperation(async () => {
-      console.log('Looking for existing user activity:', userId);
-      // Find or create user activity document with timeout
-      let userActivity = await UserActivity.findOne({ userId }).maxTimeMS(5000).exec();
+    // Find or create user activity document
+    let userActivity = await UserActivity.findOne({ userId });
 
-      if (!userActivity) {
-        console.log('Creating new user activity record for:', userId);
-        userActivity = new UserActivity({
-          userId,
-          email,
-          lastActive: new Date(),
-          visitHistory: []
-        });
-      } else {
-        console.log('Found existing user activity:', userActivity._id);
-      }
-
-      // Add page view to history
-      userActivity.visitHistory.push({
-        page,
-        timestamp: new Date()
+    if (!userActivity) {
+      console.log('Creating new user activity record for:', userId);
+      userActivity = new UserActivity({
+        userId,
+        email,
+        lastActive: new Date(),
+        visitHistory: []
       });
+    }
 
-      // Update last active
-      userActivity.lastActive = new Date();
-      userActivity.email = email; // Keep email up to date
-
-      console.log('Saving user activity...');
-      await userActivity.save();
-      console.log('User activity saved successfully');
+    // Add page view to history
+    userActivity.visitHistory.push({
+      page,
+      timestamp: new Date()
     });
+
+    // Update last active
+    userActivity.lastActive = new Date();
+    userActivity.email = email;
+
+    console.log('Saving user activity...');
+    await userActivity.save();
+    console.log('User activity saved successfully');
 
     res.json({ success: true });
   } catch (error) {
     console.error('Error tracking activity:', error);
-    // Log more details about the error
     if (error instanceof Error) {
       console.error('Error details:', {
         name: error.name,
         message: error.message,
-        stack: error.stack,
-        mongoState: mongoose.connection.readyState
+        stack: error.stack
       });
     }
     res.status(500).json({ error: 'Error tracking activity' });

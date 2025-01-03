@@ -20,7 +20,7 @@ interface StepProgress {
   }>
 }
 
-const API_URL = 'http://209.38.87.210:3002/api'
+const API_URL = 'https://equihome-seed-api-pnk9i.ondigitalocean.app/api'
 
 const InvestorJourney = () => {
   const location = useLocation()
