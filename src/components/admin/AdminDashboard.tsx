@@ -52,9 +52,11 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState<boolean>(true)
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchData = async (showLoading = true) => {
       try {
-        setLoading(true)
+        if (showLoading) {
+          setLoading(true)
+        }
         setError('')
 
         const token = localStorage.getItem('adminToken')
@@ -87,17 +89,21 @@ const AdminDashboard = () => {
         setMetrics(metricsData)
         setUserActivities(activitiesData || [])
         setNewsletterSubscribers(subscribersData || [])
-
       } catch (error) {
         console.error('Error:', error)
         setError('Failed to load data')
       } finally {
-        setLoading(false)
+        if (showLoading) {
+          setLoading(false)
+        }
       }
     }
 
-    fetchData()
-    const interval = setInterval(fetchData, 30000)
+    // Initial load with loading state
+    fetchData(true)
+
+    // Refresh every 2 minutes without loading state
+    const interval = setInterval(() => fetchData(false), 120000)
     return () => clearInterval(interval)
   }, [])
 

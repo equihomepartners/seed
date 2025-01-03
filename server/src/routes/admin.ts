@@ -44,11 +44,8 @@ router.get('/metrics', adminAuth, async (req, res) => {
       webinarRegistrations,
       newsletterSubscribers
     ] = await Promise.all([
+      UserActivity.countDocuments(),
       UserActivity.countDocuments({
-        email: { $exists: true, $ne: null }
-      }),
-      UserActivity.countDocuments({
-        email: { $exists: true, $ne: null },
         lastActive: { $gte: new Date(Date.now() - 24 * 60 * 60 * 1000) }
       }),
       UserActivity.countDocuments({ 
@@ -85,9 +82,7 @@ router.get('/metrics', adminAuth, async (req, res) => {
 router.get('/user-activity', adminAuth, async (req, res) => {
   try {
     console.log('Fetching user activities...');
-    const activities = await UserActivity.find({
-      email: { $exists: true, $ne: null }
-    })
+    const activities = await UserActivity.find()
       .select({
         userId: 1,
         email: 1,
