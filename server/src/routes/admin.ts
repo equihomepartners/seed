@@ -9,16 +9,25 @@ const router = express.Router();
 // Admin login
 router.post('/login', async (req, res) => {
   try {
+    console.log('Admin login attempt received:', { email: req.body.email });
     const { email, password } = req.body;
     
     if (!email || !password) {
+      console.log('Login failed: Missing email or password');
       return res.status(400).json({ error: 'Email and password are required' });
     }
 
+    const adminEmail = process.env.ADMIN_EMAIL;
+    const adminPassword = process.env.ADMIN_PASSWORD;
+
+    console.log('Checking credentials...');
+    console.log('Admin email from env:', adminEmail);
+    console.log('Provided email:', email.toLowerCase());
+
     // Check if email and password match
-    if (email.toLowerCase() !== process.env.ADMIN_EMAIL?.toLowerCase() || 
-        password !== process.env.ADMIN_PASSWORD) {
-      console.log('Login attempt failed for:', email);
+    if (email.toLowerCase() !== adminEmail?.toLowerCase() || 
+        password !== adminPassword) {
+      console.log('Login failed: Invalid credentials for:', email);
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
@@ -35,6 +44,13 @@ router.post('/login', async (req, res) => {
     });
   } catch (error) {
     console.error('Admin login error:', error);
+    if (error instanceof Error) {
+      console.error('Error details:', {
+        name: error.name,
+        message: error.message,
+        stack: error.stack
+      });
+    }
     res.status(500).json({ error: 'Server error' });
   }
 });
