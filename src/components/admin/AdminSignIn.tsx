@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { FaLock } from 'react-icons/fa'
 
+const API_URL = process.env.REACT_APP_API_URL || 'https://equihome-seed-api-pnk9i.ondigitalocean.app/api'
+
 const AdminSignIn = () => {
   const navigate = useNavigate()
   const [email, setEmail] = useState('')
@@ -14,8 +16,20 @@ const AdminSignIn = () => {
     setIsLoading(true)
 
     try {
-      if (email.toLowerCase().trim() === 'sujay@equihome.com.au') {
-        localStorage.setItem('adminKey', 'equihome-admin-2024')
+      const response = await fetch(`${API_URL}/admin/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email: email.toLowerCase().trim(),
+          password: 'equihome2024'
+        })
+      })
+
+      if (response.ok) {
+        const data = await response.json()
+        localStorage.setItem('adminToken', data.token)
         window.location.href = '/admin'
       } else {
         setError('Invalid email')

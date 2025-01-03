@@ -57,40 +57,36 @@ const AdminDashboard = () => {
         setLoading(true)
         setError('')
 
-        // Hardcoded data for now
-        const mockData = [
-          {
-            userId: '1',
-            email: 'sujay@equihome.com.au',
-            lastActive: new Date().toISOString(),
-            createdAt: new Date().toISOString(),
-            progress: {
-              businessPitchViewed: true,
-              portfolioOSViewed: true,
-              introCallScheduled: true,
-              interestRegistered: true,
-              webinarRegistered: true
-            },
-            visitHistory: [
-              {
-                page: '/admin',
-                timestamp: new Date().toISOString()
-              }
-            ]
-          }
-        ]
+        const token = localStorage.getItem('adminToken')
+        if (!token) {
+          window.location.href = '/admin/signin'
+          return
+        }
 
-        setUserActivities(mockData)
-        
-        // Set basic metrics
-        setMetrics({
-          totalUsers: 1,
-          activeUsers: 1,
-          scheduledCalls: 1,
-          registeredInterest: 1,
-          webinarRegistrations: 1,
-          newsletterSubscribers: 1
-        })
+        const headers = {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+
+        const [metricsRes, activitiesRes, subscribersRes] = await Promise.all([
+          fetch(`${API_URL}/admin/metrics`, { headers }),
+          fetch(`${API_URL}/admin/user-activity`, { headers }),
+          fetch(`${API_URL}/admin/newsletter-subscribers`, { headers })
+        ])
+
+        if (!metricsRes.ok || !activitiesRes.ok || !subscribersRes.ok) {
+          throw new Error('Failed to fetch data')
+        }
+
+        const [metricsData, activitiesData, subscribersData] = await Promise.all([
+          metricsRes.json(),
+          activitiesRes.json(),
+          subscribersRes.json()
+        ])
+
+        setMetrics(metricsData)
+        setUserActivities(activitiesData || [])
+        setNewsletterSubscribers(subscribersData || [])
 
       } catch (error) {
         console.error('Error:', error)
