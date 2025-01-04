@@ -24,9 +24,7 @@ const AdminSignIn = () => {
         body: JSON.stringify({
           email: email.toLowerCase().trim(),
           password: 'equihome2024'
-        }),
-        credentials: 'include',
-        mode: 'cors'
+        })
       })
 
       if (response.ok) {
