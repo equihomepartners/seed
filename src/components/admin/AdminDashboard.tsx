@@ -51,61 +51,54 @@ const AdminDashboard = () => {
   const [error, setError] = useState<string>('')
   const [loading, setLoading] = useState<boolean>(true)
 
-  useEffect(() => {
-    const fetchData = async (showLoading = true) => {
-      try {
-        if (showLoading) {
-          setLoading(true)
-        }
-        setError('')
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      setError('');
 
-        const token = localStorage.getItem('adminToken')
-        if (!token) {
-          window.location.href = '/admin/signin'
-          return
-        }
-
-        const headers = {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        }
-
-        const [metricsRes, activitiesRes, subscribersRes] = await Promise.all([
-          fetch(`${API_URL}/admin/metrics`, { headers }),
-          fetch(`${API_URL}/admin/user-activity`, { headers }),
-          fetch(`${API_URL}/admin/newsletter-subscribers`, { headers })
-        ])
-
-        if (!metricsRes.ok || !activitiesRes.ok || !subscribersRes.ok) {
-          throw new Error('Failed to fetch data')
-        }
-
-        const [metricsData, activitiesData, subscribersData] = await Promise.all([
-          metricsRes.json(),
-          activitiesRes.json(),
-          subscribersRes.json()
-        ])
-
-        setMetrics(metricsData)
-        setUserActivities(activitiesData || [])
-        setNewsletterSubscribers(subscribersData || [])
-      } catch (error) {
-        console.error('Error:', error)
-        setError('Failed to load data')
-      } finally {
-        if (showLoading) {
-          setLoading(false)
-        }
+      const token = localStorage.getItem('adminToken');
+      if (!token) {
+        window.location.href = '/admin/signin';
+        return;
       }
+
+      const headers = {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      };
+
+      const [metricsRes, activitiesRes, subscribersRes] = await Promise.all([
+        fetch(`${API_URL}/admin/metrics`, { headers }),
+        fetch(`${API_URL}/admin/user-activity`, { headers }),
+        fetch(`${API_URL}/admin/newsletter-subscribers`, { headers })
+      ]);
+
+      if (!metricsRes.ok || !activitiesRes.ok || !subscribersRes.ok) {
+        throw new Error('Failed to fetch data');
+      }
+
+      const [metrics, activities, subscribers] = await Promise.all([
+        metricsRes.json(),
+        activitiesRes.json(),
+        subscribersRes.json()
+      ]);
+
+      setMetrics(metrics);
+      setUserActivities(activities || []);
+      setNewsletterSubscribers(subscribers || []);
+    } catch (error) {
+      console.error('Error:', error);
+      setError('Failed to load data');
+    } finally {
+      setLoading(false);
     }
+  };
 
-    // Initial load with loading state
-    fetchData(true)
-
-    // Refresh every 2 minutes without loading state
-    const interval = setInterval(() => fetchData(false), 120000)
-    return () => clearInterval(interval)
-  }, [])
+  useEffect(() => {
+    fetchData();
+    const interval = setInterval(fetchData, 120000); // Refresh every 2 minutes
+    return () => clearInterval(interval);
+  }, [selectedTab]);
 
   if (loading) {
     return (

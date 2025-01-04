@@ -13,7 +13,7 @@ const PORT = process.env.PORT || 3002;
 // Middleware
 app.use(express.json());
 app.use(cors({
-  origin: ['https://seed.equihome.com.au', 'http://localhost:3000'],
+  origin: ['https://seed.equihome.com.au', 'http://localhost:3000', 'https://equihome-seed-api-pnk9i.ondigitalocean.app'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   exposedHeaders: ['Authorization'],

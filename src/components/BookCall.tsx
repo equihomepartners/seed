@@ -11,7 +11,7 @@ interface FormData {
   investmentRange: string
 }
 
-const API_URL = 'https://equihome-seed-api-pnk9i.ondigitalocean.app/api'
+const API_URL = process.env.REACT_APP_API_URL || 'https://equihome-seed-api-pnk9i.ondigitalocean.app/api'
 
 const BookCall: React.FC = () => {
   const [step, setStep] = useState<number>(1)
