@@ -68,9 +68,21 @@ const AdminDashboard = () => {
       };
 
       const [metricsRes, activitiesRes, subscribersRes] = await Promise.all([
-        fetch(`${API_URL}/admin/metrics`, { headers }),
-        fetch(`${API_URL}/admin/user-activity`, { headers }),
-        fetch(`${API_URL}/admin/newsletter-subscribers`, { headers })
+        fetch(`${API_URL}/admin/metrics`, { 
+          headers,
+          credentials: 'include',
+          mode: 'cors'
+        }),
+        fetch(`${API_URL}/admin/user-activity`, { 
+          headers,
+          credentials: 'include',
+          mode: 'cors'
+        }),
+        fetch(`${API_URL}/admin/newsletter-subscribers`, { 
+          headers,
+          credentials: 'include',
+          mode: 'cors'
+        })
       ]);
 
       if (!metricsRes.ok || !activitiesRes.ok || !subscribersRes.ok) {
