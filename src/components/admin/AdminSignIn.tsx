@@ -22,14 +22,13 @@ const AdminSignIn = () => {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          email: email.toLowerCase().trim(),
-          password: 'equihome2024'
+          email: email.toLowerCase().trim()
         })
       })
 
       if (response.ok) {
         const data = await response.json()
-        localStorage.setItem('adminToken', data.token)
+        localStorage.setItem('adminEmail', data.email)
         window.location.href = '/admin'
       } else {
         setError('Invalid email')
@@ -49,7 +48,7 @@ const AdminSignIn = () => {
             <FaLock className="text-3xl text-blue-400" />
           </div>
           <h2 className="text-3xl font-bold text-white">Admin Access</h2>
-          <p className="mt-2 text-gray-400">Restricted to authorized personnel only</p>
+          <p className="mt-2 text-gray-400">Enter sujay@equihome.com.au to access admin panel</p>
         </div>
 
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>

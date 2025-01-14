@@ -1,6 +1,4 @@
 import * as express from 'express';
-import * as jwt from 'jsonwebtoken';
-import { adminAuth } from '../middleware/adminAuth';
 import { UserActivity } from '../models/UserActivity';
 import { NewsletterSubscriber } from '../models/NewsletterSubscriber';
 
@@ -9,21 +7,10 @@ const router = express.Router();
 // Admin login
 router.post('/login', async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email } = req.body;
     
-    // Hardcode the credentials temporarily to ensure it works
-    const validEmail = 'sujay@equihome.com.au';
-    const validPassword = 'equihome2024';
-
-    // Simple direct comparison
-    if (email.toLowerCase().trim() === validEmail && password.trim() === validPassword) {
-      const token = jwt.sign(
-        { email: email.toLowerCase(), role: 'admin' },
-        process.env.JWT_SECRET || 'your-secret-key',
-        { expiresIn: '24h' }
-      );
-
-      res.json({ token, email: email.toLowerCase() });
+    if (email.toLowerCase().trim() === 'sujay@equihome.com.au') {
+      res.json({ email: email.toLowerCase() });
     } else {
       res.status(401).json({ error: 'Invalid credentials' });
     }
@@ -34,7 +21,7 @@ router.post('/login', async (req, res) => {
 });
 
 // Get admin dashboard metrics
-router.get('/metrics', adminAuth, async (req, res) => {
+router.get('/metrics', async (req, res) => {
   try {
     console.log('Fetching admin metrics...');
     const [
@@ -57,14 +44,6 @@ router.get('/metrics', adminAuth, async (req, res) => {
       NewsletterSubscriber.countDocuments()
     ]);
 
-    console.log('Admin metrics:', {
-      totalUsers,
-      activeUsers,
-      scheduledCalls,
-      webinarRegistrations,
-      newsletterSubscribers
-    });
-
     res.json({
       totalUsers,
       activeUsers,
@@ -79,9 +58,8 @@ router.get('/metrics', adminAuth, async (req, res) => {
 });
 
 // Get recent user activity
-router.get('/user-activity', adminAuth, async (req, res) => {
+router.get('/user-activity', async (req, res) => {
   try {
-    console.log('Fetching user activities...');
     const activities = await UserActivity.find()
       .select({
         userId: 1,
@@ -95,7 +73,6 @@ router.get('/user-activity', adminAuth, async (req, res) => {
       .sort({ lastActive: -1 })
       .limit(50);
     
-    console.log(`Found ${activities.length} user activities`);
     res.json(activities);
   } catch (error) {
     console.error('Error fetching user activities:', error);
@@ -104,7 +81,7 @@ router.get('/user-activity', adminAuth, async (req, res) => {
 });
 
 // Get newsletter subscribers
-router.get('/newsletter-subscribers', adminAuth, async (req, res) => {
+router.get('/newsletter-subscribers', async (req, res) => {
   try {
     const subscribers = await NewsletterSubscriber.find()
       .sort({ subscribedAt: -1 });
