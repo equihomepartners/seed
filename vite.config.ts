@@ -16,8 +16,9 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:3001',
+        target: process.env.VITE_API_URL || 'https://equihome-seed-api-pnk9i.ondigitalocean.app',
         changeOrigin: true,
+        secure: false,
       },
     },
   }

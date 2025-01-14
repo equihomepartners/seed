@@ -23,11 +23,10 @@ function App() {
     const checkAuth = () => {
       const sessionActive = localStorage.getItem('sessionActive') === 'true'
       const userEmail = localStorage.getItem('userEmail')
-      const adminAuthenticated = localStorage.getItem('adminAuthenticated') === 'true'
       const adminEmail = localStorage.getItem('adminEmail')?.toLowerCase() === 'sujay@equihome.com.au'
 
       setIsAuthenticated(sessionActive && !!userEmail)
-      setIsAdminAuthenticated(adminAuthenticated && adminEmail)
+      setIsAdminAuthenticated(adminEmail)
       setIsLoading(false)
     }
 
