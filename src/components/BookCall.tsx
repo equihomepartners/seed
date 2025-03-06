@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import GlobalHeader from './GlobalHeader'
-import { FaLock, FaHandshake, FaClock, FaUsers, FaRocket, FaCheckCircle } from 'react-icons/fa'
+import { FaLock, FaHandshake, FaClock, FaUsers, FaRocket, FaCheckCircle, FaArrowRight, FaCalendar, FaUser, FaBuilding, FaDollarSign } from 'react-icons/fa'
 import axios from 'axios'
 
 interface FormData {
@@ -11,7 +11,7 @@ interface FormData {
   investmentRange: string
 }
 
-const API_URL = process.env.REACT_APP_API_URL || 'https://equihome-seed-api-pnk9i.ondigitalocean.app/api'
+const API_URL = import.meta.env.VITE_API_URL || 'https://equihome-seed-api-pnk9i.ondigitalocean.app/api'
 
 const BookCall: React.FC = () => {
   const [step, setStep] = useState<number>(1)
@@ -29,17 +29,6 @@ const BookCall: React.FC = () => {
       setFormData(prev => ({ ...prev, email: storedEmail }))
     }
   }, [])
-
-  // Calculate progress percentage
-  const totalRound = 5000000 // $5M
-  const currentRaised = 700000 // $700K
-  const progressPercentage = (currentRaised / totalRound) * 100
-
-  // Calculate days remaining
-  const endDate = new Date('2025-01-31')
-  const startDate = new Date('2024-12-16')
-  const today = new Date()
-  const daysRemaining = Math.ceil((endDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
 
   // Function to sync progress with backend
   const syncProgress = async (progress: any) => {
@@ -109,34 +98,11 @@ const BookCall: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#0B1121]">
+    <div className="min-h-screen bg-white">
       <GlobalHeader currentPage="book-call" />
       
-      {/* Fundraising Progress Bar */}
-      <div className="fixed top-[72px] left-0 right-0 bg-[#0a0f1a]/80 backdrop-blur-sm border-b border-blue-500/10 z-40">
-        <div className="max-w-7xl mx-auto px-6 py-3">
-          <div className="flex items-center justify-between text-sm mb-2">
-            <div className="text-gray-400">Seed Round Progress</div>
-            <div className="text-white font-medium">${(currentRaised / 1000000).toFixed(1)}M raised of $5M</div>
-          </div>
-          <div className="relative h-1.5 bg-[#1a2234] rounded-full overflow-hidden">
-            <motion.div 
-              className="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-500 to-blue-400 rounded-full"
-              initial={{ width: 0 }}
-              animate={{ width: `${progressPercentage}%` }}
-              transition={{ duration: 1, ease: "easeOut" }}
-            />
-          </div>
-          <div className="flex items-center justify-between text-xs mt-2">
-            <div className="text-gray-500">Dec 16, 2024</div>
-            <div className="text-gray-400">{daysRemaining} days remaining</div>
-            <div className="text-gray-500">Jan 31, 2025</div>
-          </div>
-        </div>
-      </div>
-
       {/* Main Content */}
-      <div className="pt-[180px] pb-16 px-6">
+      <div className="pt-[72px] pb-16 px-6">
         <AnimatePresence mode="wait">
           {step === 1 ? (
             <motion.div
@@ -146,10 +112,9 @@ const BookCall: React.FC = () => {
               exit={{ opacity: 0, y: -20 }}
               className="max-w-6xl mx-auto"
             >
-              {/* Form content remains the same */}
               <div className="text-center mb-12">
                 <motion.h1 
-                  className="text-4xl font-light text-white mb-4"
+                  className="text-4xl font-light text-gray-900 mb-4"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.2 }}
@@ -157,7 +122,7 @@ const BookCall: React.FC = () => {
                   Schedule Your Investment Discussion
                 </motion.h1>
                 <motion.p 
-                  className="text-xl text-gray-400 max-w-2xl mx-auto"
+                  className="text-xl text-gray-600 max-w-2xl mx-auto"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 }}
@@ -174,33 +139,33 @@ const BookCall: React.FC = () => {
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.4 }}
-                    className="bg-gradient-to-br from-blue-500/10 to-purple-500/10 p-8 rounded-2xl border border-blue-500/20 backdrop-blur-xl"
+                    className="bg-sky-50 p-8 rounded-2xl border border-sky-100"
                   >
                     <div className="flex items-center space-x-4 mb-6">
-                      <div className="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center">
-                        <FaRocket className="text-2xl text-blue-400" />
+                      <div className="w-12 h-12 rounded-xl bg-sky-100 flex items-center justify-center">
+                        <FaRocket className="text-2xl text-sky-600" />
                       </div>
                       <div>
-                        <h3 className="text-xl font-medium text-white">Investment Summary</h3>
-                        <p className="text-blue-400">Key Details</p>
+                        <h3 className="text-xl font-medium text-gray-900">Investment Summary</h3>
+                        <p className="text-sky-600">Key Details</p>
                       </div>
                     </div>
                     <div className="space-y-4">
-                      <div className="flex items-center justify-between p-3 bg-[#0a0f1a]/60 rounded-lg">
-                        <span className="text-gray-400">Round Size</span>
-                        <span className="text-white font-medium">$5M</span>
+                      <div className="flex items-center justify-between p-3 bg-white rounded-lg border border-sky-100">
+                        <span className="text-gray-600">Round Size</span>
+                        <span className="text-gray-900 font-medium">$2M</span>
                       </div>
-                      <div className="flex items-center justify-between p-3 bg-[#0a0f1a]/60 rounded-lg">
-                        <span className="text-gray-400">Minimum Investment</span>
-                        <span className="text-white font-medium">$50,000</span>
+                      <div className="flex items-center justify-between p-3 bg-white rounded-lg border border-sky-100">
+                        <span className="text-gray-600">Minimum Investment</span>
+                        <span className="text-gray-900 font-medium">$50,000</span>
                       </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-gray-400">Target Return</span>
-                        <span className="text-white font-medium">8-26x+ ROI</span>
+                      <div className="flex items-center justify-between p-3 bg-white rounded-lg border border-sky-100">
+                        <span className="text-gray-600">Target Return</span>
+                        <span className="text-gray-900 font-medium">8-26x+ ROI</span>
                       </div>
-                      <div className="flex items-center justify-between p-3 bg-[#0a0f1a]/60 rounded-lg">
-                        <span className="text-gray-400">Investment Timeline</span>
-                        <span className="text-white font-medium">5-7 Years</span>
+                      <div className="flex items-center justify-between p-3 bg-white rounded-lg border border-sky-100">
+                        <span className="text-gray-600">Investment Timeline</span>
+                        <span className="text-gray-900 font-medium">5-7 Years</span>
                       </div>
                     </div>
                   </motion.div>
@@ -210,40 +175,40 @@ const BookCall: React.FC = () => {
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.5 }}
-                    className="bg-[#1a2234]/60 rounded-2xl p-8 border border-blue-500/10"
+                    className="bg-white rounded-2xl p-8 border border-gray-200"
                   >
                     <div className="flex items-center space-x-4 mb-6">
-                      <div className="w-12 h-12 rounded-xl bg-blue-500/20 flex items-center justify-center">
-                        <FaHandshake className="text-2xl text-blue-400" />
+                      <div className="w-12 h-12 rounded-xl bg-sky-50 flex items-center justify-center">
+                        <FaHandshake className="text-2xl text-sky-600" />
                       </div>
-                      <h3 className="text-xl font-medium text-white">What to Expect</h3>
+                      <h3 className="text-xl font-medium text-gray-900">What to Expect</h3>
                     </div>
                     <div className="space-y-4">
                       <div className="flex items-start space-x-3">
-                        <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center flex-shrink-0">
-                          <FaClock className="text-blue-400" />
+                        <div className="w-8 h-8 rounded-lg bg-sky-50 flex items-center justify-center flex-shrink-0">
+                          <FaClock className="text-sky-600" />
                         </div>
                         <div>
-                          <div className="text-white font-medium mb-1">30-Minute Discussion</div>
-                          <p className="text-sm text-gray-400">Focused conversation about your investment interests and our opportunity</p>
+                          <div className="text-gray-900 font-medium mb-1">30-Minute Discussion</div>
+                          <p className="text-sm text-gray-600">Focused conversation about your investment interests and our opportunity</p>
                         </div>
                       </div>
                       <div className="flex items-start space-x-3">
-                        <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center flex-shrink-0">
-                          <FaUsers className="text-blue-400" />
+                        <div className="w-8 h-8 rounded-lg bg-sky-50 flex items-center justify-center flex-shrink-0">
+                          <FaUsers className="text-sky-600" />
                         </div>
                         <div>
-                          <div className="text-white font-medium mb-1">Meet the Team</div>
-                          <p className="text-sm text-gray-400">Direct access to key team members for detailed discussions</p>
+                          <div className="text-gray-900 font-medium mb-1">Meet the Team</div>
+                          <p className="text-sm text-gray-600">Direct access to key team members for detailed discussions</p>
                         </div>
                       </div>
                       <div className="flex items-start space-x-3">
-                        <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center flex-shrink-0">
-                          <FaLock className="text-blue-400" />
+                        <div className="w-8 h-8 rounded-lg bg-sky-50 flex items-center justify-center flex-shrink-0">
+                          <FaLock className="text-sky-600" />
                         </div>
                         <div>
-                          <div className="text-white font-medium mb-1">Deal Room Access</div>
-                          <p className="text-sm text-gray-400">Full access to detailed financials and documentation</p>
+                          <div className="text-gray-900 font-medium mb-1">Deal Room Access</div>
+                          <p className="text-sm text-gray-600">Full access to detailed financials and documentation</p>
                         </div>
                       </div>
                     </div>
@@ -256,55 +221,55 @@ const BookCall: React.FC = () => {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.6 }}
                 >
-                  <div className="bg-[#1a2234]/80 p-8 rounded-2xl border border-blue-500/10 backdrop-blur-xl">
-                    <h2 className="text-2xl font-light text-white mb-8">Schedule Your Discussion</h2>
+                  <div className="bg-white p-8 rounded-2xl border border-gray-200">
+                    <h2 className="text-2xl font-light text-gray-900 mb-8">Schedule Your Discussion</h2>
                     <form onSubmit={handleSubmit} className="space-y-6">
                       <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-2">Full Name</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
                         <input
                           type="text"
                           name="name"
                           value={formData.name}
                           onChange={handleChange}
                           required
-                          className="w-full bg-[#0d1117] border border-blue-500/10 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/30 transition-colors"
+                          className="w-full bg-white border border-gray-300 rounded-lg px-4 py-3 text-gray-900 placeholder-gray-500 focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 transition-colors"
                           placeholder="Enter your full name"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-2">Work Email</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Work Email</label>
                         <input
                           type="email"
                           name="email"
                           value={formData.email}
                           onChange={handleChange}
                           required
-                          className="w-full bg-[#0d1117] border border-blue-500/10 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/30 transition-colors"
+                          className="w-full bg-white border border-gray-300 rounded-lg px-4 py-3 text-gray-900 placeholder-gray-500 focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 transition-colors"
                           placeholder="Enter your work email"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-2">Company</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Company</label>
                         <input
                           type="text"
                           name="company"
                           value={formData.company}
                           onChange={handleChange}
-                          className="w-full bg-[#0d1117] border border-blue-500/10 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/30 transition-colors"
+                          className="w-full bg-white border border-gray-300 rounded-lg px-4 py-3 text-gray-900 placeholder-gray-500 focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 transition-colors"
                           placeholder="Enter your company name"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-2">Investment Range</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Investment Range</label>
                         <select
                           name="investmentRange"
                           value={formData.investmentRange}
                           onChange={handleChange}
                           required
-                          className="w-full bg-[#0d1117] border border-blue-500/10 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/30 transition-colors"
+                          className="w-full bg-white border border-gray-300 rounded-lg px-4 py-3 text-gray-900 placeholder-gray-500 focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 transition-colors"
                         >
                           <option value="">Select investment range</option>
                           <option value="50k-100k">$50,000 - $100,000</option>

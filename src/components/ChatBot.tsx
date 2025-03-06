@@ -32,7 +32,7 @@ TWO DISTINCT OPPORTUNITIES:
 1. Operational Company (Equihome Partners)
    - Building Australia's leading fund manager
    - Value through technology and scale
-   - Current $5M raise to grow the business
+   - Current $2M raise to grow the business
 
 2. Fund Investment (Institutional Only)
    - Returns from mortgages and property upside

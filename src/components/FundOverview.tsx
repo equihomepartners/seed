@@ -40,7 +40,7 @@ const FundOverview = () => {
       status: "Q3 2025",
       description: "Initial portfolio deployment",
       items: [
-        "$50M first drawdown",
+        "$100M first drawdown",
         "25-30 premium properties",
         "Active portfolio management",
         "Performance tracking"

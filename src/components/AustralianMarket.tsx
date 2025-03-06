@@ -8,37 +8,10 @@ const AustralianMarket = () => {
     threshold: 0.1
   })
 
-  const growthData = [
-    { year: '1994', Sydney: 4.2, SanFrancisco: 3.1, Miami: 2.9, LosAngeles: 3.0, London: 2.1, NewYork: 2.8, Tokyo: 1.9, GlobalAverage: 2.8 },
-    { year: '1995', Sydney: 4.5, SanFrancisco: 3.3, Miami: 3.1, LosAngeles: 3.2, London: 2.3, NewYork: 3.0, Tokyo: 1.8, GlobalAverage: 2.9 },
-    { year: '1996', Sydney: 4.8, SanFrancisco: 3.5, Miami: 3.3, LosAngeles: 3.4, London: 2.4, NewYork: 3.2, Tokyo: 1.7, GlobalAverage: 3.0 },
-    { year: '1997', Sydney: 5.1, SanFrancisco: 3.8, Miami: 3.5, LosAngeles: 3.6, London: 2.6, NewYork: 3.4, Tokyo: 1.9, GlobalAverage: 3.1 },
-    { year: '1998', Sydney: 5.4, SanFrancisco: 4.2, Miami: 3.7, LosAngeles: 3.8, London: 2.7, NewYork: 3.5, Tokyo: 1.8, GlobalAverage: 3.2 },
-    { year: '1999', Sydney: 5.8, SanFrancisco: 4.6, Miami: 3.9, LosAngeles: 4.0, London: 2.8, NewYork: 3.7, Tokyo: 1.7, GlobalAverage: 3.3 },
-    { year: '2000', Sydney: 6.2, SanFrancisco: 5.0, Miami: 4.1, LosAngeles: 4.2, London: 2.9, NewYork: 3.9, Tokyo: 1.8, GlobalAverage: 3.4 },
-    { year: '2001', Sydney: 6.5, SanFrancisco: 4.8, Miami: 4.3, LosAngeles: 4.4, London: 3.0, NewYork: 3.8, Tokyo: 1.9, GlobalAverage: 3.3 },
-    { year: '2002', Sydney: 6.8, SanFrancisco: 4.6, Miami: 4.5, LosAngeles: 4.6, London: 3.1, NewYork: 4.0, Tokyo: 1.8, GlobalAverage: 3.4 },
-    { year: '2003', Sydney: 7.1, SanFrancisco: 4.8, Miami: 4.7, LosAngeles: 4.8, London: 3.2, NewYork: 4.2, Tokyo: 1.9, GlobalAverage: 3.5 },
-    { year: '2004', Sydney: 7.4, SanFrancisco: 5.0, Miami: 4.9, LosAngeles: 5.0, London: 3.3, NewYork: 4.4, Tokyo: 2.0, GlobalAverage: 3.6 },
-    { year: '2005', Sydney: 7.6, SanFrancisco: 5.2, Miami: 5.1, LosAngeles: 5.2, London: 3.2, NewYork: 4.6, Tokyo: 2.1, GlobalAverage: 3.7 },
-    { year: '2006', Sydney: 7.8, SanFrancisco: 5.4, Miami: 5.3, LosAngeles: 5.4, London: 3.3, NewYork: 4.5, Tokyo: 2.2, GlobalAverage: 3.8 },
-    { year: '2007', Sydney: 8.0, SanFrancisco: 5.6, Miami: 5.5, LosAngeles: 5.6, London: 3.4, NewYork: 4.3, Tokyo: 2.3, GlobalAverage: 3.7 },
-    { year: '2008', Sydney: 7.8, SanFrancisco: 4.8, Miami: 4.2, LosAngeles: 4.4, London: 3.0, NewYork: 3.8, Tokyo: 2.2, GlobalAverage: 3.4 },
-    { year: '2009', Sydney: 7.6, SanFrancisco: 4.2, Miami: 3.8, LosAngeles: 4.0, London: 2.8, NewYork: 3.5, Tokyo: 2.1, GlobalAverage: 3.2 },
-    { year: '2010', Sydney: 7.8, SanFrancisco: 4.4, Miami: 4.0, LosAngeles: 4.2, London: 2.9, NewYork: 3.7, Tokyo: 2.2, GlobalAverage: 3.3 },
-    { year: '2011', Sydney: 8.0, SanFrancisco: 4.6, Miami: 4.2, LosAngeles: 4.4, London: 3.0, NewYork: 3.9, Tokyo: 2.3, GlobalAverage: 3.4 },
-    { year: '2012', Sydney: 8.2, SanFrancisco: 4.8, Miami: 4.4, LosAngeles: 4.6, London: 3.1, NewYork: 4.1, Tokyo: 2.4, GlobalAverage: 3.5 },
-    { year: '2013', Sydney: 8.4, SanFrancisco: 5.0, Miami: 4.6, LosAngeles: 4.8, London: 3.2, NewYork: 4.3, Tokyo: 2.3, GlobalAverage: 3.6 },
-    { year: '2014', Sydney: 8.6, SanFrancisco: 5.2, Miami: 4.8, LosAngeles: 5.0, London: 3.3, NewYork: 4.5, Tokyo: 2.4, GlobalAverage: 3.7 },
-    { year: '2015', Sydney: 8.8, SanFrancisco: 5.4, Miami: 5.0, LosAngeles: 5.2, London: 3.2, NewYork: 4.4, Tokyo: 2.5, GlobalAverage: 3.6 },
-    { year: '2016', Sydney: 8.6, SanFrancisco: 5.2, Miami: 4.8, LosAngeles: 5.0, London: 3.1, NewYork: 4.2, Tokyo: 2.4, GlobalAverage: 3.5 },
-    { year: '2017', Sydney: 8.4, SanFrancisco: 5.0, Miami: 4.6, LosAngeles: 4.8, London: 3.0, NewYork: 4.0, Tokyo: 2.5, GlobalAverage: 3.4 },
-    { year: '2018', Sydney: 8.2, SanFrancisco: 4.8, Miami: 4.4, LosAngeles: 4.6, London: 2.8, NewYork: 3.8, Tokyo: 2.5, GlobalAverage: 3.4 },
-    { year: '2019', Sydney: 8.0, SanFrancisco: 4.6, Miami: 4.2, LosAngeles: 4.4, London: 2.9, NewYork: 4.1, Tokyo: 2.7, GlobalAverage: 3.3 },
-    { year: '2020', Sydney: 7.8, SanFrancisco: 4.4, Miami: 4.0, LosAngeles: 4.2, London: 2.7, NewYork: 3.9, Tokyo: 2.4, GlobalAverage: 3.5 },
-    { year: '2021', Sydney: 8.4, SanFrancisco: 4.8, Miami: 4.4, LosAngeles: 4.6, London: 3.0, NewYork: 4.3, Tokyo: 2.8, GlobalAverage: 3.7 },
-    { year: '2022', Sydney: 8.6, SanFrancisco: 5.0, Miami: 4.6, LosAngeles: 4.8, London: 2.9, NewYork: 4.4, Tokyo: 2.9, GlobalAverage: 3.6 },
-    { year: '2023', Sydney: 8.2, SanFrancisco: 4.8, Miami: 4.4, LosAngeles: 4.6, London: 2.8, NewYork: 4.2, Tokyo: 2.8, GlobalAverage: 3.4 }
+  const historicalData = [
+    { year: 1995, Sydney: 4.5, SanFrancisco: 3.8, Miami: 3.5, LosAngeles: 3.2, London: 3.0, NewYork: 3.1, Tokyo: 2.8, GlobalAverage: 2.5 },
+    { year: 1997, Sydney: 5.2, SanFrancisco: 4.1, Miami: 3.8, LosAngeles: 3.5, London: 3.2, NewYork: 3.3, Tokyo: 2.9, GlobalAverage: 2.7 },
+    { year: 2023, Sydney: 8.2, SanFrancisco: 5.1, Miami: 4.8, LosAngeles: 4.5, London: 3.8, NewYork: 4.0, Tokyo: 3.5, GlobalAverage: 3.2 }
   ]
 
   const marketComparisonData = [
@@ -75,407 +48,464 @@ const AustralianMarket = () => {
   ]
 
   return (
-    <section id="australian-market" ref={ref} className="bg-[#0B1121] py-24 relative overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6">
+    <section ref={ref} className="py-32 px-4 bg-white">
+      <div className="max-w-7xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
+          transition={{ duration: 0.8 }}
+          className="text-center mb-20"
         >
-          <h2 className="text-5xl font-bold text-white mb-6">
-            Australian Market Strength
-          </h2>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-            Leading global property growth with strong market fundamentals
-          </p>
-        </motion.div>
-
-        {/* Key Market Advantages */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16"
-        >
-          <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-8">
-            <div className="text-4xl font-bold text-blue-400 mb-4">92%</div>
-            <h3 className="text-xl font-semibold text-white mb-3">Home Ownership Dream</h3>
-            <p className="text-gray-300">
-              Of Australians aspire to own their home, creating sustained market demand and cultural stability
-            </p>
-          </div>
-
-          <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-8">
-            <div className="text-4xl font-bold text-blue-400 mb-4">8.2%</div>
-            <h3 className="text-xl font-semibold text-white mb-3">Annual Growth Rate</h3>
-            <p className="text-gray-300">
-              Sydney's residential property market outperforms major global cities consistently
-            </p>
-          </div>
-
-          <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-8">
-            <div className="text-4xl font-bold text-blue-400 mb-4">AAA</div>
-            <h3 className="text-xl font-semibold text-white mb-3">Stable Economy</h3>
-            <p className="text-gray-300">
-              One of only 9 countries with AAA credit rating from all major agencies
-            </p>
-          </div>
-        </motion.div>
-
-        {/* Historical Growth Chart */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="bg-white/5 backdrop-blur-sm rounded-3xl p-8 mb-16"
-        >
-          <h3 className="text-2xl font-bold text-white mb-8">
-            Historical Property Growth Rates
-          </h3>
-          <div className="h-[400px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={growthData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" />
-                <XAxis 
-                  dataKey="year" 
-                  stroke="#9CA3AF"
-                  tick={{ fill: '#9CA3AF' }}
-                />
-                <YAxis 
-                  stroke="#9CA3AF"
-                  tick={{ fill: '#9CA3AF' }}
-                  tickFormatter={(value) => `${value}%`}
-                />
-                <Tooltip 
-                  contentStyle={{ 
-                    backgroundColor: '#1F2937',
-                    border: 'none',
-                    borderRadius: '0.5rem',
-                    color: '#fff'
-                  }}
-                  formatter={(value) => [`${value}%`]}
-                />
-                <Legend 
-                  verticalAlign="top" 
-                  height={36}
-                  wrapperStyle={{
-                    paddingBottom: '20px'
-                  }}
-                />
-                <Line 
-                  type="monotone" 
-                  dataKey="Sydney" 
-                  stroke="#3B82F6" 
-                  strokeWidth={3}
-                  dot={true}
-                  activeDot={{ r: 8 }}
-                />
-                <Line 
-                  type="monotone" 
-                  dataKey="SanFrancisco" 
-                  stroke="#EF4444" 
-                  strokeWidth={2}
-                  dot={false}
-                />
-                <Line 
-                  type="monotone" 
-                  dataKey="Miami" 
-                  stroke="#EC4899" 
-                  strokeWidth={2}
-                  dot={false}
-                />
-                <Line 
-                  type="monotone" 
-                  dataKey="LosAngeles" 
-                  stroke="#F59E0B" 
-                  strokeWidth={2}
-                  dot={false}
-                />
-                <Line 
-                  type="monotone" 
-                  dataKey="London" 
-                  stroke="#22C55E" 
-                  strokeWidth={2}
-                  dot={false}
-                />
-                <Line 
-                  type="monotone" 
-                  dataKey="NewYork" 
-                  stroke="#A855F7" 
-                  strokeWidth={2}
-                  dot={false}
-                />
-                <Line 
-                  type="monotone" 
-                  dataKey="Tokyo" 
-                  stroke="#64748B" 
-                  strokeWidth={2}
-                  dot={false}
-                />
-                <Line 
-                  type="monotone" 
-                  dataKey="GlobalAverage" 
-                  stroke="#9CA3AF" 
-                  strokeWidth={2}
-                  strokeDasharray="5 5"
-                  dot={false}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </motion.div>
-
-        {/* Market Comparison */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, delay: 0.4 }}
-          className="bg-white/5 backdrop-blur-sm rounded-3xl p-8 mb-16"
-        >
-          <h3 className="text-2xl font-bold text-white mb-8">
-            Market Focus: Sydney vs US Markets
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="space-y-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h4 className="text-xl font-semibold text-white">Sydney Market</h4>
-                  <p className="text-gray-300">Concentrated expertise in one major market</p>
-                </div>
-                <div className="text-right">
-                  <div className="text-3xl font-bold text-blue-400">$580K</div>
-                  <div className="text-sm text-gray-400">Avg. Home Equity</div>
-                </div>
-              </div>
-              <ul className="space-y-3">
-                <li className="flex items-start gap-3">
-                  <div className="mt-1 w-5 h-5 rounded-full bg-blue-500/20 flex items-center justify-center">
-                    <div className="w-2 h-2 rounded-full bg-blue-400" />
-                  </div>
-                  <p className="text-gray-300">Single regulatory framework</p>
-                </li>
-                <li className="flex items-start gap-3">
-                  <div className="mt-1 w-5 h-5 rounded-full bg-blue-500/20 flex items-center justify-center">
-                    <div className="w-2 h-2 rounded-full bg-blue-400" />
-                  </div>
-                  <p className="text-gray-300">Deep local market knowledge</p>
-                </li>
-                <li className="flex items-start gap-3">
-                  <div className="mt-1 w-5 h-5 rounded-full bg-blue-500/20 flex items-center justify-center">
-                    <div className="w-2 h-2 rounded-full bg-blue-400" />
-                  </div>
-                  <p className="text-gray-300">Streamlined operations</p>
-                </li>
-              </ul>
-            </div>
-            <div className="space-y-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h4 className="text-xl font-semibold text-white">US Markets</h4>
-                  <p className="text-gray-300">Complex multi-market operations</p>
-                </div>
-                <div className="text-right">
-                  <div className="text-3xl font-bold text-gray-400">$320K</div>
-                  <div className="text-sm text-gray-400">Avg. Home Equity</div>
-                </div>
-              </div>
-              <ul className="space-y-3">
-                <li className="flex items-start gap-3">
-                  <div className="mt-1 w-5 h-5 rounded-full bg-red-500/20 flex items-center justify-center">
-                    <div className="w-2 h-2 rounded-full bg-red-400" />
-                  </div>
-                  <p className="text-gray-300">50+ different state regulations</p>
-                </li>
-                <li className="flex items-start gap-3">
-                  <div className="mt-1 w-5 h-5 rounded-full bg-red-500/20 flex items-center justify-center">
-                    <div className="w-2 h-2 rounded-full bg-red-400" />
-                  </div>
-                  <p className="text-gray-300">Complex market dynamics</p>
-                </li>
-                <li className="flex items-start gap-3">
-                  <div className="mt-1 w-5 h-5 rounded-full bg-red-500/20 flex items-center justify-center">
-                    <div className="w-2 h-2 rounded-full bg-red-400" />
-                  </div>
-                  <p className="text-gray-300">Higher operational costs</p>
-                </li>
-              </ul>
+          <div className="inline-block mb-8">
+            <div className="flex items-center space-x-2 px-4 py-2 bg-sky-50 rounded-full border border-sky-100">
+              <div className="w-2 h-2 rounded-full bg-sky-500" />
+              <span className="text-sm font-medium text-sky-600">Market Analysis</span>
             </div>
           </div>
+          <h2 className="text-5xl font-bold mb-6 text-gray-900">Australian Market Strength</h2>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">Leading global property growth with strong market fundamentals</p>
         </motion.div>
 
-        {/* Recession Proof */}
+        {/* Key Statistics */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.8 }}
+            className="fintech-card p-8"
+          >
+            <div className="text-4xl font-bold text-sky-600 mb-4">92%</div>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">Home Ownership Dream</h3>
+            <p className="text-gray-600">Of Australians aspire to own their home, creating sustained market demand and value stability</p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="fintech-card p-8"
+          >
+            <div className="text-4xl font-bold text-sky-600 mb-4">8.2%</div>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">Annual Growth Rate</h3>
+            <p className="text-gray-600">Sydney's residential property market outperforms major global cities consistently</p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            className="fintech-card p-8"
+          >
+            <div className="text-4xl font-bold text-sky-600 mb-4">AAA</div>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">Stable Economy</h3>
+            <p className="text-gray-600">One of only 9 countries with AAA credit rating from all major agencies</p>
+          </motion.div>
+        </div>
+
+        {/* Sydney Market Deep Dive Comparison */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, delay: 0.6 }}
-          className="bg-gradient-to-br from-blue-500/10 to-purple-500/10 backdrop-blur-sm rounded-3xl p-8 mb-16"
+          transition={{ duration: 0.8 }}
+          className="mb-16"
         >
-          <h3 className="text-2xl font-bold text-white mb-8">
-            Recession-Proof Market & Business Model
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div>
-              <h4 className="text-xl font-semibold text-white mb-6">Market Resilience</h4>
-              <ul className="space-y-4">
-                {recessionData.map((item, index) => (
-                  <li key={index} className="flex items-start gap-3">
-                    <div className="mt-1 w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center">
-                      <div className="w-2 h-2 rounded-full bg-green-400" />
-                    </div>
+          <h3 className="text-2xl font-semibold text-gray-900 mb-8 text-center">Sydney Market Deep Dive: General vs Target Market</h3>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Growth Rates Comparison */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.8 }}
+              className="fintech-card p-8"
+            >
+              <h4 className="text-xl font-medium text-sky-800 mb-6">Growth Rates</h4>
+              <div className="space-y-6">
+                <div>
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-gray-600">General Sydney</span>
+                    <span className="text-sky-600 font-semibold">8.2% p.a.</span>
+                  </div>
+                  <div className="w-full bg-gray-100 rounded-full h-2">
+                    <div className="bg-sky-500 h-2 rounded-full" style={{ width: '82%' }}></div>
+                  </div>
+                </div>
+                <div>
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-gray-600">Target Premium Markets</span>
+                    <span className="text-sky-600 font-semibold">10.5% p.a.</span>
+                  </div>
+                  <div className="w-full bg-gray-100 rounded-full h-2">
+                    <div className="bg-sky-500 h-2 rounded-full" style={{ width: '100%' }}></div>
+                  </div>
+                </div>
+                <div className="pt-2">
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600">Premium Market Advantage</span>
+                    <span className="text-emerald-600 font-semibold">+2.3%</span>
+                  </div>
+                  <p className="text-sm text-gray-500 mt-2">Our target premium markets consistently outperform the general Sydney market</p>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Market Fundamentals */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="fintech-card p-8"
+            >
+              <h4 className="text-xl font-medium text-sky-800 mb-6">Market Fundamentals</h4>
+              <div className="space-y-4">
+                <div>
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-gray-600">Avg Property Value</span>
                     <div>
-                      <span className="text-white font-semibold">{item.year}: {item.event}</span>
-                      <p className="text-gray-300">{item.description}</p>
+                      <div className="text-gray-600">General: $1.2M</div>
+                      <div className="text-sky-600 font-semibold">Target: $2.5M+</div>
                     </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-xl font-semibold text-white mb-6">Recession-Proof Model</h4>
-              <ul className="space-y-4">
-                <li className="flex items-start gap-3">
-                  <div className="mt-1 w-5 h-5 rounded-full bg-blue-500/20 flex items-center justify-center">
-                    <div className="w-2 h-2 rounded-full bg-blue-400" />
                   </div>
-                  <div>
-                    <span className="text-white font-semibold">Counter-Cyclical Demand:</span>
-                    <p className="text-gray-300">Higher demand for equity release during economic downturns</p>
+                </div>
+                <div>
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-gray-600">Owner Equity</span>
+                    <div>
+                      <div className="text-gray-600">General: 45%</div>
+                      <div className="text-sky-600 font-semibold">Target: 70%+</div>
+                    </div>
                   </div>
-                </li>
-                <li className="flex items-start gap-3">
-                  <div className="mt-1 w-5 h-5 rounded-full bg-blue-500/20 flex items-center justify-center">
-                    <div className="w-2 h-2 rounded-full bg-blue-400" />
+                </div>
+                <div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600">Market Liquidity</span>
+                    <div>
+                      <div className="text-gray-600">General: 45 days</div>
+                      <div className="text-sky-600 font-semibold">Target: 28 days</div>
+                    </div>
                   </div>
-                  <div>
-                    <span className="text-white font-semibold">Asset-Backed Security:</span>
-                    <p className="text-gray-300">Real estate provides intrinsic value protection</p>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Unit Economics */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.8, delay: 0.4 }}
+              className="fintech-card p-8"
+            >
+              <h4 className="text-xl font-medium text-sky-800 mb-6">Unit Economics</h4>
+              <div className="space-y-4">
+                <div>
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-gray-600">Avg Transaction Size</span>
+                    <div>
+                      <div className="text-gray-600">General: $200K</div>
+                      <div className="text-sky-600 font-semibold">Target: $500K+</div>
+                    </div>
                   </div>
-                </li>
-                <li className="flex items-start gap-3">
-                  <div className="mt-1 w-5 h-5 rounded-full bg-blue-500/20 flex items-center justify-center">
-                    <div className="w-2 h-2 rounded-full bg-blue-400" />
+                </div>
+                <div>
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-gray-600">Default Risk</span>
+                    <div>
+                      <div className="text-gray-600">General: 1.2%</div>
+                      <div className="text-sky-600 font-semibold">Target: 0.3%</div>
+                    </div>
                   </div>
-                  <div>
-                    <span className="text-white font-semibold">Long-Term Contracts:</span>
-                    <p className="text-gray-300">Stable revenue streams independent of market cycles</p>
+                </div>
+                <div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600">Processing Time</span>
+                    <div>
+                      <div className="text-gray-600">General: 45 days</div>
+                      <div className="text-sky-600 font-semibold">Target: 15 days</div>
+                    </div>
                   </div>
-                </li>
-              </ul>
-            </div>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Market Stability */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.8, delay: 0.6 }}
+              className="fintech-card p-8"
+            >
+              <h4 className="text-xl font-medium text-sky-800 mb-6">Market Stability</h4>
+              <div className="space-y-4">
+                <div>
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-gray-600">Price Volatility</span>
+                    <div>
+                      <div className="text-gray-600">General: Medium</div>
+                      <div className="text-sky-600 font-semibold">Target: Very Low</div>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-gray-600">Supply Constraints</span>
+                    <div>
+                      <div className="text-gray-600">General: Moderate</div>
+                      <div className="text-sky-600 font-semibold">Target: Severe</div>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600">Demographic Stability</span>
+                    <div>
+                      <div className="text-gray-600">General: Medium</div>
+                      <div className="text-sky-600 font-semibold">Target: High</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
           </div>
         </motion.div>
 
-        {/* US Investment Advantages */}
+        {/* Recession Timeline */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, delay: 0.6 }}
-          className="grid grid-cols-1 md:grid-cols-2 gap-8"
+          transition={{ duration: 0.8 }}
+          className="fintech-card p-8 mb-16"
         >
-          {/* Why Australian Real Estate Card */}
-          <div className="bg-[#0F172A] border border-blue-500/10 rounded-2xl overflow-hidden">
-            <div className="border-b border-blue-500/10 p-6">
-              <h3 className="text-2xl font-bold text-white">
-                Why Australian Real Estate for US Investors?
-              </h3>
-            </div>
-            
-            <div className="p-6 space-y-6">
-              <ul className="space-y-4">
-                <li className="flex items-start gap-4">
-                  <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0" />
-                  <div>
-                    <span className="block text-white font-medium mb-1">Market Maturity & Scale</span>
-                    <p className="text-gray-400 text-sm leading-relaxed">
-                      Sydney's property market value exceeds $2.9T, comparable to major US cities with concentrated growth potential
-                    </p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-4">
-                  <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0" />
-                  <div>
-                    <span className="block text-white font-medium mb-1">Regulatory Excellence</span>
-                    <p className="text-gray-400 text-sm leading-relaxed">
-                      World's strongest banking system (ranked #1) with transparent property laws modeled after US system
-                    </p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-4">
-                  <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0" />
-                  <div>
-                    <span className="block text-white font-medium mb-1">Strategic Diversification</span>
-                    <p className="text-gray-400 text-sm leading-relaxed">
-                      Different economic cycles and time zones enable 24/7 portfolio balancing
-                    </p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-4">
-                  <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0" />
-                  <div>
-                    <span className="block text-white font-medium mb-1">Growth Catalysts</span>
-                    <p className="text-gray-400 text-sm leading-relaxed">
-                      Net migration of 400K+ annually, major infrastructure projects, and limited land release driving sustained demand
-                    </p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-4">
-                  <div className="mt-1.5 w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0" />
-                  <div>
-                    <span className="block text-white font-medium mb-1">Economic Stability</span>
-                    <p className="text-gray-400 text-sm leading-relaxed">
-                      AAA-rated economy with 32+ years of growth and strongest property rights protection globally
-                    </p>
-                  </div>
-                </li>
-              </ul>
-            </div>
+          <h3 className="text-2xl font-semibold text-gray-900 mb-8">Economic Stability Timeline</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {recessionData.map((item, index) => (
+              <motion.div
+                key={item.year}
+                initial={{ opacity: 0, y: 20 }}
+                animate={inView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.8, delay: index * 0.2 }}
+                className="relative"
+              >
+                <div className="absolute -inset-4 bg-gradient-to-r from-sky-50 to-white rounded-2xl -z-10" />
+                <div className="text-4xl font-bold text-sky-600 mb-4">{item.year}</div>
+                <h4 className="text-xl font-semibold text-gray-900 mb-2">{item.event}</h4>
+                <p className="text-gray-600">{item.description}</p>
+              </motion.div>
+            ))}
           </div>
+        </motion.div>
 
-          {/* Market Stability Card */}
-          <div className="bg-[#0F172A] border border-blue-500/10 rounded-2xl overflow-hidden">
-            <div className="border-b border-blue-500/10 p-6">
-              <h3 className="text-2xl font-bold text-white">
-                Market Stability Factors
-              </h3>
+        {/* Why Australian Real Estate for US Investors? & Market Stability Factors */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.8 }}
+            className="fintech-card p-8"
+          >
+            <h3 className="text-2xl font-semibold text-gray-900 mb-8">Why Australian Real Estate for US Investors?</h3>
+            <div className="space-y-6">
+              <div>
+                <h4 className="text-lg font-medium text-gray-800 mb-3">Market Maturity & Scale</h4>
+                <p className="text-gray-600">Sydney's property market value exceeds $3.3T, comparable to major US cities with concentrated growth potential</p>
+              </div>
+              <div>
+                <h4 className="text-lg font-medium text-gray-800 mb-3">Regulatory Excellence</h4>
+                <p className="text-gray-600">World's strongest banking system ranked #1 with transparent property laws modeled after US system</p>
+              </div>
+              <div>
+                <h4 className="text-lg font-medium text-gray-800 mb-3">Strategic Diversification</h4>
+                <p className="text-gray-600">Different economic cycles and time zones enable 24/7 portfolio balancing</p>
+              </div>
+              <div>
+                <h4 className="text-lg font-medium text-gray-800 mb-3">Growth Catalysts</h4>
+                <p className="text-gray-600">Net migration of 400k+ annually, major infrastructure projects, and limited land release driving sustained demand</p>
+              </div>
+              <div>
+                <h4 className="text-lg font-medium text-gray-800 mb-3">Economic Stability</h4>
+                <p className="text-gray-600">AAA-rated economy with 32+ years of growth and strongest property rights protection globally</p>
+              </div>
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="fintech-card p-8"
+          >
+            <h3 className="text-2xl font-semibold text-gray-900 mb-8">Market Stability Factors</h3>
+            <div className="space-y-6">
+              <div>
+                <h4 className="text-lg font-medium text-gray-800 mb-3">Supply Constraints</h4>
+                <p className="text-gray-600">Land not at risk of overproduction, creating natural value appreciation</p>
+              </div>
+              <div>
+                <h4 className="text-lg font-medium text-gray-800 mb-3">Market Transparency</h4>
+                <p className="text-gray-600">Ranked #3 globally for real estate transparency, ahead of US (#4) and UK (#5)</p>
+              </div>
+              <div>
+                <h4 className="text-lg font-medium text-gray-800 mb-3">Tech Hub Growth</h4>
+                <p className="text-gray-600">Sydney ranked #1 in Asia-Pacific for tech industry growth, driving premium housing demand</p>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+
+        {/* Investment Thesis */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8 }}
+          className="mt-32 relative"
+        >
+          {/* Enhanced background with pattern */}
+          <div className="absolute inset-0 bg-gradient-to-br from-sky-50/50 via-white to-sky-50/50 rounded-3xl -z-10">
+            <div className="absolute inset-0 opacity-[0.015]" style={{ backgroundImage: 'url("/grid-pattern.svg")' }} />
+          </div>
+          
+          <div className="max-w-7xl mx-auto px-8 py-16">
+            <div className="text-center mb-16">
+              <div className="inline-block mb-8">
+                <div className="flex items-center space-x-2 px-4 py-2 bg-sky-50 rounded-full border border-sky-100">
+                  <div className="w-2 h-2 rounded-full bg-sky-500" />
+                  <span className="text-sm font-medium text-sky-600">Investment Strategy</span>
+                </div>
+              </div>
+              <h2 className="text-5xl font-bold mb-6 text-gray-900">Investment Thesis</h2>
+              <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                Strategic approach to maximizing returns in Australia's premium property market
+              </p>
             </div>
             
-            <div className="p-6">
-              <ul className="space-y-6">
-                <li>
-                  <div className="flex items-center gap-4 mb-2">
-                    <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center">
-                      <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
-                    </div>
-                    <span className="text-white font-semibold">Supply Constraints</span>
-                  </div>
-                  <p className="text-gray-400 text-sm leading-relaxed ml-12">
-                    Only 6% of land is developable, creating natural value appreciation
+            {/* Market Opportunity Section */}
+            <div className="mb-20">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div>
+                  <h3 className="text-2xl font-semibold text-sky-800 mb-6">Premium Market Strategy</h3>
+                  <p className="text-gray-600 text-lg leading-relaxed mb-8">
+                    Our fund targets premium Sydney suburbs with proven track records of superior returns and market stability.
                   </p>
-                </li>
-                <li>
-                  <div className="flex items-center gap-4 mb-2">
-                    <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center">
-                      <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
+                  <div className="space-y-4">
+                    <div className="flex items-start space-x-3">
+                      <div className="w-2 h-2 bg-sky-500 rounded-full mt-2" />
+                      <p className="text-gray-600">Focus on properties valued $2.5M+ in established premium suburbs</p>
                     </div>
-                    <span className="text-white font-semibold">Market Transparency</span>
-                  </div>
-                  <p className="text-gray-400 text-sm leading-relaxed ml-12">
-                    Ranked #3 globally for real estate transparency, ahead of US (#6) and UK (#8)
-                  </p>
-                </li>
-                <li>
-                  <div className="flex items-center gap-4 mb-2">
-                    <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center">
-                      <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
+                    <div className="flex items-start space-x-3">
+                      <div className="w-2 h-2 bg-sky-500 rounded-full mt-2" />
+                      <p className="text-gray-600">Target areas with 10.5% p.a. growth vs market average of 8.2%</p>
                     </div>
-                    <span className="text-white font-semibold">Tech Hub Growth</span>
+                    <div className="flex items-start space-x-3">
+                      <div className="w-2 h-2 bg-sky-500 rounded-full mt-2" />
+                      <p className="text-gray-600">Properties with 70%+ owner equity and strong market liquidity</p>
+                    </div>
                   </div>
-                  <p className="text-gray-400 text-sm leading-relaxed ml-12">
-                    Sydney ranked #1 in Asia-Pacific for tech industry growth, driving premium housing demand
+                </div>
+                <div className="relative">
+                  <img src="/sydney region map.jpg" alt="Sydney Premium Markets" className="rounded-xl shadow-lg w-full" />
+                </div>
+              </div>
+            </div>
+
+            {/* Investment Strategy Section */}
+            <div className="mb-20">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div className="order-2 lg:order-1">
+                  <div className="bg-white rounded-xl shadow-lg p-8">
+                    <div className="grid grid-cols-1 gap-6">
+                      <div className="p-4 bg-sky-50 rounded-lg border border-sky-100">
+                        <h4 className="font-semibold text-gray-900 mb-2">Risk-Adjusted Returns</h4>
+                        <p className="text-sm text-gray-600">16%+ IRR target with strong downside protection</p>
+                      </div>
+                      <div className="p-4 bg-sky-50 rounded-lg border border-sky-100">
+                        <h4 className="font-semibold text-gray-900 mb-2">Portfolio Diversification</h4>
+                        <p className="text-sm text-gray-600">Geographic and property-type allocation strategy</p>
+                      </div>
+                      <div className="p-4 bg-sky-50 rounded-lg border border-sky-100">
+                        <h4 className="font-semibold text-gray-900 mb-2">Value Creation</h4>
+                        <p className="text-sm text-gray-600">Active management and market timing strategies</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="order-1 lg:order-2">
+                  <h3 className="text-2xl font-semibold text-sky-800 mb-6">Investment Strategy</h3>
+                  <p className="text-gray-600 text-lg leading-relaxed mb-8">
+                    Our investment approach combines market expertise with rigorous analysis to deliver superior risk-adjusted returns.
                   </p>
-                </li>
-              </ul>
+                  <div className="space-y-4">
+                    <div className="flex items-start space-x-3">
+                      <div className="w-2 h-2 bg-sky-500 rounded-full mt-2" />
+                      <p className="text-gray-600">Strategic property selection in high-growth corridors</p>
+                    </div>
+                    <div className="flex items-start space-x-3">
+                      <div className="w-2 h-2 bg-sky-500 rounded-full mt-2" />
+                      <p className="text-gray-600">Focus on areas with strong infrastructure development</p>
+                    </div>
+                    <div className="flex items-start space-x-3">
+                      <div className="w-2 h-2 bg-sky-500 rounded-full mt-2" />
+                      <p className="text-gray-600">Active portfolio management for optimal returns</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Technology Platform Section */}
+            <div className="mb-20">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div>
+                  <h3 className="text-2xl font-semibold text-sky-800 mb-6">Technology-Enabled Execution</h3>
+                  <p className="text-gray-600 text-lg leading-relaxed mb-8">
+                    Our proprietary platform enhances traditional investment strategies with advanced analytics and automation.
+                  </p>
+                  <div className="space-y-4">
+                    <div className="flex items-start space-x-3">
+                      <div className="w-2 h-2 bg-sky-500 rounded-full mt-2" />
+                      <p className="text-gray-600">AI-driven market analysis and opportunity identification</p>
+                    </div>
+                    <div className="flex items-start space-x-3">
+                      <div className="w-2 h-2 bg-sky-500 rounded-full mt-2" />
+                      <p className="text-gray-600">Automated underwriting reducing processing time by 90%</p>
+                    </div>
+                    <div className="flex items-start space-x-3">
+                      <div className="w-2 h-2 bg-sky-500 rounded-full mt-2" />
+                      <p className="text-gray-600">Real-time portfolio monitoring and risk management</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="relative">
+                  <img src="/portfolio-management.svg" alt="Portfolio Management Platform" className="rounded-xl shadow-lg w-full" />
+                </div>
+              </div>
+            </div>
+
+            {/* Risk Management Section */}
+            <div>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div className="order-2 lg:order-1">
+                  <img src="/automated-underwriting.svg" alt="Risk Management Process" className="rounded-xl shadow-lg w-full" />
+                </div>
+                <div className="order-1 lg:order-2">
+                  <h3 className="text-2xl font-semibold text-sky-800 mb-6">Risk Management</h3>
+                  <p className="text-gray-600 text-lg leading-relaxed mb-8">
+                    Comprehensive risk management framework ensuring portfolio stability and investor protection.
+                  </p>
+                  <div className="space-y-4">
+                    <div className="flex items-start space-x-3">
+                      <div className="w-2 h-2 bg-sky-500 rounded-full mt-2" />
+                      <p className="text-gray-600">Multi-factor risk assessment for each investment</p>
+                    </div>
+                    <div className="flex items-start space-x-3">
+                      <div className="w-2 h-2 bg-sky-500 rounded-full mt-2" />
+                      <p className="text-gray-600">Continuous market monitoring and portfolio rebalancing</p>
+                    </div>
+                    <div className="flex items-start space-x-3">
+                      <div className="w-2 h-2 bg-sky-500 rounded-full mt-2" />
+                      <p className="text-gray-600">Strong focus on capital preservation and steady returns</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </motion.div>

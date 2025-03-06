@@ -3,7 +3,7 @@ import { useLocation } from 'react-router-dom'
 import axios from 'axios'
 import { v4 as uuidv4 } from 'uuid'
 
-const API_URL = process.env.REACT_APP_API_URL || 'https://equihome-seed-api-pnk9i.ondigitalocean.app/api'
+const API_URL = import.meta.env.VITE_API_URL || 'https://equihome-seed-api-pnk9i.ondigitalocean.app/api'
 
 const PageTracker = () => {
   const location = useLocation()

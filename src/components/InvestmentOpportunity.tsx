@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
+import { FaChartLine, FaHandshake, FaMoneyBillWave, FaRocket } from 'react-icons/fa'
 
 const InvestmentOpportunity = () => {
   const [ref, inView] = useInView({
@@ -8,105 +9,90 @@ const InvestmentOpportunity = () => {
   })
 
   const fadeInUp = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 }
+    initial: {
+      opacity: 0,
+      y: 20,
+      transition: { duration: 0.8 }
+    },
+    animate: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.8 }
+    }
   }
 
   return (
-    <section ref={ref} id="investment-opportunity" className="min-h-screen py-24">
-      <div className="max-w-5xl mx-auto px-6">
+    <section ref={ref} id="investment-opportunity" className="min-h-screen py-20 px-4">
+      <div className="max-w-7xl mx-auto">
         <motion.div
-          initial="hidden"
-          animate={inView ? "visible" : "hidden"}
-          transition={{ staggerChildren: 0.2 }}
-          className="space-y-24"
+          initial={{ opacity: 0, y: 20 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8 }}
+          className="text-center mb-16"
         >
-          {/* Header */}
-          <motion.div 
-            variants={fadeInUp}
-            className="text-center max-w-3xl mx-auto"
-          >
-            <h2 className="text-7xl font-bold mb-4">Investment Opportunity</h2>
-            <p className="text-xl text-gray-400 mb-6">
-              Equihome Capital Group, Inc. | C-Corp US Based Company
-            </p>
-            <div className="text-lg text-gray-300">
-              Join us in revolutionizing the $5.5T home equity market with a unique early-stage investment opportunity
+          <h2 className="text-4xl font-bold mb-6 text-gray-900">Investment Opportunity</h2>
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            Early-stage equity investment in Australia's leading residential fund manager
+          </p>
+        </motion.div>
+
+        <motion.div
+          initial="initial"
+          animate={inView ? "animate" : "initial"}
+          className="grid grid-cols-1 md:grid-cols-3 gap-8"
+        >
+          {/* Investment Terms */}
+          <motion.div variants={fadeInUp} className="fintech-card p-8">
+            <div className="text-2xl font-bold text-sky-600 mb-8">Investment Terms</div>
+            <div className="space-y-8">
+              <div>
+                <div className="text-xl font-bold text-gray-900 mb-2">SAFE Note</div>
+                <div className="text-gray-600">$50,000 minimum investment</div>
+                <div className="text-gray-600">18-26x+ potential ROI</div>
+              </div>
+              <div>
+                <div className="text-xl font-bold text-gray-900 mb-2">Convertible Note</div>
+                <div className="text-gray-600">$100,000 minimum investment</div>
+                <div className="text-gray-600">15-22x+ potential ROI</div>
+              </div>
+              <div>
+                <div className="text-xl font-bold text-gray-900 mb-2">Direct Equity</div>
+                <div className="text-gray-600">$250,000 minimum investment</div>
+                <div className="text-gray-600">8-18x+ potential ROI</div>
+              </div>
             </div>
           </motion.div>
 
-          {/* Investment Overview */}
-          <motion.div
-            variants={fadeInUp}
-            className="grid grid-cols-2 gap-x-24 gap-y-16 max-w-4xl mx-auto"
-          >
-            <div className="text-center">
-              <div className="text-2xl font-bold text-blue-400 mb-3">Investment Amount</div>
-              <div className="text-5xl font-bold mb-2">$50K+</div>
-              <div className="text-gray-400">Minimum Investment</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-blue-400 mb-3">Target Return</div>
-              <div className="text-5xl font-bold mb-2">8-26x+ ROI</div>
-              <div className="text-gray-400">Projected Return</div>
+          {/* Exit Strategy */}
+          <motion.div variants={fadeInUp} className="fintech-card p-8">
+            <div className="text-2xl font-bold text-sky-600 mb-8">Exit Strategy</div>
+            <div className="space-y-8">
+              <div>
+                <div className="text-xl font-bold text-gray-900 mb-2">Timeline</div>
+                <div className="text-gray-600">5-7 year investment period</div>
+              </div>
+              <div>
+                <div className="text-xl font-bold text-gray-900 mb-2">Target Value</div>
+                <div className="text-gray-600">$600M+ company valuation</div>
+              </div>
+              <div>
+                <div className="text-xl font-bold text-gray-900 mb-2">Exit Options</div>
+                <div className="text-gray-600">IPO or strategic acquisition</div>
+              </div>
             </div>
           </motion.div>
 
-          {/* Investment Details */}
-          <motion.div 
-            variants={fadeInUp}
-            className="grid grid-cols-3 gap-20 max-w-4xl mx-auto pt-12 border-t border-gray-800/50"
-          >
-            {/* Investment Structure */}
-            <div>
-              <div className="text-2xl font-bold text-blue-400 mb-8">Investment Structure</div>
-              <div className="space-y-8">
-                <div>
-                  <div className="text-xl font-bold text-white mb-2">SAFE</div>
-                  <div className="text-gray-400">Simple Agreement for Future Equity</div>
-                </div>
-                <div>
-                  <div className="text-xl font-bold text-white mb-2">Convertible Note</div>
-                  <div className="text-gray-400">Debt converting to equity</div>
-                </div>
-                <div>
-                  <div className="text-xl font-bold text-white mb-2">Direct Equity</div>
-                  <div className="text-gray-400">Immediate ownership stake</div>
-                </div>
+          {/* Returns & Reporting */}
+          <motion.div variants={fadeInUp} className="fintech-card p-8">
+            <div className="text-2xl font-bold text-sky-600 mb-8">Returns & Reporting</div>
+            <div className="space-y-8">
+              <div>
+                <div className="text-xl font-bold text-gray-900 mb-2">Dividends</div>
+                <div className="text-gray-600">Performance-based returns from operational cashflows</div>
               </div>
-            </div>
-
-            {/* Exit Strategy */}
-            <div>
-              <div className="text-2xl font-bold text-blue-400 mb-8">Exit Strategy</div>
-              <div className="space-y-8">
-                <div>
-                  <div className="text-xl font-bold text-white mb-2">Timeline</div>
-                  <div className="text-gray-400">5-7 Years</div>
-                </div>
-                <div>
-                  <div className="text-xl font-bold text-white mb-2">Target Value</div>
-                  <div className="text-gray-400">$600M+ (Conservative)</div>
-                </div>
-                <div>
-                  <div className="text-xl font-bold text-white mb-2">Method</div>
-                  <div className="text-gray-400">Strategic sale or IPO</div>
-                </div>
-              </div>
-            </div>
-
-            {/* Returns & Reporting */}
-            <div>
-              <div className="text-2xl font-bold text-blue-400 mb-8">Returns & Reporting</div>
-              <div className="space-y-8">
-                <div>
-                  <div className="text-xl font-bold text-white mb-2">Dividends</div>
-                  <div className="text-gray-400">Performance-based returns from operational cashflows</div>
-                </div>
-                <div>
-                  <div className="text-xl font-bold text-white mb-2">Updates</div>
-                  <div className="text-gray-400">Quarterly financial reports and metrics</div>
-                </div>
+              <div>
+                <div className="text-xl font-bold text-gray-900 mb-2">Updates</div>
+                <div className="text-gray-600">Quarterly financial reports and metrics</div>
               </div>
             </div>
           </motion.div>
@@ -114,15 +100,15 @@ const InvestmentOpportunity = () => {
           {/* Bottom CTA */}
           <motion.div 
             variants={fadeInUp}
-            className="text-center pt-12 border-t border-gray-800/50 max-w-3xl mx-auto"
+            className="text-center pt-12 border-t border-gray-200/50 max-w-3xl mx-auto col-span-1 md:col-span-3"
           >
-            <div className="text-3xl font-bold text-blue-400 mb-4">
+            <div className="text-3xl font-bold text-sky-600 mb-4">
               Limited Investment Window
             </div>
-            <div className="text-xl text-gray-300 mb-3">
+            <div className="text-xl text-gray-700 mb-3">
               Early-stage opportunity with significant upside potential
             </div>
-            <div className="text-gray-400">
+            <div className="text-gray-600">
               Future equity rounds will be at significantly higher valuations.<br/>
               This is the optimal entry point for investors seeking maximum returns.
             </div>

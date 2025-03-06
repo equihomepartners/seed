@@ -22,9 +22,21 @@ export default {
       colors: {
         primary: '#FFFFFF',
         accent: '#3B82F6',
+        sky: {
+          50: '#f0f9ff',
+          100: '#e0f2fe',
+          200: '#bae6fd',
+          300: '#7dd3fc',
+          400: '#38bdf8',
+          500: '#0ea5e9',
+          600: '#0284c7',
+          700: '#0369a1',
+          800: '#075985',
+          900: '#0c4a6e',
+        },
       },
       fontFamily: {
-        sans: ['SF Pro Display', '-apple-system', 'BlinkMacSystemFont', 'system-ui', 'sans-serif'],
+        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
       },
       spacing: {
         'safe-top': 'env(safe-area-inset-top)',
@@ -34,6 +46,7 @@ export default {
       },
       animation: {
         'ping': 'ping 2s cubic-bezier(0, 0, 0.2, 1) infinite',
+        'progress': 'progress 2s linear infinite',
       },
       keyframes: {
         ping: {
@@ -41,6 +54,10 @@ export default {
             transform: 'scale(2)',
             opacity: '0',
           },
+        },
+        progress: {
+          '0%': { backgroundPosition: '200% 0' },
+          '100%': { backgroundPosition: '-200% 0' },
         },
       },
       // Add responsive padding and margin scales
@@ -87,6 +104,11 @@ export default {
       },
       minWidth: {
         'touch-target': '44px',
+      },
+      boxShadow: {
+        'fintech-sm': '0 1px 2px 0 rgb(0 0 0 / 0.05)',
+        'fintech-md': '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
+        'fintech-lg': '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
       },
     },
   },

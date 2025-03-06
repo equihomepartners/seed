@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1200" height="800" viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="1200" height="800" fill="#FFFFFF"/>
+  
+  <!-- Title -->
+  <text x="600" y="60" font-family="Arial" font-size="32" fill="#111827" text-anchor="middle" font-weight="bold">
+    Technology-Driven Market Analysis
+  </text>
+
+  <!-- Left Column -->
+  <g transform="translate(50, 120)">
+    <!-- Precision Market Zoning Engine -->
+    <g>
+      <rect width="500" height="140" fill="#F0F9FF" rx="8"/>
+      <g transform="translate(20, 20)">
+        <!-- Icon -->
+        <rect width="40" height="40" fill="#BAE6FD" rx="8"/>
+        <text x="60" y="25" font-family="Arial" font-size="20" fill="#0369A1" font-weight="600">
+          Precision Market Zoning Engine
+        </text>
+        <text x="0" y="70" width="460" font-family="Arial" font-size="16" fill="#475569">
+          <tspan x="0" dy="0">Our proprietary zoning engine dissects Sydney into</tspan>
+          <tspan x="0" dy="24">micro-markets, analyzing over 200 data points per</tspan>
+          <tspan x="0" dy="24">neighborhood.</tspan>
+        </text>
+      </g>
+    </g>
+
+    <!-- Infrastructure Impact Analysis -->
+    <g transform="translate(0, 180)">
+      <rect width="500" height="120" fill="#F8FAFC" rx="8"/>
+      <g transform="translate(20, 20)">
+        <circle cx="10" cy="10" r="6" fill="#0EA5E9"/>
+        <text x="30" y="15" font-family="Arial" font-size="18" fill="#0369A1" font-weight="600">
+          Infrastructure Impact Analysis
+        </text>
+        <text x="0" y="45" width="460" font-family="Arial" font-size="16" fill="#475569">
+          Real-time tracking of infrastructure projects, from transport
+          links to urban renewal initiatives, with predictive modeling
+          of property value impact.
+        </text>
+      </g>
+    </g>
+
+    <!-- Educational Zone Mapping -->
+    <g transform="translate(0, 320)">
+      <rect width="500" height="120" fill="#F8FAFC" rx="8"/>
+      <g transform="translate(20, 20)">
+        <circle cx="10" cy="10" r="6" fill="#0EA5E9"/>
+        <text x="30" y="15" font-family="Arial" font-size="18" fill="#0369A1" font-weight="600">
+          Educational Zone Mapping
+        </text>
+        <text x="0" y="45" width="460" font-family="Arial" font-size="16" fill="#475569">
+          Comprehensive analysis of school catchment areas,
+          including historical performance trends and demographic
+          shifts that influence property values.
+        </text>
+      </g>
+    </g>
+
+    <!-- Safety & Lifestyle Metrics -->
+    <g transform="translate(0, 460)">
+      <rect width="500" height="120" fill="#F8FAFC" rx="8"/>
+      <g transform="translate(20, 20)">
+        <circle cx="10" cy="10" r="6" fill="#0EA5E9"/>
+        <text x="30" y="15" font-family="Arial" font-size="18" fill="#0369A1" font-weight="600">
+          Safety & Lifestyle Metrics
+        </text>
+        <text x="0" y="45" width="460" font-family="Arial" font-size="16" fill="#475569">
+          Advanced crime rate analysis combined with lifestyle
+          amenity scoring to identify premium residential pockets.
+        </text>
+      </g>
+    </g>
+  </g>
+
+  <!-- Right Column - Sydney Market Analysis -->
+  <g transform="translate(600, 120)">
+    <rect width="550" height="460" fill="#F8FAFC" rx="8"/>
+    <!-- Sydney Map Visualization -->
+    <use href="#sydney-map" x="25" y="25" width="500" height="410"/>
+  </g>
+
+  <!-- Bottom Section - Data-Driven Decision Making -->
+  <g transform="translate(50, 620)">
+    <rect width="1100" height="120" fill="#F0F9FF" rx="8"/>
+    <g transform="translate(20, 20)">
+      <!-- Icon -->
+      <rect width="40" height="40" fill="#BAE6FD" rx="8"/>
+      <text x="60" y="25" font-family="Arial" font-size="20" fill="#0369A1" font-weight="600">
+        Data-Driven Decision Making
+      </text>
+      <text x="0" y="70" font-family="Arial" font-size="16" fill="#475569">
+        Leveraging advanced analytics and machine learning to make informed investment decisions
+        based on comprehensive market data and trends.
+      </text>
+    </g>
+  </g>
+</svg> 

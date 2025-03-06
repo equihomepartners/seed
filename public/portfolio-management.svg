@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800" height="600" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+  <!-- Dashboard Background -->
+  <rect width="800" height="600" fill="#FFFFFF" rx="8"/>
+  
+  <!-- Header -->
+  <rect x="0" y="0" width="800" height="60" fill="#F8FAFC" rx="8"/>
+  <text x="30" y="38" font-family="Arial" font-size="18" fill="#0F172A">Portfolio Overview</text>
+  
+  <!-- Main Stats -->
+  <g transform="translate(30, 80)">
+    <!-- Total Value -->
+    <rect width="230" height="100" fill="#F0F9FF" rx="8"/>
+    <text x="20" y="30" font-family="Arial" font-size="14" fill="#64748B">Total Portfolio Value</text>
+    <text x="20" y="65" font-family="Arial" font-size="24" fill="#0F172A">$24.5M</text>
+    
+    <!-- Performance -->
+    <rect x="250" width="230" height="100" fill="#F0F9FF" rx="8"/>
+    <text x="270" y="30" font-family="Arial" font-size="14" fill="#64748B">Annual Performance</text>
+    <text x="270" y="65" font-family="Arial" font-size="24" fill="#0F172A">+16.8%</text>
+    
+    <!-- Properties -->
+    <rect x="500" width="230" height="100" fill="#F0F9FF" rx="8"/>
+    <text x="520" y="30" font-family="Arial" font-size="14" fill="#64748B">Total Properties</text>
+    <text x="520" y="65" font-family="Arial" font-size="24" fill="#0F172A">47</text>
+  </g>
+  
+  <!-- Chart -->
+  <g transform="translate(30, 200)">
+    <rect width="480" height="300" fill="#F8FAFC" rx="8"/>
+    <!-- Chart Lines -->
+    <path d="M40,250 L40,50 M40,250 L460,250" stroke="#E2E8F0" stroke-width="1"/>
+    <!-- Data Line -->
+    <path d="M60,200 C100,180 140,220 180,160 C220,100 260,140 300,80 C340,40 380,60 420,30" 
+          fill="none" stroke="#0EA5E9" stroke-width="3"/>
+    <!-- Data Points -->
+    <g fill="#0EA5E9">
+      <circle cx="60" cy="200" r="4"/>
+      <circle cx="180" cy="160" r="4"/>
+      <circle cx="300" cy="80" r="4"/>
+      <circle cx="420" cy="30" r="4"/>
+    </g>
+  </g>
+  
+  <!-- Property List -->
+  <g transform="translate(530, 200)">
+    <rect width="230" height="300" fill="#F8FAFC" rx="8"/>
+    <text x="20" y="30" font-family="Arial" font-size="14" fill="#64748B">Recent Properties</text>
+    <!-- List Items -->
+    <g font-family="Arial" font-size="12" fill="#0F172A">
+      <text x="20" y="60">123 Bondi Road, Bondi</text>
+      <text x="20" y="90">45 Rose Bay Avenue</text>
+      <text x="20" y="120">78 Vaucluse Street</text>
+      <text x="20" y="150">92 Double Bay Road</text>
+    </g>
+  </g>
+</svg> 

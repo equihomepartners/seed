@@ -9,48 +9,48 @@ type SectionColors = {
 
 const sectionColors: SectionColors = {
   'hero': {
-    main: 'rgb(11, 17, 33)',
-    gradient: 'rgba(30, 64, 175, 0.05)'
+    main: 'rgb(255, 255, 255)',
+    gradient: 'rgba(14, 165, 233, 0.05)'
   },
   'current-options': {
-    main: 'rgb(13, 19, 35)',
-    gradient: 'rgba(30, 64, 175, 0.07)'
+    main: 'rgb(248, 250, 252)',
+    gradient: 'rgba(14, 165, 233, 0.07)'
   },
   'solution': {
-    main: 'rgb(15, 21, 37)',
-    gradient: 'rgba(30, 64, 175, 0.08)'
+    main: 'rgb(241, 245, 249)',
+    gradient: 'rgba(14, 165, 233, 0.08)'
   },
   'business-model': {
-    main: 'rgb(17, 23, 39)',
-    gradient: 'rgba(30, 64, 175, 0.09)'
+    main: 'rgb(248, 250, 252)',
+    gradient: 'rgba(14, 165, 233, 0.09)'
   },
   'australian-market': {
-    main: 'rgb(19, 25, 41)',
-    gradient: 'rgba(30, 64, 175, 0.1)'
+    main: 'rgb(255, 255, 255)',
+    gradient: 'rgba(14, 165, 233, 0.1)'
   },
   'win-win-win': {
-    main: 'rgb(21, 27, 43)',
-    gradient: 'rgba(30, 64, 175, 0.11)'
+    main: 'rgb(248, 250, 252)',
+    gradient: 'rgba(14, 165, 233, 0.11)'
   },
   'growth-trajectory': {
-    main: 'rgb(23, 29, 45)',
-    gradient: 'rgba(30, 64, 175, 0.12)'
+    main: 'rgb(241, 245, 249)',
+    gradient: 'rgba(14, 165, 233, 0.12)'
   },
   'team': {
-    main: 'rgb(25, 31, 47)',
-    gradient: 'rgba(30, 64, 175, 0.13)'
+    main: 'rgb(255, 255, 255)',
+    gradient: 'rgba(14, 165, 233, 0.13)'
   },
   'partners': {
-    main: 'rgb(27, 33, 49)',
-    gradient: 'rgba(30, 64, 175, 0.14)'
+    main: 'rgb(248, 250, 252)',
+    gradient: 'rgba(14, 165, 233, 0.14)'
   },
   'investment-opportunity': {
-    main: 'rgb(29, 35, 51)',
-    gradient: 'rgba(30, 64, 175, 0.15)'
+    main: 'rgb(241, 245, 249)',
+    gradient: 'rgba(14, 165, 233, 0.15)'
   },
   'contact': {
-    main: 'rgb(31, 37, 53)',
-    gradient: 'rgba(30, 64, 175, 0.16)'
+    main: 'rgb(255, 255, 255)',
+    gradient: 'rgba(14, 165, 233, 0.16)'
   }
 }
 
@@ -170,7 +170,7 @@ const BackgroundController = () => {
         style={{
           background: `linear-gradient(to bottom,
             transparent,
-            rgba(0,0,0,${0.05 + scrollProgress * 0.1})
+            rgba(0,0,0,${0.02 + scrollProgress * 0.05})
           )`
         }}
       />

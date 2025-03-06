@@ -39,7 +39,7 @@ const Partnerships = () => {
           transition={{ duration: 0.8 }}
           className="text-center mb-40"
         >
-          <h2 className="text-6xl font-bold mb-6">$5M Operational Investment</h2>
+          <h2 className="text-6xl font-bold mb-6">$2M Operational Investment</h2>
           <p className="text-2xl text-gray-300 mb-24">
             Join us in building the future of home equity investment
           </p>

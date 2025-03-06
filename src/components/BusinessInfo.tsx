@@ -3,7 +3,7 @@ import GlobalHeader from './GlobalHeader'
 
 const BusinessInfo = () => {
   // Calculate progress percentage
-  const totalRound = 5000000 // $5M
+  const totalRound = 2000000 // $2M
   const currentRaised = 700000 // $700K
   const progressPercentage = (currentRaised / totalRound) * 100
 
@@ -22,7 +22,7 @@ const BusinessInfo = () => {
         <div className="max-w-7xl mx-auto px-6 py-3">
           <div className="flex items-center justify-between text-sm mb-2">
             <div className="text-gray-400">Seed Round Progress</div>
-            <div className="text-white font-medium">${(currentRaised / 1000000).toFixed(1)}M raised of $5M</div>
+            <div className="text-white font-medium">${(currentRaised / 1000000).toFixed(1)}M raised of $2M</div>
           </div>
           <div className="relative h-1.5 bg-[#1a2234] rounded-full overflow-hidden">
             <div 

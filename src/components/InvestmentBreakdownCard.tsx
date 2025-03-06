@@ -10,7 +10,7 @@ const InvestmentBreakdownCard = () => {
     {
       period: 'Q4 2024 - Q1 2025',
       title: 'Seed Round',
-      description: 'Initial capital raise of $5M',
+      description: 'Initial capital raise of $2M',
       details: [
         'Platform development completion',
         'Key team expansion',
@@ -20,7 +20,7 @@ const InvestmentBreakdownCard = () => {
     {
       period: 'Q3 2025',
       title: 'Fund Launch',
-      description: '$50M Initial Deployment',
+      description: '$100M Initial Deployment',
       details: [
         'First property acquisitions',
         'Platform launch',

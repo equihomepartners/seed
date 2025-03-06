@@ -11,93 +11,86 @@ const Team = () => {
   const teamMembers = [
     {
       name: "Ian Morgan Charles",
-      title: "Chairman & Co-Founder of Unison",
-      role: "Executive Leadership",
-      points: [
-        "Pioneer of home equity investments since 2004",
-        "Built Unison to $10B+ portfolio",
-        "Created the entire asset class"
-      ],
-      linkedin: "https://www.linkedin.com/in/ian-morgan-charles-6b0a1b1/",
-      company: {
-        name: "Unison",
-        url: "https://www.unison.com"
-      }
+      role: "Chairman of the Board",
+      subtitle: "Executive Leadership",
+      linkedin: "#",
+      experience: [
+        "Co-founder of Unison, pioneer in Home Equity Investments",
+        "Built largest US company in the industry",
+        "Inspired global market expansion including US and Canada"
+      ]
     },
     {
       name: "Sujay Namburi",
-      title: "Co-Founder",
-      role: "Tech & Operations",
-      points: [
+      role: "Co-Founder",
+      subtitle: "Tech & Operations",
+      linkedin: "#",
+      experience: [
         "Real estate and tech background",
         "Platform architecture",
         "Data analytics expertise"
-      ],
-      linkedin: "https://www.linkedin.com/in/sujay-namburi-b5b3b31b/"
+      ]
     },
     {
       name: "Taurian Charles",
-      title: "Co-Founder",
-      role: "Fund Management & CFO",
-      points: [
+      role: "Co-Founder",
+      subtitle: "Fund Management & CFO",
+      linkedin: "#",
+      experience: [
         "Financial markets expertise",
         "Investment strategy",
         "Risk management"
-      ],
-      linkedin: "https://www.linkedin.com/in/taurian-charles-b3b3b31b/"
+      ]
     }
   ]
 
   return (
-    <section ref={ref} id="team" className="min-h-screen py-20 px-4 bg-[#0B1121]">
+    <section ref={ref} id="team" className="py-32 px-4 bg-white">
       <div className="max-w-7xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
-          className="text-center mb-16"
+          className="text-center mb-20"
         >
-          <h2 className="text-5xl font-bold mb-6">Team</h2>
-          <p className="text-xl text-gray-400">Led by pioneers of the home equity investment industry</p>
+          <h2 className="text-4xl font-bold mb-6 text-gray-900">Team</h2>
+          <p className="text-xl text-gray-600">Led by pioneers of the home equity investment industry</p>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
           {teamMembers.map((member, index) => (
             <motion.div
               key={member.name}
               initial={{ opacity: 0, y: 20 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.8, delay: index * 0.2 }}
-              className={`bg-[#111827] rounded-2xl p-8 relative overflow-hidden group hover:scale-105 transition-transform duration-300 ${
-                index === 0 ? 'md:transform md:scale-110 md:z-10 ring-2 ring-blue-500/20' : ''
-              }`}
+              className="fintech-card p-8 relative overflow-hidden border border-gray-200"
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <div className="relative z-10">
-                <div className="flex justify-between items-start mb-6">
+                <div className="flex items-center justify-between mb-6">
                   <div>
-                    <h3 className="text-2xl font-bold text-white mb-2">{member.name}</h3>
-                    <p className="text-blue-400 font-medium mb-1">{member.title}</p>
-                    <p className="text-gray-400">{member.role}</p>
+                    <h3 className="text-xl font-semibold text-gray-900">{member.name}</h3>
+                    <p className="text-sky-600">{member.role}</p>
+                    <p className="text-gray-600">{member.subtitle}</p>
                   </div>
                   <a
                     href={member.linkedin}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-blue-400 hover:text-blue-300 transition-colors"
+                    className="text-sky-600 hover:text-sky-500"
                   >
-                    <FaLinkedin size={24} />
+                    <FaLinkedin className="text-xl" />
                   </a>
                 </div>
 
-                <div className="space-y-3">
-                  {member.points.map((point, idx) => (
-                    <div key={idx} className="flex items-center gap-2">
-                      <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
-                      <p className="text-gray-300">{point}</p>
-                    </div>
+                <ul className="space-y-2">
+                  {member.experience.map((item, i) => (
+                    <li key={i} className="flex items-center text-gray-600">
+                      <span className="w-1.5 h-1.5 bg-sky-500 rounded-full mr-2" />
+                      {item}
+                    </li>
                   ))}
-                </div>
+                </ul>
               </div>
             </motion.div>
           ))}

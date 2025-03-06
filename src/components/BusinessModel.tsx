@@ -45,7 +45,7 @@ const BusinessModel = () => {
   ]
 
   return (
-    <section ref={ref} id="business-model" className="min-h-screen py-20 px-4 bg-[#0B1121]">
+    <section ref={ref} id="business-model" className="min-h-screen py-20 px-4 bg-white">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -53,8 +53,14 @@ const BusinessModel = () => {
         transition={{ duration: 0.8 }}
         className="text-center mb-16"
       >
-        <h2 className="text-5xl font-bold mb-6">Business Model and Structure</h2>
-        <p className="text-xl text-gray-400 max-w-3xl mx-auto">
+        <div className="inline-block mb-8">
+          <div className="flex items-center space-x-2 px-4 py-2 bg-sky-50 rounded-full border border-sky-100">
+            <div className="w-2 h-2 rounded-full bg-sky-500" />
+            <span className="text-sm font-medium text-sky-600">Business Model</span>
+          </div>
+        </div>
+        <h2 className="text-5xl font-bold mb-6 text-gray-900">Investment Structure</h2>
+        <p className="text-xl text-gray-600 max-w-3xl mx-auto">
           Fund capital is deployed directly to homeowners, while our operational company has a separate share pool currently open for investment
         </p>
       </motion.div>
@@ -66,59 +72,59 @@ const BusinessModel = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="bg-[#111827] rounded-2xl p-8 relative overflow-hidden"
+          className="fintech-card p-8 relative overflow-hidden"
         >
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-br from-sky-50 to-transparent" />
           <div className="relative z-10">
             <div className="flex items-center gap-4 mb-6">
-              <div className="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center">
-                <FaRocket className="text-blue-500 text-2xl" />
+              <div className="w-12 h-12 rounded-full bg-sky-100 flex items-center justify-center">
+                <FaRocket className="text-sky-600 text-2xl" />
               </div>
-              <h3 className="text-2xl font-bold">Operations Company</h3>
+              <h3 className="text-2xl font-bold text-gray-900">Operations Company</h3>
             </div>
-            <p className="text-blue-400 mb-2">$5M early-stage equity investment opportunity</p>
+            <p className="text-sky-600 mb-2">$2M early-stage equity investment opportunity</p>
             {/* Key Metrics */}
             <div className="space-y-6">
-              <div className="bg-[#1F2937] rounded-xl p-6">
-                <h4 className="text-lg font-bold mb-4">Revenue Streams</h4>
+              <div className="fintech-card p-6">
+                <h4 className="text-lg font-bold text-gray-900 mb-4">Revenue Streams</h4>
                 <ul className="space-y-3">
                   <li className="flex items-center justify-between">
-                    <span className="text-gray-300">Origination Fees</span>
-                    <span className="text-blue-400 font-bold">2-3%</span>
+                    <span className="text-gray-600">Origination Fees</span>
+                    <span className="text-sky-600 font-bold">2-3%</span>
                   </li>
                   <li className="flex items-center justify-between">
-                    <span className="text-gray-300">Management Fees</span>
-                    <span className="text-blue-400 font-bold">1.5-2%</span>
+                    <span className="text-gray-600">Management Fees</span>
+                    <span className="text-sky-600 font-bold">1.5-2%</span>
                   </li>
                   <li className="flex items-center justify-between">
-                    <span className="text-gray-300">Performance Fees</span>
-                    <span className="text-blue-400 font-bold">15-20%</span>
+                    <span className="text-gray-600">Performance Fees</span>
+                    <span className="text-sky-600 font-bold">15-20%</span>
                   </li>
                 </ul>
               </div>
 
-              <div className="bg-[#1F2937] rounded-xl p-6">
-                <h4 className="text-lg font-bold mb-4">Investment Returns</h4>
+              <div className="fintech-card p-6">
+                <h4 className="text-lg font-bold text-gray-900 mb-4">Investment Returns</h4>
                 <ul className="space-y-3">
                   <li className="flex items-center justify-between">
-                    <span className="text-gray-300">Return on Investment</span>
-                    <span className="text-blue-400 font-bold">8-26x+ ROI</span>
+                    <span className="text-gray-600">Return on Investment</span>
+                    <span className="text-sky-600 font-bold">8-26x+ ROI</span>
                   </li>
                   <li className="flex items-center justify-between">
-                    <span className="text-gray-300">Investment Period</span>
-                    <span className="text-blue-400 font-bold">5-7 years</span>
+                    <span className="text-gray-600">Investment Period</span>
+                    <span className="text-sky-600 font-bold">5-7 years</span>
                   </li>
                   <li className="flex items-center justify-between">
-                    <span className="text-gray-300">Target Exit Value</span>
-                    <span className="text-blue-400 font-bold">$600M</span>
+                    <span className="text-gray-600">Target Exit Value</span>
+                    <span className="text-sky-600 font-bold">$600M</span>
                   </li>
                 </ul>
               </div>
 
-              <div className="bg-blue-500/10 rounded-xl p-6 border border-blue-500/20">
-                <h4 className="text-lg font-bold mb-2">Current Raise</h4>
-                <div className="text-2xl font-bold text-blue-400">$5M Operational Capital</div>
-                <p className="text-gray-300 mt-2">Funding platform development and team expansion</p>
+              <div className="bg-sky-50 rounded-xl p-6 border border-sky-200">
+                <h4 className="text-lg font-bold text-gray-900 mb-2">Current Raise</h4>
+                <div className="text-2xl font-bold text-sky-600">$2M Operational Capital</div>
+                <p className="text-gray-600 mt-2">Funding platform development and team expansion</p>
               </div>
             </div>
           </div>
@@ -129,60 +135,60 @@ const BusinessModel = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.3 }}
-          className="bg-[#111827] rounded-2xl p-8 relative overflow-hidden"
+          className="fintech-card p-8 relative overflow-hidden"
         >
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-br from-sky-50 to-transparent" />
           <div className="relative z-10">
             <div className="flex items-center gap-4 mb-6">
-              <div className="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center">
-                <FaBuilding className="text-blue-500 text-2xl" />
+              <div className="w-12 h-12 rounded-full bg-sky-100 flex items-center justify-center">
+                <FaBuilding className="text-sky-600 text-2xl" />
               </div>
-              <h3 className="text-2xl font-bold">Fund</h3>
+              <h3 className="text-2xl font-bold text-gray-900">Fund</h3>
             </div>
-            <p className="text-blue-400 mb-2">For institutional investors ($10M+ commitment)</p>
-            <p className="text-gray-400 mb-6">Capital deployed directly to homeowners, not company equity</p>
+            <p className="text-sky-600 mb-2">For institutional investors ($10M+ commitment)</p>
+            <p className="text-gray-600 mb-6">Capital deployed directly to homeowners, not company equity</p>
             {/* Key Metrics */}
             <div className="space-y-6">
-              <div className="bg-[#1F2937] rounded-xl p-6">
-                <h4 className="text-lg font-bold mb-4">Investment Terms</h4>
+              <div className="fintech-card p-6">
+                <h4 className="text-lg font-bold text-gray-900 mb-4">Investment Terms</h4>
                 <ul className="space-y-3">
                   <li className="flex items-center justify-between">
-                    <span className="text-gray-300">Target IRR</span>
-                    <span className="text-blue-400 font-bold">16%+</span>
+                    <span className="text-gray-600">Target IRR</span>
+                    <span className="text-sky-600 font-bold">16%+</span>
                   </li>
                   <li className="flex items-center justify-between">
-                    <span className="text-gray-300">Investment Period</span>
-                    <span className="text-blue-400 font-bold">7-10 years</span>
+                    <span className="text-gray-600">Investment Period</span>
+                    <span className="text-sky-600 font-bold">7-10 years</span>
                   </li>
                   <li className="flex items-center justify-between">
-                    <span className="text-gray-300">Distributions</span>
-                    <span className="text-blue-400 font-bold">Quarterly</span>
+                    <span className="text-gray-600">Distributions</span>
+                    <span className="text-sky-600 font-bold">Quarterly</span>
                   </li>
                 </ul>
               </div>
 
-              <div className="bg-[#1F2937] rounded-xl p-6">
-                <h4 className="text-lg font-bold mb-4">Portfolio Strategy</h4>
+              <div className="fintech-card p-6">
+                <h4 className="text-lg font-bold text-gray-900 mb-4">Portfolio Strategy</h4>
                 <ul className="space-y-3">
                   <li className="flex items-center justify-between">
-                    <span className="text-gray-300">Target AUM</span>
-                    <span className="text-blue-400 font-bold">$2B+</span>
+                    <span className="text-gray-600">Target AUM</span>
+                    <span className="text-sky-600 font-bold">$2B+</span>
                   </li>
                   <li className="flex items-center justify-between">
-                    <span className="text-gray-300">Property Type</span>
-                    <span className="text-blue-400 font-bold">Premium</span>
+                    <span className="text-gray-600">Property Type</span>
+                    <span className="text-sky-600 font-bold">Premium</span>
                   </li>
                   <li className="flex items-center justify-between">
-                    <span className="text-gray-300">Geographic Focus</span>
-                    <span className="text-blue-400 font-bold">Major Cities</span>
+                    <span className="text-gray-600">Geographic Focus</span>
+                    <span className="text-sky-600 font-bold">Major Cities</span>
                   </li>
                 </ul>
               </div>
 
-              <div className="bg-green-500/10 rounded-xl p-6 border border-green-500/20">
-                <h4 className="text-lg font-bold mb-2">Committed Capital</h4>
-                <div className="text-2xl font-bold text-green-400">$500M Initial Commitment</div>
-                <p className="text-gray-300 mt-2">First $50M deployment in Q3 2025</p>
+              <div className="bg-green-50 rounded-xl p-6 border border-green-200">
+                <h4 className="text-lg font-bold text-gray-900 mb-2">Committed Capital</h4>
+                <div className="text-2xl font-bold text-green-600">$500M Initial Commitment</div>
+                <p className="text-gray-600 mt-2">First $100M deployment in Q3 2025</p>
               </div>
             </div>
           </div>
@@ -200,7 +206,7 @@ const BusinessModel = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
-          className="text-3xl font-bold text-center mb-4"
+          className="text-3xl font-bold text-center mb-4 text-gray-900"
         >
           Operational Value Drivers
         </motion.h3>
@@ -208,7 +214,7 @@ const BusinessModel = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="text-center text-gray-400 mb-16"
+          className="text-center text-gray-600 mb-16"
         >
           Key drivers maximizing company value for optimal exit at $600M
         </motion.p>
@@ -219,16 +225,16 @@ const BusinessModel = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.8, delay: index * 0.1 }}
-              className="bg-[#111827] rounded-xl p-6 group hover:scale-105 transition-transform duration-300"
+              className="fintech-card p-6 group hover:scale-105 transition-transform duration-300"
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              <div className="absolute inset-0 bg-gradient-to-br from-sky-50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <div className="relative z-10">
-                <div className="w-12 h-12 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-500 mb-4">
+                <div className="w-12 h-12 rounded-full bg-sky-100 flex items-center justify-center text-sky-600 mb-4">
                   {driver.icon}
                 </div>
-                <h4 className="text-lg font-bold mb-2">{driver.title}</h4>
-                <p className="text-blue-400 text-lg font-bold mb-2">{driver.value}</p>
-                <p className="text-sm text-gray-400">{driver.description}</p>
+                <h4 className="text-lg font-bold mb-2 text-gray-900">{driver.title}</h4>
+                <p className="text-sky-600 text-lg font-bold mb-2">{driver.value}</p>
+                <p className="text-sm text-gray-600">{driver.description}</p>
               </div>
             </motion.div>
           ))}

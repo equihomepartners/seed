@@ -25,7 +25,7 @@ const PortfolioOS: React.FC = () => {
 
   // Portfolio performance metrics
   const portfolioMetrics = {
-    targetSize: '$50M',
+    targetSize: '$100M',
     averageLoanSize: '$250K',
     propertyRange: '$2M-3M',
     targetLTV: '50%',
@@ -42,7 +42,7 @@ const PortfolioOS: React.FC = () => {
   }
 
   // Calculate progress percentage
-  const totalRound = 5000000 // $5M
+  const totalRound = 2000000 // $2M
   const currentRaised = 700000 // $700K
   const progressPercentage = (currentRaised / totalRound) * 100
 
@@ -56,28 +56,8 @@ const PortfolioOS: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-b from-[#020817] via-[#041434] to-[#061C4C]" ref={ref}>
       <GlobalHeader currentPage="portfolio-os" />
       
-      {/* Fundraising Progress Bar */}
-      <div className="fixed top-[72px] left-0 right-0 bg-[#020817]/95 backdrop-blur-xl border-b border-blue-500/30 z-40">
-        <div className="max-w-7xl mx-auto px-8 py-4">
-          <div className="flex items-center justify-between text-sm mb-2">
-            <div className="text-blue-200">Seed Round Progress</div>
-            <div className="text-white font-medium">${(currentRaised / 1000000).toFixed(1)}M raised of $5M</div>
-          </div>
-          <div className="relative h-2.5 bg-[#041434] rounded-full overflow-hidden shadow-inner">
-            <div 
-              className="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-600 via-cyan-500 to-teal-400 rounded-full transition-all duration-500 shadow-lg"
-              style={{ width: `${progressPercentage}%` }}
-            />
-          </div>
-          <div className="flex items-center justify-between text-xs mt-2">
-            <div className="text-blue-300">Dec 16, 2024</div>
-            <div className="text-teal-400 font-medium">{daysRemaining} days remaining</div>
-            <div className="text-blue-300">Jan 31, 2025</div>
-          </div>
-        </div>
-      </div>
-
-      <div className="pt-[180px] pb-24">
+      {/* Main Content */}
+      <div className="pt-[72px]">
         <div className="max-w-7xl mx-auto px-8">
           {/* Title Section */}
           <motion.div
@@ -138,35 +118,50 @@ const PortfolioOS: React.FC = () => {
             </div>
 
             {/* Market Strength */}
-            <div className="bg-gradient-to-br from-[#020817] to-[#041434] rounded-2xl border border-blue-500/30 p-8 shadow-[0_8px_32px_rgba(0,0,0,0.4)] hover:shadow-[0_16px_48px_rgba(0,0,0,0.5)] transition-all duration-300 hover:border-cyan-500/30">
+            <div className="bg-white rounded-2xl border border-gray-200 p-8 shadow-lg hover:shadow-xl transition-all duration-300">
               <div className="flex items-center space-x-3 mb-4">
-                <div className="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center">
-                  <FaGlobeAmericas className="text-2xl text-purple-400" />
+                <div className="w-12 h-12 rounded-xl bg-purple-50 flex items-center justify-center">
+                  <FaGlobeAmericas className="text-2xl text-purple-600" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-white">Market Strength</h3>
-                  <p className="text-sm text-gray-400">Sydney Premium Market</p>
+                  <h3 className="text-lg font-semibold text-gray-900">Market Strength</h3>
+                  <p className="text-sm text-gray-600">Sydney Premium Market</p>
                 </div>
               </div>
               <div className="space-y-4">
-                <div className="bg-[#020817] rounded-xl p-4 shadow-inner backdrop-blur-xl border border-cyan-500/10">
+                <div className="bg-gray-50 rounded-xl p-4 shadow-sm backdrop-blur-xl border border-gray-200">
                   <div className="flex justify-between items-center mb-2">
-                    <span className="text-blue-200">Market Size</span>
-                    <span className="text-2xl font-bold text-purple-400">{marketMetrics.marketSize}</span>
+                    <span className="text-gray-600">Market Size</span>
+                    <span className="text-2xl font-bold text-purple-600">{marketMetrics.marketSize}</span>
                   </div>
                   <div className="flex justify-between items-center text-sm">
-                    <span className="text-blue-400">Annual Growth</span>
-                    <span className="text-green-400">+{marketMetrics.annualGrowth}</span>
+                    <span className="text-sky-600">Annual Growth</span>
+                    <span className="text-green-600">+{marketMetrics.annualGrowth}</span>
                   </div>
                 </div>
-                <div className="bg-[#020817] rounded-xl p-4 shadow-inner backdrop-blur-xl border border-cyan-500/10">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="text-blue-400">Market Stability</span>
-                    <span className="text-white">{marketMetrics.stabilityIndex}</span>
+
+                <div className="space-y-4">
+                  <div className="bg-gray-50 rounded-xl p-4 shadow-sm backdrop-blur-xl border border-gray-200">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-8 h-8 rounded-lg bg-green-50 flex items-center justify-center">
+                        <FaLock className="text-green-600" />
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-semibold text-gray-900">Conservative LTV</h4>
+                        <p className="text-xs text-gray-600">50% maximum loan-to-value ratio provides significant equity buffer</p>
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex justify-between items-center text-sm">
-                    <span className="text-blue-400">Demand Score</span>
-                    <span className="text-green-400">{marketMetrics.demandScore}</span>
+                  <div className="bg-gray-50 rounded-xl p-4 shadow-sm backdrop-blur-xl border border-gray-200">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-8 h-8 rounded-lg bg-purple-50 flex items-center justify-center">
+                        <FaHome className="text-purple-600" />
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-semibold text-gray-900">Premium Properties</h4>
+                        <p className="text-xs text-gray-600">Focus on high-quality houses in established areas</p>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -227,14 +222,14 @@ const PortfolioOS: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {/* First $50M Portfolio */}
+              {/* First $100M Portfolio */}
               <div className="bg-gradient-to-br from-[#020817] to-[#041434] rounded-2xl border border-blue-500/30 p-8 shadow-[0_8px_32px_rgba(0,0,0,0.4)] hover:shadow-[0_16px_48px_rgba(0,0,0,0.5)] transition-all duration-300 hover:border-cyan-500/30">
                 <div className="flex items-center space-x-3 mb-6">
                   <div className="w-12 h-12 rounded-xl bg-cyan-500/10 flex items-center justify-center">
                     <FaChartPie className="text-2xl text-cyan-400" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-white">First $50M Portfolio</h3>
+                    <h3 className="text-lg font-semibold text-white">First $100M Portfolio</h3>
                     <p className="text-sm text-gray-400">Target Allocation</p>
                   </div>
                 </div>
@@ -1066,7 +1061,7 @@ const PortfolioOS: React.FC = () => {
                   <div className="bg-[#020817] rounded-xl p-4 shadow-inner backdrop-blur-xl border border-cyan-500/10">
                     <div className="flex items-center space-x-3">
                       <div className="w-8 h-8 rounded-lg bg-green-500/20 flex items-center justify-center">
-                        <FaLock className="text-green-400" />
+                        <FaLock className="text-green-600" />
                       </div>
                       <div>
                         <h4 className="text-sm font-semibold text-white">Conservative LTV</h4>
@@ -1077,7 +1072,7 @@ const PortfolioOS: React.FC = () => {
                   <div className="bg-[#020817] rounded-xl p-4 shadow-inner backdrop-blur-xl border border-cyan-500/10">
                     <div className="flex items-center space-x-3">
                       <div className="w-8 h-8 rounded-lg bg-purple-500/20 flex items-center justify-center">
-                        <FaHome className="text-purple-400" />
+                        <FaHome className="text-purple-600" />
                       </div>
                       <div>
                         <h4 className="text-sm font-semibold text-white">Premium Properties</h4>
@@ -1104,11 +1099,11 @@ const PortfolioOS: React.FC = () => {
                 <div className="flex items-center justify-between mb-6">
                   <div className="flex items-center space-x-3">
                     <div className="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center">
-                      <FaHistory className="text-2xl text-purple-400" />
+                      <FaHistory className="text-2xl text-purple-600" />
                     </div>
                     <div>
                       <h3 className="text-lg font-semibold text-white">Market Cycle Protection</h3>
-                      <p className="text-sm text-gray-400">Downside Management</p>
+                      <p className="text-sm text-gray-600">Downside Management</p>
                     </div>
                   </div>
                 </div>

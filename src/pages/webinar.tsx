@@ -3,7 +3,7 @@ import GlobalHeader from '../components/GlobalHeader'
 
 const WebinarPage = () => {
   return (
-    <div className="min-h-screen bg-[#0B1121]">
+    <div className="min-h-screen bg-white">
       <GlobalHeader currentPage="webinar" />
       <WebinarRegistration />
     </div>
