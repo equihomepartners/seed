@@ -59,7 +59,7 @@ const BusinessModel = () => {
             <span className="text-sm font-medium text-sky-600">Business Model</span>
           </div>
         </div>
-        <h2 className="text-5xl font-bold mb-6 text-gray-900">Investment Structure</h2>
+        <h2 className="text-5xl font-bold mb-6 text-gray-900">Business, Fund, and Operations Model</h2>
         <p className="text-xl text-gray-600 max-w-3xl mx-auto">
           Fund capital is deployed directly to homeowners, while our operational company has a separate share pool currently open for investment
         </p>

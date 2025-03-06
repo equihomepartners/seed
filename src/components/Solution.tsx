@@ -320,7 +320,7 @@ const Solution = () => {
                   <div className="w-2 h-2 bg-sky-500 rounded-full mt-2"></div>
                   <div className="flex-1">
                     <div className="text-gray-900 font-medium">Homeowner Profile</div>
-                    <div className="text-gray-600">Retired couple in their 70s with fully paid off home, looking to help their children enter the Sydney property market without selling their family home</div>
+                    <div className="text-gray-600">Professional couple in their late 50s with fully paid off home, looking to help their children enter the Sydney property market without selling their family home</div>
                   </div>
                 </div>
                 <div className="flex items-start space-x-3">
