@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800" height="400" viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="800" height="400" fill="#FFFFFF"/>
+  
+  <!-- Process Flow -->
+  <g transform="translate(50, 50)">
+    <!-- Step 1: Data Collection -->
+    <g transform="translate(0, 0)">
+      <rect width="160" height="120" fill="#F0F9FF" rx="8" stroke="#0EA5E9" stroke-width="2"/>
+      <text x="20" y="40" font-family="Arial" font-size="14" fill="#0F172A">Data Collection</text>
+      <text x="20" y="70" font-family="Arial" font-size="12" fill="#64748B">Property Data</text>
+      <text x="20" y="90" font-family="Arial" font-size="12" fill="#64748B">Market Analysis</text>
+    </g>
+    
+    <!-- Arrow 1 -->
+    <path d="M170,60 L220,60" stroke="#0EA5E9" stroke-width="2" marker-end="url(#arrow)"/>
+    
+    <!-- Step 2: AI Analysis -->
+    <g transform="translate(230, 0)">
+      <rect width="160" height="120" fill="#F0F9FF" rx="8" stroke="#0EA5E9" stroke-width="2"/>
+      <text x="20" y="40" font-family="Arial" font-size="14" fill="#0F172A">AI Analysis</text>
+      <text x="20" y="70" font-family="Arial" font-size="12" fill="#64748B">Risk Assessment</text>
+      <text x="20" y="90" font-family="Arial" font-size="12" fill="#64748B">Value Prediction</text>
+    </g>
+    
+    <!-- Arrow 2 -->
+    <path d="M400,60 L450,60" stroke="#0EA5E9" stroke-width="2" marker-end="url(#arrow)"/>
+    
+    <!-- Step 3: Decision Engine -->
+    <g transform="translate(460, 0)">
+      <rect width="160" height="120" fill="#F0F9FF" rx="8" stroke="#0EA5E9" stroke-width="2"/>
+      <text x="20" y="40" font-family="Arial" font-size="14" fill="#0F172A">Decision Engine</text>
+      <text x="20" y="70" font-family="Arial" font-size="12" fill="#64748B">Auto-Approval</text>
+      <text x="20" y="90" font-family="Arial" font-size="12" fill="#64748B">Terms Generation</text>
+    </g>
+  </g>
+  
+  <!-- Process Metrics -->
+  <g transform="translate(50, 200)">
+    <rect width="700" height="80" fill="#F8FAFC" rx="8"/>
+    <text x="20" y="35" font-family="Arial" font-size="14" fill="#0F172A">Process Metrics</text>
+    <g transform="translate(20, 50)" font-family="Arial" font-size="12" fill="#64748B">
+      <text x="0" y="0">Processing Time: &lt; 21 days</text>
+      <text x="200" y="0">Accuracy Rate: 98.5%</text>
+      <text x="400" y="0">Auto-Approval Rate: 85%</text>
+    </g>
+  </g>
+  
+  <!-- AI Indicators -->
+  <g transform="translate(50, 300)">
+    <rect width="700" height="60" fill="#F0F9FF" rx="8"/>
+    <text x="20" y="35" font-family="Arial" font-size="12" fill="#0EA5E9">
+      AI-Powered · Machine Learning · Real-Time Analytics · Automated Decisioning
+    </text>
+  </g>
+  
+  <!-- Arrow Marker -->
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#0EA5E9"/>
+    </marker>
+  </defs>
+</svg> 

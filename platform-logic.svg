@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800" height="600" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="800" height="600" fill="#FFFFFF"/>
+  
+  <!-- Data Sources Section -->
+  <g transform="translate(50, 50)">
+    <!-- Historical Data -->
+    <rect x="0" y="0" width="140" height="80" rx="8" fill="#F0F9FF" stroke="#0EA5E9"/>
+    <text x="70" y="35" text-anchor="middle" font-family="Arial" font-size="14" fill="#0F172A">Historical Growth</text>
+    <text x="70" y="55" text-anchor="middle" font-family="Arial" font-size="12" fill="#64748B">30+ Years Data</text>
+
+    <!-- Infrastructure -->
+    <rect x="160" y="0" width="140" height="80" rx="8" fill="#F0F9FF" stroke="#0EA5E9"/>
+    <text x="230" y="35" text-anchor="middle" font-family="Arial" font-size="14" fill="#0F172A">Infrastructure</text>
+    <text x="230" y="55" text-anchor="middle" font-family="Arial" font-size="12" fill="#64748B">Projects & Impact</text>
+
+    <!-- News & Press -->
+    <rect x="320" y="0" width="140" height="80" rx="8" fill="#F0F9FF" stroke="#0EA5E9"/>
+    <text x="390" y="35" text-anchor="middle" font-family="Arial" font-size="14" fill="#0F172A">News & Press</text>
+    <text x="390" y="55" text-anchor="middle" font-family="Arial" font-size="12" fill="#64748B">Market Sentiment</text>
+
+    <!-- Education Data -->
+    <rect x="480" y="0" width="140" height="80" rx="8" fill="#F0F9FF" stroke="#0EA5E9"/>
+    <text x="550" y="35" text-anchor="middle" font-family="Arial" font-size="14" fill="#0F172A">School Metrics</text>
+    <text x="550" y="55" text-anchor="middle" font-family="Arial" font-size="12" fill="#64748B">Performance Data</text>
+  </g>
+
+  <!-- More Data Sources -->
+  <g transform="translate(50, 150)">
+    <!-- Crime Statistics -->
+    <rect x="0" y="0" width="140" height="80" rx="8" fill="#F0F9FF" stroke="#0EA5E9"/>
+    <text x="70" y="35" text-anchor="middle" font-family="Arial" font-size="14" fill="#0F172A">Crime Statistics</text>
+    <text x="70" y="55" text-anchor="middle" font-family="Arial" font-size="12" fill="#64748B">Safety Metrics</text>
+
+    <!-- Property Comps -->
+    <rect x="160" y="0" width="140" height="80" rx="8" fill="#F0F9FF" stroke="#0EA5E9"/>
+    <text x="230" y="35" text-anchor="middle" font-family="Arial" font-size="14" fill="#0F172A">Property Comps</text>
+    <text x="230" y="55" text-anchor="middle" font-family="Arial" font-size="12" fill="#64748B">Market Values</text>
+
+    <!-- Demographics -->
+    <rect x="320" y="0" width="140" height="80" rx="8" fill="#F0F9FF" stroke="#0EA5E9"/>
+    <text x="390" y="35" text-anchor="middle" font-family="Arial" font-size="14" fill="#0F172A">Demographics</text>
+    <text x="390" y="55" text-anchor="middle" font-family="Arial" font-size="12" fill="#64748B">Population Data</text>
+
+    <!-- Economic Indicators -->
+    <rect x="480" y="0" width="140" height="80" rx="8" fill="#F0F9FF" stroke="#0EA5E9"/>
+    <text x="550" y="35" text-anchor="middle" font-family="Arial" font-size="14" fill="#0F172A">Economic Data</text>
+    <text x="550" y="55" text-anchor="middle" font-family="Arial" font-size="12" fill="#64748B">Market Indicators</text>
+  </g>
+
+  <!-- Data Flow Arrows -->
+  <g transform="translate(50, 250)">
+    <!-- Flow Lines -->
+    <path d="M70,0 L70,80 M230,0 L230,80 M390,0 L390,80 M550,0 L550,80" 
+          stroke="#0EA5E9" stroke-width="2" stroke-dasharray="4"/>
+    
+    <!-- Central Processing Box -->
+    <rect x="0" y="80" width="620" height="120" rx="8" fill="#F8FAFC" stroke="#0EA5E9"/>
+    <text x="310" y="120" text-anchor="middle" font-family="Arial" font-size="18" fill="#0F172A">AI-Powered Analysis Engine</text>
+    <text x="310" y="150" text-anchor="middle" font-family="Arial" font-size="14" fill="#64748B">Regression Analysis • Pattern Recognition • Bias Elimination</text>
+    <text x="310" y="170" text-anchor="middle" font-family="Arial" font-size="14" fill="#64748B">Real-time Market Insights • Risk Assessment</text>
+  </g>
+
+  <!-- Output Section -->
+  <g transform="translate(50, 470)">
+    <rect x="0" y="0" width="620" height="80" rx="8" fill="#F0F9FF" stroke="#0EA5E9"/>
+    <text x="310" y="35" text-anchor="middle" font-family="Arial" font-size="16" fill="#0F172A">Unbiased Market Intelligence</text>
+    <text x="310" y="55" text-anchor="middle" font-family="Arial" font-size="14" fill="#64748B">Data-Driven Investment Decisions • Automated Risk Scoring • Growth Predictions</text>
+  </g>
+</svg> 
