@@ -1,9 +1,20 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
-import { FaBars, FaTimes } from 'react-icons/fa'
+import { FaBars, FaTimes, FaSignOutAlt } from 'react-icons/fa'
 
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const navigate = useNavigate()
+  const userEmail = localStorage.getItem('userEmail')
+
+  const handleLogout = () => {
+    localStorage.removeItem('userEmail')
+    localStorage.removeItem('investorProgress')
+    localStorage.removeItem('pageViews')
+    localStorage.removeItem('pageDurations')
+    navigate('/')
+    window.location.reload()
+  }
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-lg border-b border-gray-200 safe-padding">
@@ -22,6 +33,21 @@ const Navigation = () => {
             </div>
           </div>
 
+          {/* Desktop menu */}
+          <div className="hidden md:flex items-center space-x-8">
+            <Link to="/pitch" className="text-gray-600 hover:text-gray-900 transition-colors">Business Info</Link>
+            <Link to="/portfolio-os" className="text-gray-600 hover:text-gray-900 transition-colors">Portfolio OS</Link>
+            {userEmail && (
+              <button
+                onClick={handleLogout}
+                className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors"
+              >
+                <FaSignOutAlt />
+                <span>Logout</span>
+              </button>
+            )}
+          </div>
+
           {/* Mobile menu button */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -33,12 +59,6 @@ const Navigation = () => {
               <FaBars className="text-gray-900 text-xl" />
             )}
           </button>
-
-          {/* Desktop menu */}
-          <div className="hidden md:flex items-center space-x-8">
-            <Link to="/pitch" className="text-gray-600 hover:text-gray-900 transition-colors">Business Info</Link>
-            <Link to="/portfolio-os" className="text-gray-600 hover:text-gray-900 transition-colors">Portfolio OS</Link>
-          </div>
         </div>
 
         {/* Mobile menu */}
@@ -48,6 +68,15 @@ const Navigation = () => {
               <Link to="/pitch" className="text-gray-600 hover:text-gray-900 transition-colors">Business Info</Link>
               <Link to="/portfolio-os" className="text-gray-600 hover:text-gray-900 transition-colors">Portfolio OS</Link>
               <Link to="/launchpad" className="text-sky-600 hover:text-sky-700 transition-colors">Go to Launchpad</Link>
+              {userEmail && (
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 transition-colors"
+                >
+                  <FaSignOutAlt />
+                  <span>Logout</span>
+                </button>
+              )}
             </div>
           </div>
         )}
