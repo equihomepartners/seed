@@ -8,6 +8,10 @@ import {
   Tooltip,
   ResponsiveContainer,
   ReferenceLine,
+  Scatter,
+  Cell,
+  ScatterChart,
+  Legend,
 } from 'recharts';
 
 declare global {
@@ -29,8 +33,11 @@ const DealExample = () => {
     { year: 2026, value: 8.29 },
     { year: 2027, value: 7.91 },
     { year: 2028, value: 7.58 },
-    { year: "Underwrite", value: 10.65 }
+    { year: 2029, value: 7.25 }
   ];
+
+  // Add underwrite point at 4.5 years (mid-2024)
+  const underwritePoint = [{ year: 2023.5, value: 10.65 }];
 
   useEffect(() => {
     // Add Leaflet CSS
@@ -238,29 +245,46 @@ const DealExample = () => {
             <h4 className="text-lg font-semibold text-gray-900 mb-4">Returns Profile</h4>
             <div className="h-[300px]">
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={data}>
+                <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
                   <XAxis 
                     dataKey="year" 
+                    name="Year"
                     tick={{ fill: '#6B7280' }}
+                    type="number"
+                    domain={[2019, 2029]}
+                    ticks={[2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029]}
                   />
                   <YAxis 
+                    dataKey="value"
+                    name="Return"
                     tick={{ fill: '#6B7280' }}
                     domain={[0, 30]}
                     tickFormatter={(value) => `${value}%`}
+                    ticks={[0, 5, 10, 15, 20, 25, 30]}
                   />
                   <Tooltip 
                     formatter={(value) => [`${value}%`, 'Return']}
-                    labelFormatter={(label) => `Year: ${label}`}
+                    labelFormatter={(label) => `Year: ${Math.round(label * 10) / 10}`}
                   />
-                  <Line 
-                    type="monotone" 
-                    dataKey="value" 
-                    stroke="#0EA5E9" 
-                    strokeWidth={2}
-                    dot={{ fill: '#0EA5E9', r: 4 }}
-                  />
-                </LineChart>
+                  <Legend />
+                  <Scatter
+                    name="Historical Returns"
+                    data={data}
+                    fill="#0EA5E9"
+                    shape="circle"
+                  >
+                    <Cell fill="#0EA5E9" r={6} />
+                  </Scatter>
+                  <Scatter
+                    name="Underwrite Rate"
+                    data={underwritePoint}
+                    fill="#FF6B6B"
+                    shape="circle"
+                  >
+                    <Cell fill="#FF6B6B" r={6} />
+                  </Scatter>
+                </ScatterChart>
               </ResponsiveContainer>
             </div>
             <div className="mt-4 p-4 bg-gray-50 rounded-lg">
@@ -271,10 +295,10 @@ const DealExample = () => {
               <ul className="mt-2 space-y-1 text-sm text-gray-600">
                 <li>• Exit in 2020: 25.14% IRR</li>
                 <li>• Exit in 2024: 9.35% IRR</li>
-                <li>• Projected 2028: 7.58% IRR</li>
+                <li>• Underwrite Rate (4.5 years): 10.65% IRR</li>
               </ul>
               <p className="mt-2 text-sm text-gray-600">
-                The declining IRR over time reflects the mathematical impact of spreading returns over a longer period, not a decrease in absolute returns. The underwrite rate of 10.65% represents our conservative base case.
+                The declining IRR over time reflects the mathematical impact of spreading returns over a longer period, not a decrease in absolute returns. The underwrite rate of 10.65% represents our conservative base case at the 4.5 year mark.
               </p>
             </div>
           </div>
