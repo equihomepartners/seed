@@ -1,253 +1,329 @@
-import { useState } from 'react'
-import { motion } from 'framer-motion'
-import { useInView } from 'react-intersection-observer'
-import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts'
+import React, { useEffect } from 'react';
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  ReferenceLine,
+} from 'recharts';
 
-const DealExample = () => {
-  const [ref, inView] = useInView({
-    triggerOnce: true,
-    threshold: 0.1
-  })
-
-  const [growthRate, setGrowthRate] = useState(8) // Default to 8% growth
-  
-  // Calculate returns based on growth rate
-  const calculateReturns = () => {
-    // Initial values
-    const propertyValue = 1850000 // $1.85M property in growth corridor
-    const investment = 500000    // $500K investment
-    const equityShare = 0.35     // 35% equity share
-    const years = 3             // 3 year term
-    const annualInterestRate = 0.05 // 5% simple interest
-
-    // Calculate simple interest
-    const simpleInterest = investment * annualInterestRate * years
-
-    // Calculate property appreciation
-    const futurePropertyValue = propertyValue * Math.pow(1 + growthRate / 100, years)
-    const totalAppreciation = futurePropertyValue - propertyValue
-    const appreciationShare = totalAppreciation * equityShare
-
-    // Calculate total return
-    const totalReturn = simpleInterest + appreciationShare
-
-    // Calculate IRR
-    const irr = (Math.pow((investment + totalReturn) / investment, 1/years) - 1) * 100
-
-    // Calculate multiple metrics
-    const multipleOnInvestment = (investment + totalReturn) / investment
-    const annualizedReturn = totalReturn / (investment * years) * 100
-
-    return {
-      interest: simpleInterest,
-      appreciation: appreciationShare,
-      total: totalReturn,
-      irr: irr,
-      multiple: multipleOnInvestment,
-      annualizedReturn: annualizedReturn,
-      futurePropertyValue: futurePropertyValue
-    }
+declare global {
+  interface Window {
+    L: any;
   }
-
-  const returns = calculateReturns()
-  
-  const pieData = [
-    { name: 'Simple Interest', value: returns.interest },
-    { name: 'Appreciation Share', value: returns.appreciation }
-  ]
-
-  const COLORS = ['#3B82F6', '#60A5FA']
-
-  return (
-    <section ref={ref} className="min-h-screen py-20">
-      <div className="container mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8 }}
-          className="grid grid-cols-1 lg:grid-cols-2 gap-16"
-        >
-          {/* Left Side - Property Details */}
-          <div>
-            <h2 className="text-3xl font-bold mb-8">Case Study: Growth Corridor Property</h2>
-            <div className="bg-white bg-opacity-5 rounded-lg p-8 mb-8">
-              {/* Property Image Section */}
-              <div className="relative mb-6">
-                <div className="aspect-video rounded-lg overflow-hidden">
-                  <img
-                    src="/property-example.jpg"
-                    alt="Modern family home in growth corridor"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                {/* Property Location Badge */}
-                <div className="absolute top-4 left-4 bg-blue-500 bg-opacity-90 px-3 py-1 rounded-full text-sm font-medium">
-                  Box Hill Growth Precinct
-                </div>
-                {/* Property Features */}
-                <div className="absolute bottom-4 left-4 right-4 flex justify-between text-sm">
-                  <div className="bg-black bg-opacity-75 px-3 py-1 rounded-full">
-                    4 Beds
-                  </div>
-                  <div className="bg-black bg-opacity-75 px-3 py-1 rounded-full">
-                    3 Baths
-                  </div>
-                  <div className="bg-black bg-opacity-75 px-3 py-1 rounded-full">
-                    2 Cars
-                  </div>
-                  <div className="bg-black bg-opacity-75 px-3 py-1 rounded-full">
-                    580m²
-                  </div>
-                </div>
-              </div>
-
-              <h3 className="text-xl font-semibold mb-4">Investment Highlights</h3>
-              
-              {/* Key Investment Details */}
-              <div className="space-y-6">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-gray-800 bg-opacity-50 p-4 rounded-lg">
-                    <div className="text-gray-400 text-sm">Property Value</div>
-                    <div className="text-xl font-bold">$1,850,000</div>
-                  </div>
-                  <div className="bg-gray-800 bg-opacity-50 p-4 rounded-lg">
-                    <div className="text-gray-400 text-sm">Investment</div>
-                    <div className="text-xl font-bold">$500,000</div>
-                  </div>
-                  <div className="bg-gray-800 bg-opacity-50 p-4 rounded-lg">
-                    <div className="text-gray-400 text-sm">Equity Share</div>
-                    <div className="text-xl font-bold">35%</div>
-                  </div>
-                  <div className="bg-gray-800 bg-opacity-50 p-4 rounded-lg">
-                    <div className="text-gray-400 text-sm">Term</div>
-                    <div className="text-xl font-bold">3 Years</div>
-                  </div>
-                </div>
-
-                {/* Investment Structure */}
-                <div>
-                  <h4 className="text-lg font-semibold mb-3">Investment Structure</h4>
-                  <div className="space-y-2">
-                    <div className="flex items-center">
-                      <div className="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
-                      <span>5% Simple Interest (No Monthly Payments)</span>
-                    </div>
-                    <div className="flex items-center">
-                      <div className="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
-                      <span>35% Share in Property Appreciation</span>
-                    </div>
-                    <div className="flex items-center">
-                      <div className="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
-                      <span>Exit Through Refinance or Sale</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Right Side - Return Calculator */}
-          <div>
-            <h2 className="text-3xl font-bold mb-8">Return Simulator</h2>
-            <div className="bg-white bg-opacity-5 rounded-lg p-8">
-              {/* Growth Rate Slider */}
-              <div className="mb-8">
-                <div className="flex justify-between items-center mb-2">
-                  <label className="text-sm font-medium">
-                    Property Growth Rate (% p.a.)
-                  </label>
-                  <div className="text-2xl font-bold text-blue-500">
-                    {growthRate}%
-                  </div>
-                </div>
-                <input
-                  type="range"
-                  min="4"
-                  max="12"
-                  step="0.5"
-                  value={growthRate}
-                  onChange={(e) => setGrowthRate(parseFloat(e.target.value))}
-                  className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
-                />
-                <div className="flex justify-between text-xs text-gray-400 mt-1">
-                  <span>Conservative (4%)</span>
-                  <span>Historical Average (8%)</span>
-                  <span>High Growth (12%)</span>
-                </div>
-              </div>
-
-              {/* Return Metrics */}
-              <div className="grid grid-cols-2 gap-6 mb-8">
-                <div className="bg-gray-800 bg-opacity-50 p-4 rounded-lg">
-                  <div className="text-gray-400 text-sm mb-1">Total Return</div>
-                  <div className="text-2xl font-bold text-blue-500">
-                    ${Math.round(returns.total).toLocaleString()}
-                  </div>
-                  <div className="text-sm text-gray-400">
-                    {returns.multiple.toFixed(2)}x Multiple
-                  </div>
-                </div>
-                <div className="bg-gray-800 bg-opacity-50 p-4 rounded-lg">
-                  <div className="text-gray-400 text-sm mb-1">Annual IRR</div>
-                  <div className="text-2xl font-bold text-blue-500">
-                    {returns.irr.toFixed(1)}%
-                  </div>
-                  <div className="text-sm text-gray-400">
-                    Annualized Return
-                  </div>
-                </div>
-                <div className="bg-gray-800 bg-opacity-50 p-4 rounded-lg">
-                  <div className="text-gray-400 text-sm mb-1">Simple Interest</div>
-                  <div className="text-xl font-bold">
-                    ${Math.round(returns.interest).toLocaleString()}
-                  </div>
-                  <div className="text-sm text-gray-400">
-                    5% p.a. No Payments
-                  </div>
-                </div>
-                <div className="bg-gray-800 bg-opacity-50 p-4 rounded-lg">
-                  <div className="text-gray-400 text-sm mb-1">Appreciation Share</div>
-                  <div className="text-xl font-bold">
-                    ${Math.round(returns.appreciation).toLocaleString()}
-                  </div>
-                  <div className="text-sm text-gray-400">
-                    35% of Growth
-                  </div>
-                </div>
-              </div>
-
-              {/* Return Breakdown Chart */}
-              <div className="relative h-64">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={pieData}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={60}
-                      outerRadius={80}
-                      paddingAngle={5}
-                      dataKey="value"
-                    >
-                      {pieData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[index]} />
-                      ))}
-                    </Pie>
-                  </PieChart>
-                </ResponsiveContainer>
-                <div className="absolute inset-0 flex items-center justify-center flex-col">
-                  <div className="text-sm text-gray-400">Future Property Value</div>
-                  <div className="text-xl font-bold">
-                    ${Math.round(returns.futurePropertyValue).toLocaleString()}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </motion.div>
-      </div>
-    </section>
-  )
 }
 
-export default DealExample 
+const DealExample = () => {
+  // Historical returns data
+  const data = [
+    { year: 2019, value: 18.13 },
+    { year: 2020, value: 25.14 },
+    { year: 2021, value: 19.38 },
+    { year: 2022, value: 14.00 },
+    { year: 2023, value: 10.13 },
+    { year: 2024, value: 9.35 },
+    { year: 2025, value: 8.76 },
+    { year: 2026, value: 8.29 },
+    { year: 2027, value: 7.91 },
+    { year: 2028, value: 7.58 },
+    { year: "Underwrite", value: 10.65 }
+  ];
+
+  useEffect(() => {
+    // Add Leaflet CSS
+    const link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+    document.head.appendChild(link);
+
+    // Add Leaflet JS
+    const script = document.createElement('script');
+    script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+    script.onload = () => {
+      // Initialize map after Leaflet is loaded
+      const L = window.L;
+      const map = L.map('map').setView([-33.838195, 151.220197], 15);
+      
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '© OpenStreetMap contributors'
+      }).addTo(map);
+
+      L.marker([-33.838195, 151.220197])
+        .addTo(map)
+        .bindPopup('24 Ben Boyd Road, Neutral Bay');
+    };
+    document.body.appendChild(script);
+
+    // Cleanup
+    return () => {
+      document.head.removeChild(link);
+      document.body.removeChild(script);
+    };
+  }, []);
+
+  return (
+    <div className="w-full bg-white space-y-8">
+      {/* Investment Thesis */}
+      <div className="bg-gray-50 p-6 rounded-lg">
+        <h3 className="text-xl font-bold text-gray-900 mb-4">Investment Thesis:</h3>
+        <ul className="space-y-2 text-gray-700">
+          <li>- Neutral Bay is a suburb located on the Lower North Shore of Sydney</li>
+          <li>- The property is well located with access to transport both ferry and buses</li>
+          <li>- The house is small, but is well maintained and refurbished</li>
+          <li>- David is single and looking to use the free additional free cashflow for investments for his retirement</li>
+          <li>- The exit strategy is to move into an apartment upon retirement in the next 5 years</li>
+        </ul>
+        <div className="mt-4 p-4 bg-sky-50 rounded-lg">
+          <p className="text-sky-800 text-sm">
+            <strong>Note:</strong> While this property doesn't fully align with our premium asset criteria, it demonstrates how even lower-tier assets in our green zones can produce solid returns. The stable location and clear exit strategy help mitigate risks.
+          </p>
+        </div>
+      </div>
+
+      {/* Location */}
+      <div className="bg-white p-6 rounded-lg border border-gray-200">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Location</h3>
+        <div className="space-y-4">
+          {/* Map */}
+          <div id="map" className="w-full h-[300px] bg-gray-100 rounded-lg overflow-hidden relative"></div>
+
+          {/* Location Details */}
+          <div className="bg-gradient-to-br from-sky-50 to-gray-100 rounded-lg p-6">
+            <div className="flex items-start space-x-4">
+              <div className="w-10 h-10 rounded-full bg-sky-100 flex items-center justify-center flex-shrink-0">
+                <svg className="w-5 h-5 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+              </div>
+              <div>
+                <h4 className="text-xl font-semibold text-gray-900">24 Ben Boyd Road</h4>
+                <p className="text-gray-600 mt-1">Neutral Bay, Sydney NSW</p>
+                <div className="mt-4 grid grid-cols-2 gap-4">
+                  <div>
+                    <h5 className="text-sm font-medium text-gray-900 mb-2">Transport</h5>
+                    <ul className="space-y-2 text-sm text-gray-600">
+                      <li className="flex items-center">
+                        <span className="mr-2">•</span>
+                        5 mins to ferry
+                      </li>
+                      <li className="flex items-center">
+                        <span className="mr-2">•</span>
+                        10 mins to CBD
+                      </li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h5 className="text-sm font-medium text-gray-900 mb-2">Amenities</h5>
+                    <ul className="space-y-2 text-sm text-gray-600">
+                      <li className="flex items-center">
+                        <span className="mr-2">•</span>
+                        Walking distance to shops
+                      </li>
+                      <li className="flex items-center">
+                        <span className="mr-2">•</span>
+                        Premium Lower North Shore location
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Borrower Details */}
+      <div className="bg-emerald-50 p-6 rounded-lg">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">The Borrower</h3>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <div className="bg-white p-4 rounded-lg">
+              <table className="w-full">
+                <tbody className="divide-y divide-gray-200">
+                  <tr>
+                    <td className="py-2 text-gray-600">Name</td>
+                    <td className="py-2 text-gray-900 font-medium">David</td>
+                  </tr>
+                  <tr>
+                    <td className="py-2 text-gray-600">Address</td>
+                    <td className="py-2 text-gray-900 font-medium">24 Ben Boyd Road, Neutral Bay</td>
+                  </tr>
+                  <tr>
+                    <td className="py-2 text-gray-600">Family Status</td>
+                    <td className="py-2 text-gray-900 font-medium">Single</td>
+                  </tr>
+                  <tr>
+                    <td className="py-2 text-gray-600">Gross Income</td>
+                    <td className="py-2 text-gray-900 font-medium">$200,000</td>
+                  </tr>
+                  <tr>
+                    <td className="py-2 text-gray-600">Use of Funds</td>
+                    <td className="py-2 text-gray-900 font-medium">Lifestyle</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Deal Details */}
+      <div className="bg-sky-50 p-6 rounded-lg">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">The Deal</h3>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <div className="bg-white p-4 rounded-lg">
+              <table className="w-full">
+                <tbody className="divide-y divide-gray-200">
+                  <tr>
+                    <td className="py-2 text-gray-600">Deal Date</td>
+                    <td className="py-2 text-gray-900 font-medium">1-Jan-2020</td>
+                  </tr>
+                  <tr>
+                    <td className="py-2 text-gray-600">Deal End Date</td>
+                    <td className="py-2 text-gray-900 font-medium">30-Jun-2024</td>
+                  </tr>
+                  <tr>
+                    <td className="py-2 text-gray-600">PropTrack AVM Value</td>
+                    <td className="py-2 text-gray-900 font-medium">$2,300,000</td>
+                  </tr>
+                  <tr>
+                    <td className="py-2 text-gray-600">PropTrack Low Range</td>
+                    <td className="py-2 text-gray-900 font-medium">$2,180,000</td>
+                  </tr>
+                  <tr>
+                    <td className="py-2 text-gray-600">Discount from the AVM</td>
+                    <td className="py-2 text-gray-900 font-medium">-5.22%</td>
+                  </tr>
+                  <tr>
+                    <td className="py-2 text-gray-600">1st Mortgage Debt</td>
+                    <td className="py-2 text-gray-900 font-medium">$650,000</td>
+                  </tr>
+                  <tr>
+                    <td className="py-2 text-gray-600">Additional Equity Released</td>
+                    <td className="py-2 text-gray-900 font-medium">-</td>
+                  </tr>
+                  <tr>
+                    <td className="py-2 text-gray-600">Total Debt</td>
+                    <td className="py-2 text-gray-900 font-medium">$650,000</td>
+                  </tr>
+                  <tr>
+                    <td className="py-2 text-gray-600">LVR</td>
+                    <td className="py-2 text-gray-900 font-medium">29.82%</td>
+                  </tr>
+                  <tr>
+                    <td className="py-2 text-gray-600">Simple Interest Rate</td>
+                    <td className="py-2 text-gray-900 font-medium">5%</td>
+                  </tr>
+                  <tr>
+                    <td className="py-2 text-gray-600">Upside Participation Rate</td>
+                    <td className="py-2 text-gray-900 font-medium">29.82%</td>
+                  </tr>
+                  <tr>
+                    <td className="py-2 text-gray-600">Term, Years</td>
+                    <td className="py-2 text-gray-900 font-medium">4.5</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          
+          {/* Returns Profile Chart */}
+          <div className="bg-white p-4 rounded-lg">
+            <h4 className="text-lg font-semibold text-gray-900 mb-4">Returns Profile</h4>
+            <div className="h-[300px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={data}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
+                  <XAxis 
+                    dataKey="year" 
+                    tick={{ fill: '#6B7280' }}
+                  />
+                  <YAxis 
+                    tick={{ fill: '#6B7280' }}
+                    domain={[0, 30]}
+                    tickFormatter={(value) => `${value}%`}
+                  />
+                  <Tooltip 
+                    formatter={(value) => [`${value}%`, 'Return']}
+                    labelFormatter={(label) => `Year: ${label}`}
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="value" 
+                    stroke="#0EA5E9" 
+                    strokeWidth={2}
+                    dot={{ fill: '#0EA5E9', r: 4 }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+            <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+              <h5 className="text-sm font-semibold text-gray-900 mb-2">Understanding the Returns Profile</h5>
+              <p className="text-sm text-gray-600">
+                This graph shows the Internal Rate of Return (IRR) if the investment was exited at each point in time. For example:
+              </p>
+              <ul className="mt-2 space-y-1 text-sm text-gray-600">
+                <li>• Exit in 2020: 25.14% IRR</li>
+                <li>• Exit in 2024: 9.35% IRR</li>
+                <li>• Projected 2028: 7.58% IRR</li>
+              </ul>
+              <p className="mt-2 text-sm text-gray-600">
+                The declining IRR over time reflects the mathematical impact of spreading returns over a longer period, not a decrease in absolute returns. The underwrite rate of 10.65% represents our conservative base case.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Growth Profiles */}
+      <div className="bg-purple-50 p-6 rounded-lg">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">The Growth Profiles</h3>
+        <div className="grid grid-cols-2 gap-4">
+          <div className="bg-white p-4 rounded-lg">
+            <table className="w-full">
+              <tbody className="divide-y divide-gray-200">
+                <tr>
+                  <td className="py-2 text-gray-600">Suburb Growth Rate</td>
+                  <td className="py-2 text-gray-900 font-medium">4.65%</td>
+                </tr>
+                <tr>
+                  <td className="py-2 text-gray-600">Forecast Growth Rate</td>
+                  <td className="py-2 text-gray-900 font-medium">2.65%</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      {/* Traffic Light */}
+      <div className="bg-green-50 p-6 rounded-lg">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Traffic Light</h3>
+        <div className="grid grid-cols-2 gap-4">
+          <div className="bg-white p-4 rounded-lg">
+            <table className="w-full">
+              <tbody className="divide-y divide-gray-200">
+                <tr>
+                  <td className="py-2 text-gray-600">Council (LGA)</td>
+                  <td className="py-2 text-gray-900 font-medium">NORTH SYDNEY COUNCIL</td>
+                </tr>
+                <tr>
+                  <td className="py-2 text-gray-600">Suburb Traffic Light</td>
+                  <td className="py-2 text-green-600 font-medium">Green</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default DealExample; 

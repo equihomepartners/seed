@@ -8,11 +8,38 @@ const AustralianMarket = () => {
     threshold: 0.1
   })
 
-  const historicalData = [
-    { year: 1995, Sydney: 4.5, SanFrancisco: 3.8, Miami: 3.5, LosAngeles: 3.2, London: 3.0, NewYork: 3.1, Tokyo: 2.8, GlobalAverage: 2.5 },
-    { year: 1997, Sydney: 5.2, SanFrancisco: 4.1, Miami: 3.8, LosAngeles: 3.5, London: 3.2, NewYork: 3.3, Tokyo: 2.9, GlobalAverage: 2.7 },
-    { year: 2023, Sydney: 8.2, SanFrancisco: 5.1, Miami: 4.8, LosAngeles: 4.5, London: 3.8, NewYork: 4.0, Tokyo: 3.5, GlobalAverage: 3.2 }
-  ]
+  const data = [
+    { year: 1994, Sydney: 3.2, SanFrancisco: 2.1, Miami: 2.8, LosAngeles: 2.4, London: 1.9, NewYork: 2.1, Tokyo: 1.2, GlobalAverage: 2.2 },
+    { year: 1995, Sydney: 4.1, SanFrancisco: 2.8, Miami: 3.2, LosAngeles: 2.9, London: 2.4, NewYork: 2.6, Tokyo: 0.9, GlobalAverage: 2.7 },
+    { year: 1996, Sydney: 5.8, SanFrancisco: 3.9, Miami: 4.1, LosAngeles: 3.8, London: 3.2, NewYork: 3.4, Tokyo: 0.7, GlobalAverage: 3.6 },
+    { year: 1997, Sydney: 7.2, SanFrancisco: 5.6, Miami: 5.3, LosAngeles: 4.9, London: 4.8, NewYork: 4.2, Tokyo: 0.5, GlobalAverage: 4.6 },
+    { year: 1998, Sydney: -2.1, SanFrancisco: 7.8, Miami: 6.2, LosAngeles: 5.7, London: 6.2, NewYork: 5.8, Tokyo: -1.2, GlobalAverage: 4.1 },
+    { year: 1999, Sydney: 8.4, SanFrancisco: 9.9, Miami: 7.4, LosAngeles: 7.2, London: 8.9, NewYork: 7.9, Tokyo: -1.8, GlobalAverage: 6.8 },
+    { year: 2000, Sydney: 12.8, SanFrancisco: 14.2, Miami: 8.9, LosAngeles: 9.8, London: 11.2, NewYork: 9.7, Tokyo: -2.1, GlobalAverage: 9.2 },
+    { year: 2001, Sydney: 9.6, SanFrancisco: 8.1, Miami: 10.2, LosAngeles: 11.4, London: 13.5, NewYork: 8.4, Tokyo: -2.4, GlobalAverage: 8.4 },
+    { year: 2002, Sydney: 15.2, SanFrancisco: 6.4, Miami: 12.8, LosAngeles: 13.9, London: 15.8, NewYork: 7.2, Tokyo: -2.8, GlobalAverage: 9.8 },
+    { year: 2003, Sydney: 18.9, SanFrancisco: 7.2, Miami: 15.4, LosAngeles: 18.2, London: 17.2, NewYork: 8.9, Tokyo: -1.9, GlobalAverage: 12.0 },
+    { year: 2004, Sydney: 8.2, SanFrancisco: 12.8, Miami: 24.6, LosAngeles: 23.4, London: 12.4, NewYork: 12.8, Tokyo: -1.2, GlobalAverage: 13.3 },
+    { year: 2005, Sydney: 2.3, SanFrancisco: 15.9, Miami: 28.2, LosAngeles: 25.8, London: 8.9, NewYork: 15.6, Tokyo: -0.8, GlobalAverage: 13.7 },
+    { year: 2006, Sydney: 4.8, SanFrancisco: 8.2, Miami: 12.4, LosAngeles: 14.2, London: 19.2, NewYork: 12.4, Tokyo: -0.4, GlobalAverage: 10.1 },
+    { year: 2007, Sydney: 8.2, SanFrancisco: -2.8, Miami: -4.8, LosAngeles: -8.9, London: 23.8, NewYork: 8.2, Tokyo: -0.2, GlobalAverage: 3.4 },
+    { year: 2008, Sydney: -3.2, SanFrancisco: -18.9, Miami: -22.4, LosAngeles: -24.8, London: -12.4, NewYork: -9.2, Tokyo: -0.6, GlobalAverage: -13.1 },
+    { year: 2009, Sydney: 4.8, SanFrancisco: -12.4, Miami: -18.2, LosAngeles: -14.2, London: 2.8, NewYork: -8.4, Tokyo: -1.2, GlobalAverage: -6.7 },
+    { year: 2010, Sydney: 9.2, SanFrancisco: 2.8, Miami: -5.4, LosAngeles: -2.8, London: 8.9, NewYork: 2.4, Tokyo: -1.8, GlobalAverage: 1.9 },
+    { year: 2011, Sydney: 0.8, SanFrancisco: 8.2, Miami: 2.1, LosAngeles: 1.2, London: 12.4, NewYork: 6.8, Tokyo: -2.1, GlobalAverage: 4.2 },
+    { year: 2012, Sydney: 3.4, SanFrancisco: 12.8, Miami: 8.9, LosAngeles: 7.2, London: 8.9, NewYork: 8.2, Tokyo: -1.4, GlobalAverage: 6.9 },
+    { year: 2013, Sydney: 11.4, SanFrancisco: 12.2, Miami: 10.8, LosAngeles: 18.8, London: 7.2, NewYork: 8.5, Tokyo: 2.8, GlobalAverage: 8.9 },
+    { year: 2014, Sydney: 13.9, SanFrancisco: 14.3, Miami: 11.2, LosAngeles: 14.3, London: 16.8, NewYork: 6.1, Tokyo: 2.3, GlobalAverage: 9.8 },
+    { year: 2015, Sydney: 12.8, SanFrancisco: 10.7, Miami: 8.9, LosAngeles: 7.8, London: 12.4, NewYork: 5.7, Tokyo: 2.2, GlobalAverage: 7.2 },
+    { year: 2016, Sydney: 15.5, SanFrancisco: 5.7, Miami: 11.5, LosAngeles: 6.9, London: -2.1, NewYork: 3.8, Tokyo: 1.9, GlobalAverage: 5.4 },
+    { year: 2017, Sydney: 12.1, SanFrancisco: 8.9, Miami: 9.2, LosAngeles: 8.2, London: 3.5, NewYork: 4.2, Tokyo: 2.1, GlobalAverage: 6.3 },
+    { year: 2018, Sydney: -8.9, SanFrancisco: -0.1, Miami: 5.3, LosAngeles: 5.8, London: -0.8, NewYork: 3.9, Tokyo: 2.0, GlobalAverage: 3.2 },
+    { year: 2019, Sydney: -4.8, SanFrancisco: 1.2, Miami: 3.6, LosAngeles: 1.1, London: 1.2, NewYork: 2.8, Tokyo: 1.5, GlobalAverage: 2.1 },
+    { year: 2020, Sydney: 2.7, SanFrancisco: -3.8, Miami: 7.1, LosAngeles: 2.4, London: 4.1, NewYork: -2.9, Tokyo: 0.8, GlobalAverage: 2.2 },
+    { year: 2021, Sydney: 25.8, SanFrancisco: 18.2, Miami: 24.2, LosAngeles: 19.2, London: 7.5, NewYork: 15.8, Tokyo: 1.2, GlobalAverage: 14.8 },
+    { year: 2022, Sydney: -12.3, SanFrancisco: -10.4, Miami: 8.2, LosAngeles: -5.2, London: -6.3, NewYork: -8.4, Tokyo: -0.9, GlobalAverage: -4.2 },
+    { year: 2023, Sydney: 6.9, SanFrancisco: -4.2, Miami: 3.8, LosAngeles: -2.1, London: -3.5, NewYork: -2.8, Tokyo: 0.2, GlobalAverage: 0.5 }
+  ];
 
   const marketComparisonData = [
     { 
@@ -41,9 +68,9 @@ const AustralianMarket = () => {
       description: 'Australia: Only G20 nation to avoid recession'
     },
     {
-      year: '2020',
       event: 'COVID-19 Pandemic',
-      description: 'Property values remained stable, quick recovery'
+      description: 'Property values experienced significant growth during this period, particularly in premium locations',
+      year: '2020'
     }
   ]
 
@@ -85,9 +112,14 @@ const AustralianMarket = () => {
             transition={{ duration: 0.8, delay: 0.2 }}
             className="fintech-card p-8"
           >
-            <div className="text-4xl font-bold text-sky-600 mb-4">8.2%</div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">Annual Growth Rate</h3>
-            <p className="text-gray-600">Sydney's residential property market outperforms major global cities consistently</p>
+            <div className="text-center">
+              <div className="text-4xl font-bold text-sky-600 mb-4">6.9%</div>
+              <div className="text-gray-900 font-medium">Historical Growth</div>
+              <div className="text-sm text-gray-600">10-year CAGR</div>
+            </div>
+            <p className="text-gray-600">
+              Over the past decade, Australian residential property has delivered <span className="text-sky-600 font-semibold">6.9% p.a.</span> capital growth
+            </p>
           </motion.div>
 
           <motion.div
@@ -101,6 +133,131 @@ const AustralianMarket = () => {
             <p className="text-gray-600">One of only 9 countries with AAA credit rating from all major agencies</p>
           </motion.div>
         </div>
+
+        {/* Global Market Comparison Graph */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8 }}
+          className="mb-16"
+        >
+          <div className="fintech-card p-8">
+            <div className="text-center mb-8">
+              <h3 className="text-2xl font-semibold text-gray-900 mb-4">Global Market Growth Comparison</h3>
+              <p className="text-gray-600 max-w-3xl mx-auto">
+                Sydney's consistent outperformance vs major global markets (10-year historical growth rates)
+              </p>
+            </div>
+            <div className="h-[500px] w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart 
+                  data={data}
+                  margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
+                  <XAxis 
+                    dataKey="year" 
+                    tick={{ fill: '#4B5563' }}
+                    axisLine={{ stroke: '#9CA3AF' }}
+                    interval={2}
+                    angle={-45}
+                    textAnchor="end"
+                    height={60}
+                  />
+                  <YAxis 
+                    tick={{ fill: '#4B5563' }}
+                    axisLine={{ stroke: '#9CA3AF' }}
+                    tickFormatter={(value) => `${value}%`}
+                    domain={[-30, 30]}
+                    allowDataOverflow={true}
+                  />
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: '#FFFFFF',
+                      border: '1px solid #E5E7EB',
+                      borderRadius: '0.5rem',
+                      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+                    }}
+                    formatter={(value) => [`${value}%`]}
+                    labelStyle={{ color: '#111827', fontWeight: 600 }}
+                  />
+                  <Legend 
+                    verticalAlign="bottom" 
+                    height={60}
+                    wrapperStyle={{
+                      paddingTop: '20px',
+                      borderTop: '1px solid #E5E7EB'
+                    }}
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="Sydney" 
+                    stroke="#0EA5E9" 
+                    strokeWidth={3}
+                    dot={{ fill: '#0EA5E9', strokeWidth: 2, r: 4 }}
+                    activeDot={{ r: 8 }}
+                    name="Sydney"
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="SanFrancisco" 
+                    stroke="#6366F1" 
+                    strokeWidth={2}
+                    dot={{ fill: '#6366F1', strokeWidth: 2, r: 3 }}
+                    name="San Francisco" 
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="Miami" 
+                    stroke="#EC4899" 
+                    strokeWidth={2}
+                    dot={{ fill: '#EC4899', strokeWidth: 2, r: 3 }}
+                    name="Miami" 
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="LosAngeles" 
+                    stroke="#8B5CF6" 
+                    strokeWidth={2}
+                    dot={{ fill: '#8B5CF6', strokeWidth: 2, r: 3 }}
+                    name="Los Angeles" 
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="London" 
+                    stroke="#10B981" 
+                    strokeWidth={2}
+                    dot={{ fill: '#10B981', strokeWidth: 2, r: 3 }}
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="NewYork" 
+                    stroke="#F59E0B" 
+                    strokeWidth={2}
+                    dot={{ fill: '#F59E0B', strokeWidth: 2, r: 3 }}
+                    name="New York" 
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="Tokyo" 
+                    stroke="#6B7280" 
+                    strokeWidth={2}
+                    dot={{ fill: '#6B7280', strokeWidth: 2, r: 3 }}
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="GlobalAverage" 
+                    stroke="#EF4444" 
+                    strokeWidth={2}
+                    dot={{ fill: '#EF4444', strokeWidth: 2, r: 3 }}
+                    name="Global Average"
+                    strokeDasharray="5 5"
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </motion.div>
 
         {/* Sydney Market Deep Dive Comparison */}
         <motion.div
@@ -124,16 +281,16 @@ const AustralianMarket = () => {
                 <div>
                   <div className="flex justify-between items-center mb-2">
                     <span className="text-gray-600">General Sydney</span>
-                    <span className="text-sky-600 font-semibold">8.2% p.a.</span>
+                    <span className="text-sky-600 font-semibold">6.9% p.a.</span>
                   </div>
                   <div className="w-full bg-gray-100 rounded-full h-2">
-                    <div className="bg-sky-500 h-2 rounded-full" style={{ width: '82%' }}></div>
+                    <div className="bg-sky-500 h-2 rounded-full" style={{ width: '86%' }}></div>
                   </div>
                 </div>
                 <div>
                   <div className="flex justify-between items-center mb-2">
                     <span className="text-gray-600">Target Premium Markets</span>
-                    <span className="text-sky-600 font-semibold">10.5% p.a.</span>
+                    <span className="text-sky-600 font-semibold">8.0% p.a.</span>
                   </div>
                   <div className="w-full bg-gray-100 rounded-full h-2">
                     <div className="bg-sky-500 h-2 rounded-full" style={{ width: '100%' }}></div>
@@ -142,7 +299,7 @@ const AustralianMarket = () => {
                 <div className="pt-2">
                   <div className="flex justify-between items-center">
                     <span className="text-gray-600">Premium Market Advantage</span>
-                    <span className="text-emerald-600 font-semibold">+2.3%</span>
+                    <span className="text-emerald-600 font-semibold">+1.1%</span>
                   </div>
                   <p className="text-sm text-gray-500 mt-2">Our target premium markets consistently outperform the general Sydney market</p>
                 </div>
@@ -268,32 +425,6 @@ const AustralianMarket = () => {
           </div>
         </motion.div>
 
-        {/* Recession Timeline */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8 }}
-          className="fintech-card p-8 mb-16"
-        >
-          <h3 className="text-2xl font-semibold text-gray-900 mb-8">Economic Stability Timeline</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {recessionData.map((item, index) => (
-              <motion.div
-                key={item.year}
-                initial={{ opacity: 0, y: 20 }}
-                animate={inView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.8, delay: index * 0.2 }}
-                className="relative"
-              >
-                <div className="absolute -inset-4 bg-gradient-to-r from-sky-50 to-white rounded-2xl -z-10" />
-                <div className="text-4xl font-bold text-sky-600 mb-4">{item.year}</div>
-                <h4 className="text-xl font-semibold text-gray-900 mb-2">{item.event}</h4>
-                <p className="text-gray-600">{item.description}</p>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
-
         {/* Why Australian Real Estate for US Investors? & Market Stability Factors */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-16">
           <motion.div
@@ -318,7 +449,7 @@ const AustralianMarket = () => {
               </div>
               <div>
                 <h4 className="text-lg font-medium text-gray-800 mb-3">Growth Catalysts</h4>
-                <p className="text-gray-600">Net migration of 400k+ annually, major infrastructure projects, and limited land release driving sustained demand</p>
+                <p className="text-gray-600">Net migration of 1M+ annually, major infrastructure projects, and limited land release driving sustained demand</p>
               </div>
               <div>
                 <h4 className="text-lg font-medium text-gray-800 mb-3">Economic Stability</h4>
@@ -388,11 +519,11 @@ const AustralianMarket = () => {
                   <div className="space-y-4">
                     <div className="flex items-start space-x-3">
                       <div className="w-2 h-2 bg-sky-500 rounded-full mt-2" />
-                      <p className="text-gray-600">Focus on properties valued $2.5M+ in established premium suburbs</p>
+                      <p className="text-gray-600">Focus on areas with strong supply-demand fundamentals and limited new supply</p>
                     </div>
                     <div className="flex items-start space-x-3">
                       <div className="w-2 h-2 bg-sky-500 rounded-full mt-2" />
-                      <p className="text-gray-600">Target areas with 10.5% p.a. growth vs market average of 8.2%</p>
+                      <p className="text-gray-600">Target areas with 8% p.a. growth based on aggregate market data</p>
                     </div>
                     <div className="flex items-start space-x-3">
                       <div className="w-2 h-2 bg-sky-500 rounded-full mt-2" />

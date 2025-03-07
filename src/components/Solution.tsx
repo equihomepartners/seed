@@ -1,5 +1,7 @@
 import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
+import { useEffect, useRef } from 'react'
+import DealExample from './DealExample'
 
 const Solution = () => {
   const [ref, inView] = useInView({
@@ -232,10 +234,8 @@ const Solution = () => {
         </div>
 
         {/* Transaction Example */}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.8, delay: 0.6 }}
+        <motion.div
+          initial={{ opacity: 1, y: 0 }}
           className="max-w-4xl mx-auto"
         >
           <div className="text-center mb-16">
@@ -243,169 +243,7 @@ const Solution = () => {
             <p className="text-xl text-gray-600">A real case study from Sydney's Lower North Shore</p>
           </div>
 
-          <div className="grid grid-cols-1 gap-8">
-            {/* Property Details */}
-            <div className="fintech-card p-8 bg-gradient-to-br from-sky-50 to-white">
-              <h4 className="text-xl font-bold text-gray-900 mb-6">Property Profile</h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="space-y-4">
-                  <div>
-                    <div className="text-gray-600 mb-1">Location</div>
-                    <div className="text-lg font-semibold text-gray-900">Neutral Bay, Sydney</div>
-                    <div className="text-sm text-gray-600">Premium Lower North Shore suburb</div>
-                  </div>
-                  <div>
-                    <div className="text-gray-600 mb-1">Property Type</div>
-                    <div className="text-lg font-semibold text-gray-900">Single-Family Home</div>
-                    <div className="text-sm text-gray-600">4-bed, 2-bath Federation home, 506m² land</div>
-                  </div>
-                  <div>
-                    <div className="text-gray-600 mb-1">Market Context</div>
-                    <div className="text-sm text-gray-600">
-                      • Premium Lower North Shore location with limited new supply<br/>
-                      • High owner-occupier ratio (82%) indicating stable values<br/>
-                      • Strong rental demand with 2.1% vacancy rate<br/>
-                      • Major infrastructure projects: New Metro station (2024)<br/>
-                      • Zoning restrictions protect heritage character
-                    </div>
-                  </div>
-                </div>
-                <div className="space-y-4">
-                  <div>
-                    <div className="text-gray-600 mb-1">Initial Valuation (2021)</div>
-                    <div className="text-lg font-semibold text-gray-900">$3,200,000</div>
-                    <div className="text-sm text-gray-600">Based on recent comparable sales on Ben Boyd Road</div>
-                  </div>
-                  <div>
-                    <div className="text-gray-600 mb-1">Risk Assessment</div>
-                    <div className="text-sm text-gray-600">
-                      • Premium Federation home with period features<br/>
-                      • Highly sought-after school catchment<br/>
-                      • Large land size for the area<br/>
-                      • Walking distance to shops and transport
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Initial Transaction */}
-            <div className="fintech-card p-8">
-              <h4 className="text-xl font-bold text-gray-900 mb-6">Initial Transaction</h4>
-              <div className="grid grid-cols-2 gap-8">
-                <div>
-                  <div className="text-gray-600 mb-2">Property Value</div>
-                  <div className="text-2xl font-bold text-gray-900">$1,500,000</div>
-                </div>
-                <div>
-                  <div className="text-gray-600 mb-2">Equity Release (30% LTV)</div>
-                  <div className="text-2xl font-bold text-gray-900">$450,000</div>
-                </div>
-                <div>
-                  <div className="text-gray-600 mb-2">Upfront Fee (3%)</div>
-                  <div className="text-2xl font-bold text-red-500">-$13,500</div>
-                </div>
-                <div>
-                  <div className="text-gray-600 mb-2">Net to Homeowner</div>
-                  <div className="text-2xl font-bold text-sky-600">$436,500</div>
-                </div>
-              </div>
-            </div>
-
-            {/* Use Case */}
-            <div className="fintech-card p-8 bg-sky-50">
-              <h4 className="text-xl font-bold text-gray-900 mb-6">Investment Journey</h4>
-              <div className="space-y-6">
-                <div className="flex items-start space-x-3">
-                  <div className="w-2 h-2 bg-sky-500 rounded-full mt-2"></div>
-                  <div className="flex-1">
-                    <div className="text-gray-900 font-medium">Homeowner Profile</div>
-                    <div className="text-gray-600">Professional couple in their late 50s with fully paid off home, looking to help their children enter the Sydney property market without selling their family home</div>
-                  </div>
-                </div>
-                <div className="flex items-start space-x-3">
-                  <div className="w-2 h-2 bg-sky-500 rounded-full mt-2"></div>
-                  <div className="flex-1">
-                    <div className="text-gray-900 font-medium">Security Position</div>
-                    <div className="text-gray-600">First registered mortgage on unencumbered property, providing maximum security with no other debt obligations on title</div>
-                  </div>
-                </div>
-                <div className="flex items-start space-x-3">
-                  <div className="w-2 h-2 bg-sky-500 rounded-full mt-2"></div>
-                  <div className="flex-1">
-                    <div className="text-gray-900 font-medium">Terms & Conditions</div>
-                    <div className="text-gray-600">10-year term with early repayment flexibility, mandatory building and contents insurance, property maintenance requirements, and full recourse under Australian law in case of default</div>
-                  </div>
-                </div>
-                <div className="flex items-start space-x-3">
-                  <div className="w-2 h-2 bg-sky-500 rounded-full mt-2"></div>
-                  <div className="flex-1">
-                    <div className="text-gray-900 font-medium">Events of Default</div>
-                    <div className="text-gray-600">Include failure to maintain required insurance, unauthorized sale/transfer of property, breach of maintenance obligations, or bankruptcy - triggering Equihome's right to enforce security</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Exit & Returns */}
-            <div className="fintech-card p-8">
-              <h4 className="text-xl font-bold text-gray-900 mb-6">Exit & Returns (21 Months)</h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="space-y-6">
-                  <div>
-                    <div className="text-gray-600 mb-2">New Property Value</div>
-                    <div className="text-2xl font-bold text-gray-900">$1,800,000</div>
-                    <div className="text-sm text-gray-600">20% appreciation over 21 months</div>
-                    <div className="mt-3 text-sm text-gray-600">
-                      Value growth supported by:<br/>
-                      • Strong market fundamentals in premium suburb<br/>
-                      • Limited supply of heritage family homes<br/>
-                      • Infrastructure and amenity improvements<br/>
-                      • Consistent buyer demand in school catchment
-                    </div>
-                    <div className="mt-3 text-sm text-gray-600">
-                      Validated by:<br/>
-                      • Recent comparable sales within 500m<br/>
-                      • Independent valuation report<br/>
-                      • REA Property Data insights
-                    </div>
-                  </div>
-                  <div>
-                    <div className="text-gray-600 mb-2">Property Gain</div>
-                    <div className="text-2xl font-bold text-green-500">+$300,000</div>
-                    <div className="text-sm text-gray-600">Verified by independent valuation</div>
-                  </div>
-                </div>
-                <div className="space-y-4">
-                  <div>
-                    <div className="text-gray-600 mb-2">Principal Repayment</div>
-                    <div className="text-xl font-bold text-gray-900">$450,000</div>
-                    <div className="text-sm text-gray-600">Original loan amount</div>
-                  </div>
-                  <div>
-                    <div className="text-gray-600 mb-2">Simple Interest (5% p.a.)</div>
-                    <div className="text-xl font-bold text-gray-900">$39,375</div>
-                    <div className="text-sm text-gray-600">(21 months on $450,000)</div>
-                  </div>
-                  <div>
-                    <div className="text-gray-600 mb-2">Appreciation Share (35%)</div>
-                    <div className="text-xl font-bold text-gray-900">$105,000</div>
-                    <div className="text-sm text-gray-600">35% of $300,000 gain</div>
-                  </div>
-                  <div className="pt-4 border-t border-gray-200">
-                    <div className="text-gray-600 mb-2">Total Return to Equihome</div>
-                    <div className="text-2xl font-bold text-sky-600">$594,375</div>
-                    <div className="text-sm text-gray-600 space-y-1">
-                      <div>• Principal: $450,000</div>
-                      <div>• Interest: $39,375</div>
-                      <div>• Appreciation Share: $105,000</div>
-                      <div>• Total IRR: 21.8% (including upfront fee)</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <DealExample />
         </motion.div>
       </div>
     </section>

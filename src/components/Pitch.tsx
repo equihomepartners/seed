@@ -52,67 +52,41 @@ const Pitch = () => {
     try {
       const sections = contentRef.current.querySelectorAll('section')
       const pdf = new jsPDF('p', 'mm', 'a4', true)
-      const margin = 10
-      let currentPage = 1
+      const margin = 20 // Increased margin for better spacing
+      let currentPage = 0
 
-      // Add cover page
-      pdf.setFillColor(240, 249, 255) // sky-50
-      pdf.rect(0, 0, pdf.internal.pageSize.width, pdf.internal.pageSize.height, 'F')
-      pdf.setFontSize(24)
-      pdf.setTextColor(2, 132, 199) // sky-600
-      pdf.text('Equihome', margin, 30)
-      pdf.setFontSize(16)
-      pdf.setTextColor(51, 65, 85) // slate-700
-      pdf.text('Investment Pitch Deck', margin, 45)
-      pdf.setFontSize(12)
-      pdf.text(`Generated on ${new Date().toLocaleDateString()}`, margin, 60)
-      
-      // Add table of contents
-      pdf.addPage()
-      currentPage++
-      pdf.setFontSize(18)
-      pdf.setTextColor(2, 132, 199)
-      pdf.text('Table of Contents', margin, 20)
-      pdf.setFontSize(12)
-      pdf.setTextColor(51, 65, 85)
-      
-      let tocY = 35
-      const sections_list = [
-        'Executive Summary',
-        'Vision & Problem',
-        'Current Market Options',
-        'Our Solution',
-        'Australian Market',
-        'US Model Validation',
-        'Business Model',
-        'Win-Win Model',
-        'Growth Trajectory',
-        'Team',
-        'Strategic Backing',
-        'Investment Opportunity'
-      ]
-      
-      sections_list.forEach((section, index) => {
-        pdf.text(`${index + 1}. ${section}`, margin, tocY)
-        tocY += 10
-      })
-
-      // Process each section
-      for (const section of Array.from(sections)) {
-        const canvas = await html2canvas(section, {
-          scale: 2,
+      // Get the hero section for the cover page
+      const heroSection = sections[0]
+      if (heroSection) {
+        const canvas = await html2canvas(heroSection, {
           useCORS: true,
-          logging: false
+          logging: false,
+          background: '#FFFFFF'
+        })
+
+        const imgData = canvas.toDataURL('image/jpeg', 1.0)
+        const imgWidth = pdf.internal.pageSize.width
+        const imgHeight = (canvas.height * imgWidth) / canvas.width
+
+        // Add cover page without margins for full bleed
+        pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight)
+        currentPage++
+      }
+
+      // Process remaining sections (skip the hero section since we used it as cover)
+      for (const section of Array.from(sections).slice(1)) {
+        const canvas = await html2canvas(section, {
+          useCORS: true,
+          logging: false,
+          background: '#FFFFFF'
         })
 
         const imgData = canvas.toDataURL('image/jpeg', 1.0)
         const imgWidth = pdf.internal.pageSize.width - (margin * 2)
         const imgHeight = (canvas.height * imgWidth) / canvas.width
 
-        if (currentPage > 1) {
-          pdf.addPage()
-        }
-
+        // Add new page for each section with margins
+        pdf.addPage()
         pdf.addImage(imgData, 'JPEG', margin, margin, imgWidth, imgHeight)
         currentPage++
       }
@@ -138,16 +112,7 @@ const Pitch = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      <GlobalHeader currentPage="pitch" />
-      
-      {/* Download Button */}
-      <button
-        onClick={generatePDF}
-        className="fixed bottom-8 right-8 bg-sky-600 hover:bg-sky-700 text-white p-4 rounded-full shadow-lg z-50 transition-transform hover:scale-105 active:scale-95"
-        aria-label="Download Pitch Deck"
-      >
-        <FaDownload className="text-xl" />
-      </button>
+      <GlobalHeader currentPage="pitch" onDownloadPDF={generatePDF} />
       
       {/* Main Content */}
       <div className="pt-[72px]" ref={contentRef}>
