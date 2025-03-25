@@ -2,7 +2,11 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { FaSignOutAlt } from 'react-icons/fa'
 
-const GlobalHeader = ({ currentPage }: { currentPage: string }) => {
+interface GlobalHeaderProps {
+  currentPage: string;
+}
+
+const GlobalHeader = ({ currentPage }: GlobalHeaderProps) => {
   const navigate = useNavigate()
   const [userEmail, setUserEmail] = useState<string | null>(null)
 
