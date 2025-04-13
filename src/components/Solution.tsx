@@ -123,7 +123,7 @@ const Solution = () => {
           >
             {/* Add subtle pattern overlay */}
             <div className="absolute inset-0 bg-sky-50 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, rgba(2,132,199,0.15) 2px, transparent 0)' }} />
-            
+
             <div className="relative">
               <div className="flex items-center space-x-3 mb-8">
                 <div className="w-10 h-10 rounded-full bg-sky-100 flex items-center justify-center">
@@ -233,6 +233,107 @@ const Solution = () => {
           </motion.div>
         </div>
 
+        {/* Product Offering Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8, delay: 0.6 }}
+          className="mb-32 py-16 bg-gradient-to-b from-gray-50 to-white rounded-3xl"
+        >
+          <div className="text-center mb-12">
+            <h3 className="text-4xl font-bold mb-2 text-gray-900">Product Offering</h3>
+            <p className="text-xl font-medium mb-4 text-gray-700">
+              Empowering Homeowners with Cash Flow-Free Financing
+            </p>
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+              Specializing in equity release to provide innovative solutions to homeowners
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+            {/* Refinance Card */}
+            <div className="rounded-xl overflow-hidden shadow-xl transform transition-transform hover:scale-105">
+              <div className="bg-blue-700 p-6 text-center">
+                <h4 className="text-2xl font-bold text-white">Refinance</h4>
+              </div>
+              <div className="bg-gray-900 text-white p-6 flex flex-col space-y-4 min-h-[320px]">
+                <p className="text-center pb-4 border-b border-gray-700 text-sm md:text-base">
+                  Refinance your existing mortgage
+                </p>
+
+                <div className="text-center py-2 border-b border-gray-700">
+                  <p className="font-medium text-sm md:text-base">Unlock Home Equity</p>
+                </div>
+
+                <div className="space-y-2 py-2 text-center">
+                  <p className="text-sm">Deferred Payments</p>
+                  <p className="text-sm">Fixed Simple Interest</p>
+                  <p className="text-sm">Appreciation Share</p>
+                  <p className="text-sm">Shared Risk & Reward</p>
+                </div>
+
+                <div className="pt-4 mt-auto border-t border-gray-700">
+                  <p className="text-center font-medium text-sm">10 Year Term, Exit Anytime</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Transitional Card */}
+            <div className="rounded-xl overflow-hidden shadow-xl transform transition-transform hover:scale-105">
+              <div className="bg-blue-700 p-6 text-center">
+                <h4 className="text-2xl font-bold text-white">Transitional</h4>
+              </div>
+              <div className="bg-gray-900 text-white p-6 flex flex-col space-y-4 min-h-[320px]">
+                <p className="text-center pb-4 border-b border-gray-700 text-sm md:text-base">
+                  Bridge the gap when buying a new home before selling your current one
+                </p>
+
+                <div className="text-center py-2 border-b border-gray-700">
+                  <p className="font-medium text-sm md:text-base">Unlock Home Equity</p>
+                </div>
+
+                <div className="space-y-2 py-2 text-center">
+                  <p className="text-sm">Deferred Payments</p>
+                  <p className="text-sm">Fixed Simple Interest</p>
+                  <p className="text-sm">Appreciation Share</p>
+                  <p className="text-sm">Shared Risk & Reward</p>
+                </div>
+
+                <div className="pt-4 mt-auto border-t border-gray-700">
+                  <p className="text-center font-medium text-sm">1 Year Timeline to Buy New Property</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Equity Release Card */}
+            <div className="rounded-xl overflow-hidden shadow-xl transform transition-transform hover:scale-105">
+              <div className="bg-blue-700 p-6 text-center">
+                <h4 className="text-2xl font-bold text-white">Equity Release</h4>
+              </div>
+              <div className="bg-gray-900 text-white p-6 flex flex-col space-y-4 min-h-[320px]">
+                <p className="text-center pb-4 border-b border-gray-700 text-sm md:text-base">
+                  Unlock the equity in your home
+                </p>
+
+                <div className="text-center py-2 border-b border-gray-700">
+                  <p className="font-medium text-sm md:text-base">Unlock Home Equity</p>
+                </div>
+
+                <div className="space-y-2 py-2 text-center">
+                  <p className="text-sm">Deferred Payments</p>
+                  <p className="text-sm">Fixed Simple Interest</p>
+                  <p className="text-sm">Appreciation Share</p>
+                  <p className="text-sm">Shared Risk & Reward</p>
+                </div>
+
+                <div className="pt-4 mt-auto border-t border-gray-700">
+                  <p className="text-center font-medium text-sm">10 Year Term, Exit Anytime</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
         {/* Transaction Example */}
         <motion.div
           initial={{ opacity: 1, y: 0 }}
@@ -250,4 +351,4 @@ const Solution = () => {
   )
 }
 
-export default Solution 
+export default Solution
