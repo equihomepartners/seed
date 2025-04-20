@@ -38,21 +38,21 @@ app.use(cors({
 app.use(express.json())
 
 // Request logging middleware
-app.use((req, res, next) => {
+app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
   console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`)
   console.log('Request headers:', req.headers)
   next()
 })
 
 // Health check endpoint
-app.get('/health', (req, res) => {
+app.get('/health', (req: express.Request, res: express.Response) => {
   console.log('Health check request received')
   res.setHeader('Access-Control-Allow-Origin', '*')
   res.json({ status: 'ok', timestamp: new Date().toISOString() })
 })
 
 // OpenAI Chat endpoint
-app.post('/api/chat', async (req, res) => {
+app.post('/api/chat', async (req: express.Request, res: express.Response) => {
   try {
     console.log('Received chat request:', req.body)
     const { messages } = req.body
@@ -77,7 +77,7 @@ app.post('/api/chat', async (req, res) => {
 })
 
 // Email endpoint
-app.post('/api/schedule-call', async (req, res) => {
+app.post('/api/schedule-call', async (req: express.Request, res: express.Response) => {
   const { name, email, company, timePreference, message } = req.body
 
   try {
@@ -120,7 +120,7 @@ app.post('/api/schedule-call', async (req, res) => {
 })
 
 // Access Request endpoint
-app.post('/api/request-access', async (req, res) => {
+app.post('/api/request-access', async (req: express.Request, res: express.Response) => {
   const { name, email, requestType } = req.body
 
   try {
@@ -179,7 +179,7 @@ app.post('/api/request-access', async (req, res) => {
 })
 
 // Get all access requests (admin only)
-app.get('/api/access-requests', async (req, res) => {
+app.get('/api/access-requests', async (req: express.Request, res: express.Response) => {
   try {
     // Connect to MongoDB
     await connectToDatabase()
@@ -195,7 +195,7 @@ app.get('/api/access-requests', async (req, res) => {
 })
 
 // Update access request status (admin only)
-app.put('/api/access-requests/:id', async (req, res) => {
+app.put('/api/access-requests/:id', async (req: express.Request, res: express.Response) => {
   const { id } = req.params
   const { status, adminEmail } = req.body
 
@@ -260,7 +260,7 @@ app.put('/api/access-requests/:id', async (req, res) => {
 })
 
 // Check if user has access to a specific resource
-app.get('/api/check-access', async (req, res) => {
+app.get('/api/check-access', async (req: express.Request, res: express.Response) => {
   const { email, resourceType } = req.query
 
   if (!email || !resourceType) {
