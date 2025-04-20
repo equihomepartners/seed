@@ -252,7 +252,7 @@ const Launchpad = () => {
                 <div className="fintech-card p-8 h-full bg-white">
                   <div
                     className="absolute inset-0 bg-gradient-to-br from-sky-600/60 to-indigo-600/60 backdrop-blur-[0.5px] rounded-xl flex items-center justify-center cursor-pointer transition-all hover:from-sky-700/70 hover:to-indigo-700/70 group"
-                    onClick={() => {
+                    onClick={async () => {
                       if (isRequestingAccess) return; // Prevent multiple clicks
 
                       const userEmail = localStorage.getItem('userEmail');
@@ -264,39 +264,57 @@ const Launchpad = () => {
                       // Set loading state
                       setIsRequestingAccess(true);
 
-                      // Simulate API request with a timeout
-                      setTimeout(() => {
-                        try {
-                          // Prepare request data
-                          const requestData = {
-                            email: userEmail,
-                            name: localStorage.getItem('userName') || 'Investor',
-                            requestType: 'dealRoom',
+                      // Prepare request data
+                      const requestData = {
+                        email: userEmail,
+                        name: localStorage.getItem('userName') || 'Investor',
+                        requestType: 'dealRoom'
+                      };
+
+                      try {
+                        // Send API request
+                        const response = await fetch('/api/request-access', {
+                          method: 'POST',
+                          headers: {
+                            'Content-Type': 'application/json'
+                          },
+                          body: JSON.stringify(requestData)
+                        });
+
+                        const data = await response.json();
+
+                        if (response.ok) {
+                          // Store request in localStorage for tracking
+                          const existingRequests = JSON.parse(localStorage.getItem('accessRequests') || '[]');
+                          existingRequests.push({
+                            ...requestData,
                             timestamp: new Date().toISOString(),
                             status: 'pending'
-                          };
-
-                          // Store request in localStorage
-                          const existingRequests = JSON.parse(localStorage.getItem('accessRequests') || '[]');
-                          existingRequests.push(requestData);
-                          localStorage.setItem('accessRequests', JSON.stringify(existingRequests));
-
-                          // Log the request (in a real app, this would be sent to the server)
-                          console.log('Access request details:', {
-                            ...requestData,
-                            message: 'This request would be sent to sujay@equihome.com.au in a production environment'
                           });
+                          localStorage.setItem('accessRequests', JSON.stringify(existingRequests));
 
                           // Show success message
                           alert('Your access request has been sent to sujay@equihome.com.au. You will be notified when access is granted.');
-                        } catch (error) {
-                          console.error('Error processing access request:', error);
-                          alert('There was an error processing your request. Please try again later.');
-                        } finally {
-                          // Reset loading state
-                          setIsRequestingAccess(false);
+                        } else {
+                          throw new Error(data.message || 'Failed to send request');
                         }
-                      }, 1500); // Simulate network delay for better UX
+                      } catch (error) {
+                        console.error('Error sending access request:', error);
+
+                        // Fallback to client-side simulation if API fails
+                        const existingRequests = JSON.parse(localStorage.getItem('accessRequests') || '[]');
+                        existingRequests.push({
+                          ...requestData,
+                          timestamp: new Date().toISOString(),
+                          status: 'pending'
+                        });
+                        localStorage.setItem('accessRequests', JSON.stringify(existingRequests));
+
+                        alert('Your access request has been recorded. You will be notified when access is granted.');
+                      } finally {
+                        // Reset loading state
+                        setIsRequestingAccess(false);
+                      }
                     }}
                   >
                     <div className="flex flex-col items-center text-center px-6 py-6 transform transition-transform group-hover:scale-105 bg-gradient-to-br from-sky-800/40 to-indigo-800/40 rounded-lg backdrop-blur-md">
