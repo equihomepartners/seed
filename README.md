@@ -35,12 +35,23 @@ cd equihome-dashboard
 npm install
 ```
 
-3. Start the development server:
+3. Set up environment variables:
 ```bash
-npm run dev
+cp .env.example .env
 ```
+Then edit the `.env` file and add your actual values for:
+- `OPENAI_API_KEY`: Your OpenAI API key for the chat functionality
+- `EMAIL_USER`: Email address used for sending notifications
+- `EMAIL_PASSWORD`: Password for the email account
+- `TEAM_EMAIL`: Email address to receive admin notifications
 
-4. Build for production:
+4. Start the development server:
+```bash
+npm start
+```
+This will start both the frontend (Vite) and backend (Express) servers.
+
+5. Build for production:
 ```bash
 npm run build
 ```
