@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { FaLock, FaChartLine, FaBuilding, FaFileAlt, FaUsers, FaBrain, FaArrowRight, FaCalendar, FaDownload, FaPlay, FaNewspaper, FaLinkedin, FaGlobe, FaChartBar, FaMapMarkerAlt, FaCheck, FaHome, FaPhone, FaHandshake, FaKey, FaChartPie, FaUser, FaEnvelope } from 'react-icons/fa'
+import { FaLock, FaChartLine, FaBuilding, FaFileAlt, FaUsers, FaBrain, FaArrowRight, FaCalendar, FaDownload, FaPlay, FaNewspaper, FaLinkedin, FaGlobe, FaChartBar, FaMapMarkerAlt, FaCheck, FaHome, FaPhone, FaHandshake, FaKey, FaChartPie, FaUser, FaEnvelope, FaUnlock } from 'react-icons/fa'
 import { useState, useEffect } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import axios from 'axios'
@@ -25,10 +25,72 @@ const Launchpad = () => {
   const [newsletterEmail, setNewsletterEmail] = useState('')
   const [isSubscribing, setIsSubscribing] = useState(false)
   const [isRequestingAccess, setIsRequestingAccess] = useState(false)
+  const [hasDealRoomAccess, setHasDealRoomAccess] = useState(false)
+  const [isCheckingAccess, setIsCheckingAccess] = useState(true)
   const [subscriptionStatus, setSubscriptionStatus] = useState(() => {
     const status = localStorage.getItem('newsletterStatus')
     return status ? JSON.parse(status) : { isSubscribed: false }
   })
+
+  // Check if user has access to Deal Room
+  useEffect(() => {
+    const checkAccess = async () => {
+      setIsCheckingAccess(true);
+      const userEmail = localStorage.getItem('userEmail');
+
+      if (!userEmail) {
+        setHasDealRoomAccess(false);
+        setIsCheckingAccess(false);
+        return;
+      }
+
+      try {
+        // First check localStorage for offline functionality
+        const approvedUsers = JSON.parse(localStorage.getItem('approvedUsers') || '[]');
+        const hasLocalAccess = approvedUsers.some((user: any) =>
+          user.email === userEmail && user.accessType === 'dealRoom'
+        );
+
+        if (hasLocalAccess) {
+          setHasDealRoomAccess(true);
+          setIsCheckingAccess(false);
+          return;
+        }
+
+        // Then check with the server
+        const response = await fetch(`/api/check-access?email=${encodeURIComponent(userEmail)}&resourceType=dealRoom`);
+
+        if (response.ok) {
+          const data = await response.json();
+          setHasDealRoomAccess(data.hasAccess);
+
+          // If has access, update localStorage for offline functionality
+          if (data.hasAccess) {
+            const approvedUsers = JSON.parse(localStorage.getItem('approvedUsers') || '[]');
+            if (!approvedUsers.some((user: any) => user.email === userEmail && user.accessType === 'dealRoom')) {
+              approvedUsers.push({
+                email: userEmail,
+                name: localStorage.getItem('userName') || 'User',
+                accessType: 'dealRoom',
+                approvedAt: data.since || new Date().toISOString()
+              });
+              localStorage.setItem('approvedUsers', JSON.stringify(approvedUsers));
+            }
+          }
+        } else {
+          // If API fails, default to no access
+          setHasDealRoomAccess(false);
+        }
+      } catch (error) {
+        console.error('Error checking access:', error);
+        setHasDealRoomAccess(false);
+      } finally {
+        setIsCheckingAccess(false);
+      }
+    };
+
+    checkAccess();
+  }, []);
 
   const steps: Step[] = [
     {
@@ -250,41 +312,69 @@ const Launchpad = () => {
               {/* Deal Room */}
               <div className="relative">
                 <div className="fintech-card p-8 h-full bg-white">
-                  <div
-                    className="absolute inset-0 bg-gradient-to-br from-sky-600/60 to-indigo-600/60 backdrop-blur-[0.5px] rounded-xl flex items-center justify-center cursor-pointer transition-all hover:from-sky-700/70 hover:to-indigo-700/70 group"
-                    onClick={async () => {
-                      if (isRequestingAccess) return; // Prevent multiple clicks
+                  {isCheckingAccess ? (
+                    // Loading state while checking access
+                    <div className="absolute inset-0 bg-white/80 backdrop-blur-[0.5px] rounded-xl flex items-center justify-center">
+                      <div className="flex flex-col items-center text-center">
+                        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-sky-600 mb-3"></div>
+                        <span className="text-sky-600 font-medium">Checking access...</span>
+                      </div>
+                    </div>
+                  ) : !hasDealRoomAccess ? (
+                    // Request access overlay if user doesn't have access
+                    <div
+                      className="absolute inset-0 bg-gradient-to-br from-sky-600/60 to-indigo-600/60 backdrop-blur-[0.5px] rounded-xl flex items-center justify-center cursor-pointer transition-all hover:from-sky-700/70 hover:to-indigo-700/70 group"
+                      onClick={async () => {
+                        if (isRequestingAccess) return; // Prevent multiple clicks
 
-                      const userEmail = localStorage.getItem('userEmail');
-                      if (!userEmail) {
-                        alert('Please log in to request access.');
-                        return;
-                      }
+                        const userEmail = localStorage.getItem('userEmail');
+                        if (!userEmail) {
+                          alert('Please log in to request access.');
+                          return;
+                        }
 
-                      // Set loading state
-                      setIsRequestingAccess(true);
+                        // Set loading state
+                        setIsRequestingAccess(true);
 
-                      // Prepare request data
-                      const requestData = {
-                        email: userEmail,
-                        name: localStorage.getItem('userName') || 'Investor',
-                        requestType: 'dealRoom'
-                      };
+                        // Prepare request data
+                        const requestData = {
+                          email: userEmail,
+                          name: localStorage.getItem('userName') || 'Investor',
+                          requestType: 'dealRoom'
+                        };
 
-                      try {
-                        // Send API request
-                        const response = await fetch('/api/request-access', {
-                          method: 'POST',
-                          headers: {
-                            'Content-Type': 'application/json'
-                          },
-                          body: JSON.stringify(requestData)
-                        });
+                        try {
+                          // Send API request
+                          const response = await fetch('/api/request-access', {
+                            method: 'POST',
+                            headers: {
+                              'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(requestData)
+                          });
 
-                        const data = await response.json();
+                          const data = await response.json();
 
-                        if (response.ok) {
-                          // Store request in localStorage for tracking
+                          if (response.ok) {
+                            // Store request in localStorage for tracking
+                            const existingRequests = JSON.parse(localStorage.getItem('accessRequests') || '[]');
+                            existingRequests.push({
+                              ...requestData,
+                              timestamp: new Date().toISOString(),
+                              status: 'pending',
+                              requestId: data.requestId
+                            });
+                            localStorage.setItem('accessRequests', JSON.stringify(existingRequests));
+
+                            // Show success message
+                            alert('Your access request has been sent to sujay@equihome.com.au. You will be notified when access is granted.');
+                          } else {
+                            throw new Error(data.message || 'Failed to send request');
+                          }
+                        } catch (error) {
+                          console.error('Error sending access request:', error);
+
+                          // Fallback to client-side simulation if API fails
                           const existingRequests = JSON.parse(localStorage.getItem('accessRequests') || '[]');
                           existingRequests.push({
                             ...requestData,
@@ -293,60 +383,58 @@ const Launchpad = () => {
                           });
                           localStorage.setItem('accessRequests', JSON.stringify(existingRequests));
 
-                          // Show success message
-                          alert('Your access request has been sent to sujay@equihome.com.au. You will be notified when access is granted.');
-                        } else {
-                          throw new Error(data.message || 'Failed to send request');
+                          alert('Your access request has been recorded. You will be notified when access is granted.');
+                        } finally {
+                          // Reset loading state
+                          setIsRequestingAccess(false);
                         }
-                      } catch (error) {
-                        console.error('Error sending access request:', error);
-
-                        // Fallback to client-side simulation if API fails
-                        const existingRequests = JSON.parse(localStorage.getItem('accessRequests') || '[]');
-                        existingRequests.push({
-                          ...requestData,
-                          timestamp: new Date().toISOString(),
-                          status: 'pending'
-                        });
-                        localStorage.setItem('accessRequests', JSON.stringify(existingRequests));
-
-                        alert('Your access request has been recorded. You will be notified when access is granted.');
-                      } finally {
-                        // Reset loading state
-                        setIsRequestingAccess(false);
-                      }
-                    }}
-                  >
-                    <div className="flex flex-col items-center text-center px-6 py-6 transform transition-transform group-hover:scale-105 bg-gradient-to-br from-sky-800/40 to-indigo-800/40 rounded-lg backdrop-blur-md">
-                      <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center mb-3">
-                        {isRequestingAccess ? (
-                          <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-white"></div>
-                        ) : (
-                          <FaKey className="text-2xl text-white" />
-                        )}
+                      }}
+                    >
+                      <div className="flex flex-col items-center text-center px-6 py-6 transform transition-transform group-hover:scale-105 bg-gradient-to-br from-sky-800/40 to-indigo-800/40 rounded-lg backdrop-blur-md">
+                        <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center mb-3">
+                          {isRequestingAccess ? (
+                            <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-white"></div>
+                          ) : (
+                            <FaKey className="text-2xl text-white" />
+                          )}
+                        </div>
+                        <span className="text-white font-bold text-lg mb-1">
+                          {isRequestingAccess ? 'Sending Request...' : 'Request Access'}
+                        </span>
+                        <span className="text-white/90 text-sm mb-3">Get exclusive access to our deal room</span>
+                        <button
+                          className={`px-5 py-1.5 bg-white rounded-full font-medium transition-colors shadow-lg text-sm ${isRequestingAccess ? 'opacity-70 cursor-not-allowed' : 'text-sky-600 hover:bg-sky-50'}`}
+                          disabled={isRequestingAccess}
+                        >
+                          {isRequestingAccess ? 'Processing...' : 'Request Now'}
+                        </button>
                       </div>
-                      <span className="text-white font-bold text-lg mb-1">
-                        {isRequestingAccess ? 'Sending Request...' : 'Request Access'}
-                      </span>
-                      <span className="text-white/90 text-sm mb-3">Get exclusive access to our deal room</span>
-                      <button
-                        className={`px-5 py-1.5 bg-white rounded-full font-medium transition-colors shadow-lg text-sm ${isRequestingAccess ? 'opacity-70 cursor-not-allowed' : 'text-sky-600 hover:bg-sky-50'}`}
-                        disabled={isRequestingAccess}
-                      >
-                        {isRequestingAccess ? 'Processing...' : 'Request Now'}
-                      </button>
                     </div>
-                  </div>
+                  ) : null}
+
                   <div className="flex items-center justify-between mb-6">
                     <h3 className="text-xl font-semibold text-gray-800">Deal Room</h3>
                     <div className="w-12 h-12 rounded-xl bg-sky-50 flex items-center justify-center">
-                      <svg className="w-6 h-6 text-sky-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                      </svg>
+                      {hasDealRoomAccess ? (
+                        <FaUnlock className="w-6 h-6 text-green-600" />
+                      ) : (
+                        <svg className="w-6 h-6 text-sky-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                        </svg>
+                      )}
                     </div>
                   </div>
                   <p className="text-gray-600 mb-6">Access detailed financials and due diligence materials.</p>
-                  <div className="text-sky-500">Enter Deal Room →</div>
+                  {hasDealRoomAccess ? (
+                    <div
+                      className="text-green-600 font-medium cursor-pointer hover:underline"
+                      onClick={() => navigate('/deal-room')}
+                    >
+                      Enter Deal Room →
+                    </div>
+                  ) : (
+                    <div className="text-sky-500">Enter Deal Room →</div>
+                  )}
                 </div>
               </div>
             </div>

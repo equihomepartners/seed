@@ -12,6 +12,7 @@ import InterestRegistration from './components/forms/InterestRegistration'
 import AdminDashboard from './components/admin/AdminDashboard'
 import AdminSignIn from './components/admin/AdminSignIn'
 import WebinarRegistration from './components/WebinarRegistration'
+import DealRoom from './components/DealRoom'
 import PageTracker from './components/PageTracker'
 
 function App() {
@@ -151,6 +152,16 @@ function App() {
           element={
             isAuthenticated ? (
               <WebinarRegistration />
+            ) : (
+              <Navigate to="/" replace />
+            )
+          }
+        />
+        <Route
+          path="/deal-room"
+          element={
+            isAuthenticated ? (
+              <DealRoom />
             ) : (
               <Navigate to="/" replace />
             )

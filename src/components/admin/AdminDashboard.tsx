@@ -14,7 +14,7 @@ const AdminDashboard = () => {
   const [metrics, setMetrics] = useState<Metrics | null>(null);
   const [activities, setActivities] = useState([]);
   const [subscribers, setSubscribers] = useState([]);
-  const [accessRequests, setAccessRequests] = useState([]);
+  const [accessRequests, setAccessRequests] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -28,10 +28,11 @@ const AdminDashboard = () => {
     const fetchData = async () => {
       try {
         // Fetch data from API
-        const [metricsRes, activitiesRes, subscribersRes] = await Promise.all([
+        const [metricsRes, activitiesRes, subscribersRes, accessRequestsRes] = await Promise.all([
           fetch(`${API_URL}/admin/metrics`),
           fetch(`${API_URL}/admin/user-activity`),
-          fetch(`${API_URL}/admin/newsletter-subscribers`)
+          fetch(`${API_URL}/admin/newsletter-subscribers`),
+          fetch('/api/access-requests')
         ]);
 
         if (!metricsRes.ok || !activitiesRes.ok || !subscribersRes.ok) {
@@ -44,13 +45,20 @@ const AdminDashboard = () => {
           subscribersRes.json()
         ]);
 
-        // Fetch access requests from localStorage
-        const storedRequests = JSON.parse(localStorage.getItem('accessRequests') || '[]');
+        // Process access requests
+        let accessRequestsData = [];
+        if (accessRequestsRes.ok) {
+          accessRequestsData = await accessRequestsRes.json();
+        } else {
+          // Fallback to localStorage if API fails
+          console.warn('Failed to fetch access requests from API, falling back to localStorage');
+          accessRequestsData = JSON.parse(localStorage.getItem('accessRequests') || '[]');
+        }
 
         setMetrics(metricsData);
         setActivities(activitiesData);
         setSubscribers(subscribersData);
-        setAccessRequests(storedRequests);
+        setAccessRequests(accessRequestsData);
       } catch (err) {
         setError('Failed to load dashboard data');
         console.error(err);
@@ -67,35 +75,69 @@ const AdminDashboard = () => {
     navigate('/admin/login');
   };
 
-  const handleAccessRequest = (index: number, action: 'approve' | 'deny') => {
-    const updatedRequests = [...accessRequests];
-    const request = updatedRequests[index];
+  const handleAccessRequest = async (index: number, action: 'approve' | 'deny') => {
+    const request = accessRequests[index];
+    const requestId = request._id;
+    const status = action === 'approve' ? 'approved' : 'denied';
 
-    if (action === 'approve') {
-      request.status = 'approved';
-
-      // In a real app, this would send an email to the user
-      console.log(`Access approved for ${request.email}`);
-
-      // Store the approved user in a separate list
-      const approvedUsers = JSON.parse(localStorage.getItem('approvedUsers') || '[]');
-      approvedUsers.push({
-        email: request.email,
-        name: request.name,
-        accessType: request.requestType,
-        approvedAt: new Date().toISOString()
+    try {
+      // Update request status via API
+      const response = await fetch(`/api/access-requests/${requestId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          status,
+          adminEmail: localStorage.getItem('adminEmail')
+        })
       });
-      localStorage.setItem('approvedUsers', JSON.stringify(approvedUsers));
-    } else {
-      request.status = 'denied';
-      console.log(`Access denied for ${request.email}`);
+
+      if (!response.ok) {
+        throw new Error('Failed to update access request');
+      }
+
+      // Update local state
+      const updatedRequests = [...accessRequests];
+      updatedRequests[index] = {
+        ...request,
+        status,
+        approvedAt: status === 'approved' ? new Date().toISOString() : null,
+        approvedBy: status === 'approved' ? localStorage.getItem('adminEmail') : null
+      };
+
+      // Fallback: Update localStorage for offline functionality
+      const localRequests = JSON.parse(localStorage.getItem('accessRequests') || '[]');
+      const localIndex = localRequests.findIndex((req: any) =>
+        req.email === request.email && req.requestType === request.requestType
+      );
+
+      if (localIndex !== -1) {
+        localRequests[localIndex].status = status;
+        localStorage.setItem('accessRequests', JSON.stringify(localRequests));
+      }
+
+      // If approved, also update approvedUsers in localStorage for client-side checks
+      if (status === 'approved') {
+        const approvedUsers = JSON.parse(localStorage.getItem('approvedUsers') || '[]');
+        approvedUsers.push({
+          email: request.email,
+          name: request.name,
+          accessType: request.requestType,
+          approvedAt: new Date().toISOString()
+        });
+        localStorage.setItem('approvedUsers', JSON.stringify(approvedUsers));
+      }
+
+      // Update state
+      setAccessRequests(updatedRequests);
+
+      // Show success message
+      alert(`Access request ${status} for ${request.email}`);
+    } catch (error) {
+      console.error('Error updating access request:', error);
+      alert('Failed to update access request. Please try again.');
     }
-
-    // Update the requests in localStorage
-    localStorage.setItem('accessRequests', JSON.stringify(updatedRequests));
-
-    // Update state
-    setAccessRequests(updatedRequests);
   };
 
   if (loading) {
