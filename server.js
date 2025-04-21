@@ -40,6 +40,7 @@ const connectToDatabase = async () => {
 
 // Import models
 const DealRoomActivity = require('./server/models/DealRoomActivity');
+const DealRoomDocument = require('./server/models/DealRoomDocument');
 
 // Define AccessRequest model
 const accessRequestSchema = new mongoose.Schema({
@@ -442,6 +443,310 @@ app.get('/api/deal-room-activity/user/:email', async (req, res) => {
   } catch (error) {
     console.error('Error fetching user Deal Room activity:', error);
     res.status(500).json({ message: 'Failed to fetch user activity' });
+  }
+});
+
+// Get all Deal Room documents
+app.get('/api/deal-room/documents', async (req, res) => {
+  try {
+    // Connect to MongoDB
+    await connectToDatabase();
+
+    // Get all documents, sorted by category and sortOrder
+    const documents = await DealRoomDocument.find().sort({ category: 1, sortOrder: 1 });
+
+    res.status(200).json(documents);
+  } catch (error) {
+    console.error('Error fetching Deal Room documents:', error);
+    res.status(500).json({ message: 'Failed to fetch documents' });
+  }
+});
+
+// Get documents by category
+app.get('/api/deal-room/documents/category/:category', async (req, res) => {
+  const { category } = req.params;
+
+  try {
+    // Connect to MongoDB
+    await connectToDatabase();
+
+    // Get documents by category, sorted by sortOrder
+    const documents = await DealRoomDocument.find({ category }).sort({ sortOrder: 1 });
+
+    res.status(200).json(documents);
+  } catch (error) {
+    console.error('Error fetching documents by category:', error);
+    res.status(500).json({ message: 'Failed to fetch documents by category' });
+  }
+});
+
+// Add a new document (admin only)
+app.post('/api/deal-room/documents', async (req, res) => {
+  const { title, description, category, fileUrl, externalUrl, iconType, isLocked, sortOrder, bookmark } = req.body;
+
+  try {
+    // Connect to MongoDB
+    await connectToDatabase();
+
+    // Create new document
+    const document = new DealRoomDocument({
+      title,
+      description,
+      category,
+      fileUrl,
+      externalUrl,
+      iconType,
+      isLocked: isLocked || false,
+      sortOrder: sortOrder || 0,
+      bookmark
+    });
+
+    // Save to database
+    await document.save();
+
+    console.log(`New document added: ${title} in ${category}`);
+
+    res.status(201).json({ message: 'Document added successfully', document });
+  } catch (error) {
+    console.error('Error adding document:', error);
+    res.status(500).json({ message: 'Failed to add document' });
+  }
+});
+
+// Update a document (admin only)
+app.put('/api/deal-room/documents/:id', async (req, res) => {
+  const { id } = req.params;
+  const { title, description, category, fileUrl, externalUrl, iconType, isLocked, sortOrder, bookmark } = req.body;
+
+  try {
+    // Connect to MongoDB
+    await connectToDatabase();
+
+    // Find the document
+    const document = await DealRoomDocument.findById(id);
+
+    if (!document) {
+      return res.status(404).json({ message: 'Document not found' });
+    }
+
+    // Update fields
+    if (title) document.title = title;
+    if (description !== undefined) document.description = description;
+    if (category) document.category = category;
+    if (fileUrl !== undefined) document.fileUrl = fileUrl;
+    if (externalUrl !== undefined) document.externalUrl = externalUrl;
+    if (iconType) document.iconType = iconType;
+    if (isLocked !== undefined) document.isLocked = isLocked;
+    if (sortOrder !== undefined) document.sortOrder = sortOrder;
+    if (bookmark !== undefined) document.bookmark = bookmark;
+
+    document.updatedAt = new Date();
+
+    // Save changes
+    await document.save();
+
+    console.log(`Document updated: ${document.title}`);
+
+    res.status(200).json({ message: 'Document updated successfully', document });
+  } catch (error) {
+    console.error('Error updating document:', error);
+    res.status(500).json({ message: 'Failed to update document' });
+  }
+});
+
+// Delete a document (admin only)
+app.delete('/api/deal-room/documents/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    // Connect to MongoDB
+    await connectToDatabase();
+
+    // Find and delete the document
+    const document = await DealRoomDocument.findByIdAndDelete(id);
+
+    if (!document) {
+      return res.status(404).json({ message: 'Document not found' });
+    }
+
+    console.log(`Document deleted: ${document.title}`);
+
+    res.status(200).json({ message: 'Document deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting document:', error);
+    res.status(500).json({ message: 'Failed to delete document' });
+  }
+});
+
+// Initialize Deal Room with default documents
+app.post('/api/deal-room/initialize', async (req, res) => {
+  try {
+    // Connect to MongoDB
+    await connectToDatabase();
+
+    // Check if documents already exist
+    const existingCount = await DealRoomDocument.countDocuments();
+
+    if (existingCount > 0) {
+      return res.status(400).json({ message: 'Deal Room already initialized' });
+    }
+
+    // Default documents
+    const defaultDocuments = [
+      // Company Documentation
+      {
+        title: 'US Company Documentation',
+        description: 'Legal documents for the US entity',
+        category: 'company',
+        iconType: 'folder',
+        sortOrder: 1
+      },
+      {
+        title: 'Equihome Company Model - $1.5m USD Raise',
+        description: 'Financial model for the company',
+        category: 'financial',
+        iconType: 'chart',
+        sortOrder: 1
+      },
+      {
+        title: 'Equihome Fund Model - $500m Draw Down',
+        description: 'Financial model for the fund',
+        category: 'financial',
+        iconType: 'chart',
+        sortOrder: 2
+      },
+      {
+        title: 'Equihome Thesis Presentation',
+        description: 'Investment thesis presentation',
+        category: 'company',
+        iconType: 'presentation',
+        sortOrder: 2
+      },
+      {
+        title: 'Cap Table',
+        description: 'Current capitalization table',
+        category: 'company',
+        iconType: 'table',
+        sortOrder: 3
+      },
+      {
+        title: 'Equihome Seed Website',
+        description: 'Seed stage website',
+        category: 'company',
+        externalUrl: 'https://seed.equihome.com.au',
+        iconType: 'web',
+        sortOrder: 4
+      },
+      {
+        title: '¾ Page Introduction',
+        description: 'Brief company introduction',
+        category: 'email',
+        iconType: 'email',
+        sortOrder: 1
+      },
+      {
+        title: '2 Paragraphs - Bart Email',
+        description: 'Email from Bart with company overview',
+        category: 'email',
+        iconType: 'email',
+        sortOrder: 2
+      },
+
+      // Updated Documents (with bookmark)
+      {
+        title: 'Investment Thesis - Current Draft',
+        description: 'Latest version of the investment thesis',
+        category: 'updated',
+        iconType: 'file',
+        bookmark: '15 April 2025',
+        sortOrder: 1
+      },
+      {
+        title: 'Equihome Model - Blended Duration - $2m Raise',
+        description: 'Updated financial model with blended duration',
+        category: 'updated',
+        iconType: 'chart',
+        bookmark: '15 April 2025',
+        sortOrder: 2
+      },
+      {
+        title: 'SWOT Analysis',
+        description: 'Strengths, weaknesses, opportunities, and threats analysis',
+        category: 'updated',
+        iconType: 'file',
+        bookmark: '15 April 2025',
+        sortOrder: 3
+      },
+      {
+        title: 'Competitive Landscape',
+        description: 'Analysis of competitors in the market',
+        category: 'market',
+        iconType: 'file',
+        sortOrder: 1
+      },
+      {
+        title: 'Residential Mortgage Market',
+        description: 'Overview of the residential mortgage market',
+        category: 'market',
+        iconType: 'file',
+        sortOrder: 2
+      },
+      {
+        title: 'Go to Market Strategy',
+        description: 'Strategy for market entry and growth',
+        category: 'strategy',
+        iconType: 'file',
+        sortOrder: 1
+      },
+      {
+        title: 'Market Fit Analysis',
+        description: 'Analysis of product-market fit',
+        category: 'strategy',
+        iconType: 'file',
+        sortOrder: 2
+      },
+      {
+        title: 'Introduction Deck - Updated',
+        description: 'Latest version of the introduction deck',
+        category: 'updated',
+        iconType: 'presentation',
+        bookmark: '15 April 2025',
+        sortOrder: 4
+      },
+
+      // Technical Documents
+      {
+        title: 'Technical Architecture',
+        description: 'Overview of the technical architecture',
+        category: 'technical',
+        iconType: 'file',
+        sortOrder: 1
+      },
+      {
+        title: 'API Documentation',
+        description: 'Documentation for the API',
+        category: 'technical',
+        iconType: 'file',
+        sortOrder: 2
+      },
+      {
+        title: 'Security Overview',
+        description: 'Overview of security measures',
+        category: 'technical',
+        iconType: 'file',
+        sortOrder: 3
+      }
+    ];
+
+    // Insert all documents
+    await DealRoomDocument.insertMany(defaultDocuments);
+
+    console.log(`Initialized Deal Room with ${defaultDocuments.length} documents`);
+
+    res.status(201).json({ message: 'Deal Room initialized successfully', count: defaultDocuments.length });
+  } catch (error) {
+    console.error('Error initializing Deal Room:', error);
+    res.status(500).json({ message: 'Failed to initialize Deal Room' });
   }
 });
 
