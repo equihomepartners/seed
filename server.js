@@ -831,21 +831,7 @@ app.post('/api/deal-room/initialize', async (req, res) => {
 
 // This endpoint was moved to line 304
 
-// Get Deal Room activity
-app.get('/api/deal-room-activity', async (req, res) => {
-  try {
-    // Connect to MongoDB
-    await connectToDatabase();
-
-    // Get all Deal Room activity
-    const activities = await DealRoomActivity.find({}).sort({ timestamp: -1 }).limit(100);
-
-    res.status(200).json(activities);
-  } catch (error) {
-    console.error('Error fetching Deal Room activity:', error);
-    res.status(500).json({ message: 'Failed to fetch Deal Room activity' });
-  }
-});
+// This endpoint was moved to line 491
 
 // Admin API endpoints
 

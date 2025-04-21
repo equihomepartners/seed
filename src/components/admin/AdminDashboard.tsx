@@ -30,13 +30,32 @@ const AdminDashboard = () => {
       setLoading(true);
       setError('');
 
+      // Use absolute URLs to avoid proxy issues
+      const origin = window.location.origin;
+      console.log(`Using origin: ${origin} for API calls`);
+
       // Fetch data from API
       const [metricsRes, activitiesRes, subscribersRes, accessRequestsRes, dealRoomActivitiesRes] = await Promise.all([
-        fetch(`${API_URL}/admin/metrics`).catch(() => ({ ok: false })),
-        fetch(`${API_URL}/admin/user-activity`).catch(() => ({ ok: false })),
-        fetch(`${API_URL}/admin/newsletter-subscribers`).catch(() => ({ ok: false })),
-        fetch('/api/access-requests').catch(() => ({ ok: false })),
-        fetch('/api/deal-room-activity').catch(() => ({ ok: false }))
+        fetch(`${origin}/api/admin/metrics`).catch((err) => {
+          console.error('Error fetching metrics:', err);
+          return { ok: false };
+        }),
+        fetch(`${origin}/api/admin/user-activity`).catch((err) => {
+          console.error('Error fetching user activity:', err);
+          return { ok: false };
+        }),
+        fetch(`${origin}/api/admin/newsletter-subscribers`).catch((err) => {
+          console.error('Error fetching newsletter subscribers:', err);
+          return { ok: false };
+        }),
+        fetch(`${origin}/api/access-requests`).catch((err) => {
+          console.error('Error fetching access requests:', err);
+          return { ok: false };
+        }),
+        fetch(`${origin}/api/deal-room-activity`).catch((err) => {
+          console.error('Error fetching deal room activity:', err);
+          return { ok: false };
+        })
       ]);
 
       // Process metrics data (fallback to mock data if API fails)
@@ -141,8 +160,12 @@ const AdminDashboard = () => {
     console.log(`Updating access request: ${requestId} to ${status}`);
 
     try {
+      // Use a direct API call with absolute URL to avoid proxy issues
+      const apiUrl = window.location.origin + `/api/access-requests/${requestId}`;
+      console.log(`Sending access request update to: ${apiUrl}`);
+
       // Update request status via API - use POST instead of PUT to avoid proxy issues
-      const response = await fetch(`/api/access-requests/${requestId}`, {
+      const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -222,7 +245,11 @@ const AdminDashboard = () => {
     setIsGranting(true);
 
     try {
-      const response = await fetch('/api/grant-access', {
+      // Use a direct API call with absolute URL to avoid proxy issues
+      const apiUrl = window.location.origin + '/api/grant-access';
+      console.log(`Sending grant access request to: ${apiUrl}`);
+
+      const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -237,6 +264,8 @@ const AdminDashboard = () => {
 
       // Get response text for error handling
       const responseText = await response.text();
+      console.log(`Grant access response: ${responseText}`);
+
       let data;
       try {
         data = JSON.parse(responseText);
@@ -284,7 +313,11 @@ const AdminDashboard = () => {
     }
 
     try {
-      const response = await fetch('/api/revoke-access', {
+      // Use a direct API call with absolute URL to avoid proxy issues
+      const apiUrl = window.location.origin + '/api/revoke-access';
+      console.log(`Sending revoke access request to: ${apiUrl}`);
+
+      const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -298,6 +331,8 @@ const AdminDashboard = () => {
 
       // Get response text for error handling
       const responseText = await response.text();
+      console.log(`Revoke access response: ${responseText}`);
+
       let responseData;
       try {
         responseData = JSON.parse(responseText);
