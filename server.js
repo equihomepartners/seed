@@ -767,21 +767,7 @@ app.post('/api/deal-room/initialize', async (req, res) => {
 
 // Access Requests API endpoints
 
-// Get all access requests
-app.get('/api/access-requests', async (req, res) => {
-  try {
-    // Connect to MongoDB
-    await connectToDatabase();
-
-    // Get all access requests
-    const accessRequests = await AccessRequest.find({}).sort({ createdAt: -1 });
-
-    res.status(200).json(accessRequests);
-  } catch (error) {
-    console.error('Error fetching access requests:', error);
-    res.status(500).json({ message: 'Failed to fetch access requests' });
-  }
-});
+// This endpoint was moved to line 221
 
 // This endpoint was moved to line 304
 
