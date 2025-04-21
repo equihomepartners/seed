@@ -38,6 +38,9 @@ const connectToDatabase = async () => {
   }
 };
 
+// Import models
+const DealRoomActivity = require('./server/models/DealRoomActivity');
+
 // Define AccessRequest model
 const accessRequestSchema = new mongoose.Schema({
   email: {
@@ -176,7 +179,7 @@ app.post('/api/request-access', async (req, res) => {
   try {
     // Connect to MongoDB
     await connectToDatabase();
-    
+
     // Create new access request in MongoDB
     const accessRequest = new AccessRequest({
       name,
@@ -185,41 +188,11 @@ app.post('/api/request-access', async (req, res) => {
       status: 'pending',
       timestamp: new Date()
     });
-    
+
     // Save to database
     await accessRequest.save();
-    
-    // Send email to admin
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: 'sujay@equihome.com.au', // Admin email
-      subject: 'New Deal Room Access Request',
-      html: `
-        <h2>New Deal Room Access Request</h2>
-        <p><strong>Name:</strong> ${name}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Request Type:</strong> ${requestType}</p>
-        <p><strong>Timestamp:</strong> ${new Date().toLocaleString()}</p>
-        <br>
-        <p>To grant access, please log in to the admin dashboard.</p>
-      `
-    });
 
-    // Send confirmation to user
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: email,
-      subject: 'Access Request Confirmation - Equihome Partners',
-      html: `
-        <h2>Thank you for requesting access to the Equihome Deal Room</h2>
-        <p>We have received your request for access to our exclusive deal room.</p>
-        <p>Our team will review your request and grant access shortly.</p>
-        <p>You will receive an email notification when access is granted.</p>
-        <br>
-        <p>Best regards,</p>
-        <p>Equihome Partners Team</p>
-      `
-    });
+    console.log(`New access request from ${email} for ${requestType}`);
 
     res.status(200).json({ message: 'Access request sent successfully', requestId: accessRequest._id });
   } catch (error) {
@@ -233,10 +206,10 @@ app.get('/api/access-requests', async (req, res) => {
   try {
     // Connect to MongoDB
     await connectToDatabase();
-    
+
     // Get all access requests
     const requests = await AccessRequest.find().sort({ timestamp: -1 });
-    
+
     res.status(200).json(requests);
   } catch (error) {
     console.error('Error fetching access requests:', error);
@@ -248,60 +221,32 @@ app.get('/api/access-requests', async (req, res) => {
 app.put('/api/access-requests/:id', async (req, res) => {
   const { id } = req.params;
   const { status, adminEmail } = req.body;
-  
+
   try {
     // Connect to MongoDB
     await connectToDatabase();
-    
+
     // Find the request
     const request = await AccessRequest.findById(id);
-    
+
     if (!request) {
       return res.status(404).json({ message: 'Access request not found' });
     }
-    
+
     // Update status
     request.status = status;
-    
+
     if (status === 'approved') {
       request.approvedAt = new Date();
       request.approvedBy = adminEmail || 'admin';
-      
-      // Send approval email to user
-      await transporter.sendMail({
-        from: process.env.EMAIL_USER,
-        to: request.email,
-        subject: 'Deal Room Access Approved - Equihome Partners',
-        html: `
-          <h2>Your Access Request Has Been Approved</h2>
-          <p>We're pleased to inform you that your request for access to the Equihome Deal Room has been approved.</p>
-          <p>You can now access the Deal Room by logging in to your account.</p>
-          <br>
-          <p>Best regards,</p>
-          <p>Equihome Partners Team</p>
-        `
-      });
+      console.log(`Access request from ${request.email} for ${request.requestType} has been approved by ${adminEmail || 'admin'}`);
     } else if (status === 'denied') {
-      // Send denial email to user
-      await transporter.sendMail({
-        from: process.env.EMAIL_USER,
-        to: request.email,
-        subject: 'Deal Room Access Request - Equihome Partners',
-        html: `
-          <h2>Regarding Your Access Request</h2>
-          <p>Thank you for your interest in accessing the Equihome Deal Room.</p>
-          <p>After careful consideration, we are unable to grant access at this time.</p>
-          <p>If you have any questions, please contact our team directly.</p>
-          <br>
-          <p>Best regards,</p>
-          <p>Equihome Partners Team</p>
-        `
-      });
+      console.log(`Access request from ${request.email} for ${request.requestType} has been denied by ${adminEmail || 'admin'}`);
     }
-    
+
     // Save changes
     await request.save();
-    
+
     res.status(200).json({ message: `Access request ${status}`, request });
   } catch (error) {
     console.error('Error updating access request:', error);
@@ -312,22 +257,22 @@ app.put('/api/access-requests/:id', async (req, res) => {
 // Check if user has access to a specific resource
 app.get('/api/check-access', async (req, res) => {
   const { email, resourceType } = req.query;
-  
+
   if (!email || !resourceType) {
     return res.status(400).json({ message: 'Email and resourceType are required' });
   }
-  
+
   try {
     // Connect to MongoDB
     await connectToDatabase();
-    
+
     // Check if user has an approved access request for this resource
     const request = await AccessRequest.findOne({
       email: email,
       requestType: resourceType,
       status: 'approved'
     });
-    
+
     if (request) {
       res.status(200).json({ hasAccess: true, since: request.approvedAt });
     } else {
@@ -336,6 +281,167 @@ app.get('/api/check-access', async (req, res) => {
   } catch (error) {
     console.error('Error checking access:', error);
     res.status(500).json({ message: 'Failed to check access' });
+  }
+});
+
+// Manually grant access to a user
+app.post('/api/grant-access', async (req, res) => {
+  const { email, name, requestType, adminEmail } = req.body;
+
+  if (!email || !requestType) {
+    return res.status(400).json({ message: 'Email and requestType are required' });
+  }
+
+  try {
+    // Connect to MongoDB
+    await connectToDatabase();
+
+    // Check if user already has a request
+    let existingRequest = await AccessRequest.findOne({
+      email: email,
+      requestType: requestType
+    });
+
+    if (existingRequest) {
+      // Update existing request
+      existingRequest.status = 'approved';
+      existingRequest.approvedAt = new Date();
+      existingRequest.approvedBy = adminEmail || 'admin';
+      await existingRequest.save();
+
+      console.log(`Existing access request for ${email} has been manually approved by ${adminEmail || 'admin'}`);
+      return res.status(200).json({ message: 'Access granted to existing request', request: existingRequest });
+    }
+
+    // Create new access request with approved status
+    const newRequest = new AccessRequest({
+      email,
+      name: name || email.split('@')[0], // Use part of email as name if not provided
+      requestType,
+      status: 'approved',
+      timestamp: new Date(),
+      approvedAt: new Date(),
+      approvedBy: adminEmail || 'admin'
+    });
+
+    // Save to database
+    await newRequest.save();
+
+    console.log(`Manual access granted to ${email} for ${requestType} by ${adminEmail || 'admin'}`);
+
+    res.status(200).json({ message: 'Access granted successfully', request: newRequest });
+  } catch (error) {
+    console.error('Error granting access:', error);
+    res.status(500).json({ message: 'Failed to grant access' });
+  }
+});
+
+// Revoke access from a user
+app.post('/api/revoke-access', async (req, res) => {
+  const { email, requestType, adminEmail } = req.body;
+
+  if (!email || !requestType) {
+    return res.status(400).json({ message: 'Email and requestType are required' });
+  }
+
+  try {
+    // Connect to MongoDB
+    await connectToDatabase();
+
+    // Find the user's access request
+    const request = await AccessRequest.findOne({
+      email: email,
+      requestType: requestType
+    });
+
+    if (!request) {
+      return res.status(404).json({ message: 'No access request found for this user' });
+    }
+
+    // Update status to denied
+    request.status = 'denied';
+    request.approvedAt = null;
+    request.approvedBy = null;
+
+    // Save changes
+    await request.save();
+
+    console.log(`Access revoked from ${email} for ${requestType} by ${adminEmail || 'admin'}`);
+
+    res.status(200).json({ message: 'Access revoked successfully', request });
+  } catch (error) {
+    console.error('Error revoking access:', error);
+    res.status(500).json({ message: 'Failed to revoke access' });
+  }
+});
+
+// Track Deal Room activity
+app.post('/api/track-activity', async (req, res) => {
+  const { email, name, action, documentId, documentName } = req.body;
+
+  if (!email || !action) {
+    return res.status(400).json({ message: 'Email and action are required' });
+  }
+
+  try {
+    // Connect to MongoDB
+    await connectToDatabase();
+
+    // Create new activity record
+    const activity = new DealRoomActivity({
+      email,
+      name: name || email.split('@')[0],
+      action,
+      documentId,
+      documentName,
+      timestamp: new Date(),
+      ipAddress: req.headers['x-forwarded-for'] || req.socket.remoteAddress,
+      userAgent: req.headers['user-agent']
+    });
+
+    // Save to database
+    await activity.save();
+
+    console.log(`Deal Room activity tracked: ${email} ${action} ${documentName || ''}`);
+
+    res.status(200).json({ message: 'Activity tracked successfully' });
+  } catch (error) {
+    console.error('Error tracking activity:', error);
+    res.status(500).json({ message: 'Failed to track activity' });
+  }
+});
+
+// Get Deal Room activity
+app.get('/api/deal-room-activity', async (req, res) => {
+  try {
+    // Connect to MongoDB
+    await connectToDatabase();
+
+    // Get all activity, sorted by timestamp (newest first)
+    const activities = await DealRoomActivity.find().sort({ timestamp: -1 }).limit(100);
+
+    res.status(200).json(activities);
+  } catch (error) {
+    console.error('Error fetching Deal Room activity:', error);
+    res.status(500).json({ message: 'Failed to fetch activity' });
+  }
+});
+
+// Get Deal Room activity for a specific user
+app.get('/api/deal-room-activity/user/:email', async (req, res) => {
+  const { email } = req.params;
+
+  try {
+    // Connect to MongoDB
+    await connectToDatabase();
+
+    // Get user's activity, sorted by timestamp (newest first)
+    const activities = await DealRoomActivity.find({ email }).sort({ timestamp: -1 }).limit(50);
+
+    res.status(200).json(activities);
+  } catch (error) {
+    console.error('Error fetching user Deal Room activity:', error);
+    res.status(500).json({ message: 'Failed to fetch user activity' });
   }
 });
 

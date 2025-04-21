@@ -18,42 +18,89 @@ const DealRoom = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [documents, setDocuments] = useState<Document[]>([]);
 
+  // Track user activity in the Deal Room
+  const trackActivity = async (action: string, documentId?: string, documentName?: string) => {
+    const userEmail = localStorage.getItem('userEmail');
+    const userName = localStorage.getItem('userName');
+
+    if (!userEmail) return;
+
+    try {
+      await fetch('/api/track-activity', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email: userEmail,
+          name: userName || userEmail.split('@')[0],
+          action,
+          documentId,
+          documentName
+        })
+      });
+    } catch (error) {
+      console.error('Error tracking activity:', error);
+    }
+  };
+
+  // Handle document download/view
+  const handleDocumentAction = (doc: Document, action: 'view' | 'download') => {
+    // Track the activity
+    trackActivity(action, doc.id, doc.title);
+
+    // In a real app, this would either download the file or open it in a viewer
+    if (action === 'download') {
+      alert(`Downloading ${doc.title}...`);
+      // Actual download logic would go here
+    } else {
+      alert(`Viewing ${doc.title}...`);
+      // Actual view logic would go here
+    }
+  };
+
   useEffect(() => {
     const checkAccess = async () => {
       setIsLoading(true);
       const userEmail = localStorage.getItem('userEmail');
-      
+
       if (!userEmail) {
         setHasAccess(false);
         setIsLoading(false);
         navigate('/login', { state: { from: '/deal-room' } });
         return;
       }
-      
+
       try {
         // First check localStorage for offline functionality
         const approvedUsers = JSON.parse(localStorage.getItem('approvedUsers') || '[]');
-        const hasLocalAccess = approvedUsers.some((user: any) => 
+        const hasLocalAccess = approvedUsers.some((user: any) =>
           user.email === userEmail && user.accessType === 'dealRoom'
         );
-        
+
         if (hasLocalAccess) {
           setHasAccess(true);
           setIsLoading(false);
           loadDocuments();
+
+          // Track page view
+          trackActivity('view');
           return;
         }
-        
+
         // Then check with the server
         const response = await fetch(`/api/check-access?email=${encodeURIComponent(userEmail)}&resourceType=dealRoom`);
-        
+
         if (response.ok) {
           const data = await response.json();
-          
+
           if (data.hasAccess) {
             setHasAccess(true);
             loadDocuments();
-            
+
+            // Track page view
+            trackActivity('view');
+
             // Update localStorage for offline functionality
             if (!approvedUsers.some((user: any) => user.email === userEmail && user.accessType === 'dealRoom')) {
               approvedUsers.push({
@@ -71,16 +118,16 @@ const DealRoom = () => {
         } else {
           // If API fails, check if we have a pending request
           const accessRequests = JSON.parse(localStorage.getItem('accessRequests') || '[]');
-          const hasPendingRequest = accessRequests.some((req: any) => 
+          const hasPendingRequest = accessRequests.some((req: any) =>
             req.email === userEmail && req.requestType === 'dealRoom' && req.status === 'pending'
           );
-          
+
           if (hasPendingRequest) {
             alert('Your access request is still pending. You will be notified when access is granted.');
           } else {
             alert('You do not have access to the Deal Room. Please request access from the Launchpad.');
           }
-          
+
           navigate('/launchpad');
         }
       } catch (error) {
@@ -91,7 +138,7 @@ const DealRoom = () => {
         setIsLoading(false);
       }
     };
-    
+
     const loadDocuments = () => {
       // In a real app, these would be loaded from an API
       setDocuments([
@@ -129,9 +176,30 @@ const DealRoom = () => {
         }
       ]);
     };
-    
+
     checkAccess();
-  }, [navigate]);
+
+    // Track when user leaves the page
+    return () => {
+      const userEmail = localStorage.getItem('userEmail');
+      if (userEmail && hasAccess) {
+        // We can't use the trackActivity function directly here because
+        // the fetch might not complete before the component unmounts
+        fetch('/api/track-activity', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            email: userEmail,
+            name: localStorage.getItem('userName') || userEmail.split('@')[0],
+            action: 'exit',
+            timestamp: new Date().toISOString()
+          })
+        }).catch(err => console.error('Error tracking exit:', err));
+      }
+    };
+  }, [navigate, hasAccess]);
 
   if (isLoading) {
     return (
@@ -154,7 +222,7 @@ const DealRoom = () => {
   return (
     <div className="min-h-screen bg-white">
       <GlobalHeader currentPage="deal-room" />
-      
+
       <div className="pt-[72px] bg-gradient-to-br from-sky-50 via-white to-indigo-50 min-h-screen">
         <div className="max-w-7xl mx-auto px-8 py-16">
           <div className="mb-12">
@@ -163,7 +231,7 @@ const DealRoom = () => {
               Access confidential financial documents and investment materials for the Equihome seed round.
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
             {documents.map((doc) => (
               <div key={doc.id} className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
@@ -174,35 +242,44 @@ const DealRoom = () => {
                   <div className="flex-1">
                     <h3 className="text-lg font-semibold text-gray-900 mb-1">{doc.title}</h3>
                     <p className="text-gray-600 text-sm mb-4">{doc.description}</p>
-                    
+
                     {doc.isLocked ? (
                       <div className="flex items-center text-gray-400">
                         <FaLock className="mr-2" />
                         <span>Access Restricted</span>
                       </div>
                     ) : (
-                      <a 
-                        href={doc.downloadUrl} 
-                        className="inline-flex items-center text-sky-600 hover:text-sky-700"
-                      >
-                        <FaDownload className="mr-2" />
-                        <span>Download</span>
-                      </a>
+                      <div className="flex space-x-4">
+                        <button
+                          onClick={() => handleDocumentAction(doc, 'view')}
+                          className="inline-flex items-center text-sky-600 hover:text-sky-700"
+                        >
+                          <FaFileAlt className="mr-2" />
+                          <span>View</span>
+                        </button>
+                        <button
+                          onClick={() => handleDocumentAction(doc, 'download')}
+                          className="inline-flex items-center text-sky-600 hover:text-sky-700"
+                        >
+                          <FaDownload className="mr-2" />
+                          <span>Download</span>
+                        </button>
+                      </div>
                     )}
                   </div>
                 </div>
               </div>
             ))}
           </div>
-          
+
           <div className="bg-sky-50 rounded-xl p-6 border border-sky-100">
             <h2 className="text-xl font-semibold text-gray-900 mb-4">Need Additional Information?</h2>
             <p className="text-gray-600 mb-4">
-              If you require any additional documents or have questions about the materials provided, 
+              If you require any additional documents or have questions about the materials provided,
               please don't hesitate to contact our team.
             </p>
-            <a 
-              href="mailto:sujay@equihome.com.au" 
+            <a
+              href="mailto:sujay@equihome.com.au"
               className="inline-flex items-center px-4 py-2 bg-sky-600 text-white rounded-lg hover:bg-sky-700 transition-colors"
             >
               Contact Investment Team
