@@ -47,33 +47,12 @@ interface CategoryInfo {
 }
 
 const categories: Record<string, CategoryInfo> = {
-  company: {
-    id: 'company',
-    name: 'Company Documentation',
-    description: 'Core company documents and information',
+  main: {
+    id: 'main',
+    name: 'Due Diligence Documents',
+    description: 'Core due diligence documents for investors',
     icon: <FaFileAlt />,
     color: 'blue'
-  },
-  financial: {
-    id: 'financial',
-    name: 'Financial Models',
-    description: 'Financial projections and models',
-    icon: <FaChartLine />,
-    color: 'green'
-  },
-  market: {
-    id: 'market',
-    name: 'Market Research',
-    description: 'Market analysis and research',
-    icon: <FaChartLine />,
-    color: 'purple'
-  },
-  strategy: {
-    id: 'strategy',
-    name: 'Strategy',
-    description: 'Business and go-to-market strategy',
-    icon: <FaFileAlt />,
-    color: 'orange'
   },
   technical: {
     id: 'technical',
@@ -81,20 +60,6 @@ const categories: Record<string, CategoryInfo> = {
     description: 'Technical architecture and documentation',
     icon: <FaFileAlt />,
     color: 'gray'
-  },
-  email: {
-    id: 'email',
-    name: 'Email Documents',
-    description: 'Email communications and summaries',
-    icon: <FaFileAlt />,
-    color: 'teal'
-  },
-  updated: {
-    id: 'updated',
-    name: 'Updated Documents',
-    description: 'Recently updated documents',
-    icon: <FaFileAlt />,
-    color: 'red'
   }
 };
 
@@ -310,194 +275,15 @@ const DealRoom = () => {
       try {
         console.log('DEVELOPMENT MODE: Using hardcoded documents');
 
-        // Hardcoded documents for development
+        // Hardcoded documents for development - only the specified cards
         const docs = [
-          // Company Documentation
-          {
-            _id: 'us-company-docs',
-            title: 'US Company Documentation',
-            description: 'Legal documents for the US entity, including incorporation papers, bylaws, and regulatory filings.',
-            category: 'company',
-            iconType: 'folder',
-            isLocked: false,
-            sortOrder: 1,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-          },
-          {
-            _id: 'thesis-presentation',
-            title: 'Equihome Thesis Presentation',
-            description: 'Comprehensive presentation outlining Equihome\'s investment thesis, market opportunity, and strategic vision.',
-            category: 'company',
-            iconType: 'presentation',
-            isLocked: false,
-            sortOrder: 2,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-          },
-          {
-            _id: 'cap-table',
-            title: 'Cap Table',
-            description: 'Detailed capitalization table showing ownership structure, investment rounds, and equity distribution.',
-            category: 'company',
-            iconType: 'table',
-            isLocked: false,
-            sortOrder: 3,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-          },
-          {
-            _id: 'seed-website',
-            title: 'Equihome Seed Website',
-            description: 'Seed stage website showcasing Equihome\'s value proposition, team, and early product vision.',
-            category: 'company',
-            externalUrl: 'https://seed.equihome.com.au',
-            iconType: 'web',
-            isLocked: false,
-            sortOrder: 4,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-          },
-
-          // Financial Models
-          {
-            _id: 'company-model',
-            title: 'Equihome Company Model - $1.5m USD Raise',
-            description: 'Financial model for the company with detailed projections based on a $1.5M USD raise scenario.',
-            category: 'financial',
-            iconType: 'chart',
-            isLocked: false,
-            sortOrder: 1,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-          },
-          {
-            _id: 'fund-model',
-            title: 'Equihome Fund Model - $500m Draw Down',
-            description: 'Comprehensive financial model for the fund with $500M draw down structure and return projections.',
-            category: 'financial',
-            iconType: 'chart',
-            isLocked: false,
-            sortOrder: 2,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-          },
-
-          // Email Documents
-          {
-            _id: 'intro-page',
-            title: '¾ Page Introduction',
-            description: 'Concise company introduction document formatted for email distribution to potential investors.',
-            category: 'email',
-            iconType: 'email',
-            isLocked: false,
-            sortOrder: 1,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-          },
-          {
-            _id: 'bart-email',
-            title: '2 Paragraphs - Bart Email',
-            description: 'Email from Bart with a succinct two-paragraph overview of the company and investment opportunity.',
-            category: 'email',
-            iconType: 'email',
-            isLocked: false,
-            sortOrder: 2,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-          },
-
-          // Market Research
-          {
-            _id: 'competitive-landscape',
-            title: 'Competitive Landscape',
-            description: 'In-depth analysis of the competitive environment, including direct and indirect competitors, market share, and Equihome\'s unique value proposition.',
-            category: 'market',
-            iconType: 'file',
-            isLocked: false,
-            sortOrder: 1,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-          },
-          {
-            _id: 'residential-mortgage-market',
-            title: 'Residential Mortgage Market',
-            description: 'Comprehensive overview of the residential mortgage market, including trends, challenges, and opportunities. Includes market size and growth projections.',
-            category: 'market',
-            iconType: 'file',
-            isLocked: false,
-            sortOrder: 2,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-          },
-
-          // Strategy Documents
-          {
-            _id: 'go-to-market',
-            title: 'Go to Market Strategy',
-            description: 'Detailed plan for market entry and expansion, including target customer segments, marketing channels, and partnership strategies.',
-            category: 'strategy',
-            iconType: 'file',
-            isLocked: false,
-            sortOrder: 1,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-          },
-          {
-            _id: 'market-fit',
-            title: 'Market Fit Analysis',
-            description: 'Analysis of Equihome\'s product-market fit, including customer validation, feedback, and iteration strategy. Includes adoption metrics and projections.',
-            category: 'strategy',
-            iconType: 'file',
-            isLocked: false,
-            sortOrder: 2,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-          },
-
-          // Technical Documents
-          {
-            _id: 'tech-architecture',
-            title: 'Technical Architecture',
-            description: 'Detailed overview of Equihome\'s technical architecture, including system design, infrastructure, and security measures.',
-            category: 'technical',
-            iconType: 'file',
-            isLocked: false,
-            sortOrder: 1,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-          },
-          {
-            _id: 'api-docs',
-            title: 'API Documentation',
-            description: 'Comprehensive documentation of Equihome\'s APIs, including endpoints, data models, and integration guidelines.',
-            category: 'technical',
-            iconType: 'file',
-            isLocked: false,
-            sortOrder: 2,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-          },
-          {
-            _id: 'security-overview',
-            title: 'Security Overview',
-            description: 'Detailed overview of Equihome\'s security measures, including data protection, compliance, and risk management.',
-            category: 'technical',
-            iconType: 'file',
-            isLocked: false,
-            sortOrder: 3,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-          },
-
-          // Updated Documents (with bookmark)
+          // Main Documents
           {
             _id: 'investment-thesis',
             title: 'Investment Thesis - Current Draft',
             description: 'Comprehensive analysis of Equihome\'s investment opportunity, market positioning, and growth strategy. Includes detailed financial projections and risk assessment.',
-            category: 'updated',
+            category: 'main',
             iconType: 'file',
-            bookmark: '15 April 2025',
             isLocked: false,
             sortOrder: 1,
             createdAt: new Date().toISOString(),
@@ -507,9 +293,8 @@ const DealRoom = () => {
             _id: 'blended-model',
             title: 'Equihome Model - Blended Duration - $2m Raise',
             description: 'Financial model with blended duration approach for the $2M seed round. Includes detailed cash flow projections, ROI analysis, and sensitivity testing.',
-            category: 'updated',
+            category: 'main',
             iconType: 'chart',
-            bookmark: '15 April 2025',
             isLocked: false,
             sortOrder: 2,
             createdAt: new Date().toISOString(),
@@ -519,11 +304,54 @@ const DealRoom = () => {
             _id: 'swot-analysis',
             title: 'SWOT Analysis',
             description: 'Detailed analysis of Equihome\'s strengths, weaknesses, opportunities, and threats in the current market landscape. Includes competitive positioning.',
-            category: 'updated',
+            category: 'main',
             iconType: 'file',
-            bookmark: '15 April 2025',
             isLocked: false,
             sortOrder: 3,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          },
+          {
+            _id: 'competitive-landscape',
+            title: 'Competitive Landscape',
+            description: 'In-depth analysis of the competitive environment, including direct and indirect competitors, market share, and Equihome\'s unique value proposition.',
+            category: 'main',
+            iconType: 'file',
+            isLocked: false,
+            sortOrder: 4,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          },
+          {
+            _id: 'residential-mortgage-market',
+            title: 'Residential Mortgage Market',
+            description: 'Comprehensive overview of the residential mortgage market, including trends, challenges, and opportunities. Includes market size and growth projections.',
+            category: 'main',
+            iconType: 'file',
+            isLocked: false,
+            sortOrder: 5,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          },
+          {
+            _id: 'go-to-market',
+            title: 'Go to Market Strategy',
+            description: 'Detailed plan for market entry and expansion, including target customer segments, marketing channels, and partnership strategies.',
+            category: 'main',
+            iconType: 'file',
+            isLocked: false,
+            sortOrder: 6,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          },
+          {
+            _id: 'market-fit',
+            title: 'Market Fit Analysis',
+            description: 'Analysis of Equihome\'s product-market fit, including customer validation, feedback, and iteration strategy. Includes adoption metrics and projections.',
+            category: 'main',
+            iconType: 'file',
+            isLocked: false,
+            sortOrder: 7,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString()
           },
@@ -531,11 +359,34 @@ const DealRoom = () => {
             _id: 'intro-deck-updated',
             title: 'Introduction Deck - Updated',
             description: 'Latest investor presentation deck with updated financials, team information, and market analysis. Includes executive summary and investment highlights.',
-            category: 'updated',
+            category: 'main',
             iconType: 'presentation',
-            bookmark: '15 April 2025',
             isLocked: false,
-            sortOrder: 4,
+            sortOrder: 8,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          },
+
+          // Technical Documents (Coming Soon)
+          {
+            _id: 'tech-architecture',
+            title: 'Technical Architecture (Coming Soon)',
+            description: 'Detailed overview of Equihome\'s technical architecture, including system design, infrastructure, and security measures.',
+            category: 'technical',
+            iconType: 'file',
+            isLocked: true,
+            sortOrder: 1,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          },
+          {
+            _id: 'api-docs',
+            title: 'API Documentation (Coming Soon)',
+            description: 'Comprehensive documentation of Equihome\'s APIs, including endpoints, data models, and integration guidelines.',
+            category: 'technical',
+            iconType: 'file',
+            isLocked: true,
+            sortOrder: 2,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString()
           }
@@ -661,74 +512,7 @@ const DealRoom = () => {
             </div>
           </div>
 
-          {/* Updated Documents Section */}
-          {documentsByCategory['updated'] && documentsByCategory['updated'].length > 0 && activeCategory !== 'updated' && (
-            <div className="mb-12">
-              <div className="flex items-center justify-between mb-6">
-                <div className="flex items-center">
-                  <div className="h-6 w-1 bg-gradient-to-b from-red-500 to-pink-500 rounded-full mr-3"></div>
-                  <h2 className="text-xl font-semibold text-white flex items-center">
-                    Recently Updated
-                    <span className="ml-3 px-2 py-0.5 bg-gray-800 text-gray-300 text-xs rounded-full border border-gray-700">{documentsByCategory['updated'][0].bookmark}</span>
-                  </h2>
-                </div>
-                <button
-                  onClick={() => setActiveCategory('updated')}
-                  className="text-sm text-blue-400 hover:text-blue-300 flex items-center"
-                >
-                  View All <FaArrowRight className="ml-1" />
-                </button>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                {documentsByCategory['updated'].slice(0, 3).map((doc) => (
-                  <div key={doc._id} className="bg-gray-800/50 backdrop-blur-sm rounded-xl border border-gray-700/50 p-5 hover:shadow-lg hover:shadow-blue-900/20 hover:border-blue-900/30 transition-all group">
-                    <div className="flex items-start">
-                      <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-red-500/20 to-pink-500/20 flex items-center justify-center mr-3 text-red-400 group-hover:text-red-300 transition-colors">
-                        {getDocumentIcon(doc)}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h3 className="text-base font-semibold text-white mb-1 truncate group-hover:text-blue-300 transition-colors">{doc.title}</h3>
-                        <p className="text-gray-400 text-xs mb-3 line-clamp-2">{doc.description}</p>
-
-                        {doc.isLocked ? (
-                          <div className="flex items-center text-gray-500 text-xs">
-                            <FaLock className="mr-1" />
-                            <span>Access Restricted</span>
-                          </div>
-                        ) : doc.externalUrl ? (
-                          <button
-                            onClick={() => handleDocumentAction(doc, 'open')}
-                            className="inline-flex items-center text-xs text-blue-400 hover:text-blue-300 transition-colors"
-                          >
-                            <FaExternalLinkAlt className="mr-1" />
-                            <span>Open Link</span>
-                          </button>
-                        ) : (
-                          <div className="flex space-x-3">
-                            <button
-                              onClick={() => handleDocumentAction(doc, 'view')}
-                              className="inline-flex items-center text-xs text-blue-400 hover:text-blue-300 transition-colors"
-                            >
-                              <FaFileAlt className="mr-1" />
-                              <span>View</span>
-                            </button>
-                            <button
-                              onClick={() => handleDocumentAction(doc, 'download')}
-                              className="inline-flex items-center text-xs text-blue-400 hover:text-blue-300 transition-colors"
-                            >
-                              <FaDownload className="mr-1" />
-                              <span>Download</span>
-                            </button>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
+          {/* No Recently Updated section */}
 
           {/* Active Category Documents */}
           {activeCategory && documentsByCategory[activeCategory] && (
