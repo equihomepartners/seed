@@ -308,41 +308,238 @@ const DealRoom = () => {
 
     const loadDocuments = async () => {
       try {
-        // Check if documents exist, if not initialize
-        const docsResponse = await fetch('/api/deal-room/documents');
-        let docs = [];
+        console.log('DEVELOPMENT MODE: Using hardcoded documents');
 
-        if (docsResponse.ok) {
-          docs = await docsResponse.json();
-        }
+        // Hardcoded documents for development
+        const docs = [
+          // Company Documentation
+          {
+            _id: 'us-company-docs',
+            title: 'US Company Documentation',
+            description: 'Legal documents for the US entity, including incorporation papers, bylaws, and regulatory filings.',
+            category: 'company',
+            iconType: 'folder',
+            isLocked: false,
+            sortOrder: 1,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          },
+          {
+            _id: 'thesis-presentation',
+            title: 'Equihome Thesis Presentation',
+            description: 'Comprehensive presentation outlining Equihome\'s investment thesis, market opportunity, and strategic vision.',
+            category: 'company',
+            iconType: 'presentation',
+            isLocked: false,
+            sortOrder: 2,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          },
+          {
+            _id: 'cap-table',
+            title: 'Cap Table',
+            description: 'Detailed capitalization table showing ownership structure, investment rounds, and equity distribution.',
+            category: 'company',
+            iconType: 'table',
+            isLocked: false,
+            sortOrder: 3,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          },
+          {
+            _id: 'seed-website',
+            title: 'Equihome Seed Website',
+            description: 'Seed stage website showcasing Equihome\'s value proposition, team, and early product vision.',
+            category: 'company',
+            externalUrl: 'https://seed.equihome.com.au',
+            iconType: 'web',
+            isLocked: false,
+            sortOrder: 4,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          },
 
-        // If no documents, initialize the Deal Room
-        if (docs.length === 0 && !isInitializing) {
-          setIsInitializing(true);
-          try {
-            const initResponse = await fetch('/api/deal-room/initialize', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json'
-              }
-            });
+          // Financial Models
+          {
+            _id: 'company-model',
+            title: 'Equihome Company Model - $1.5m USD Raise',
+            description: 'Financial model for the company with detailed projections based on a $1.5M USD raise scenario.',
+            category: 'financial',
+            iconType: 'chart',
+            isLocked: false,
+            sortOrder: 1,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          },
+          {
+            _id: 'fund-model',
+            title: 'Equihome Fund Model - $500m Draw Down',
+            description: 'Comprehensive financial model for the fund with $500M draw down structure and return projections.',
+            category: 'financial',
+            iconType: 'chart',
+            isLocked: false,
+            sortOrder: 2,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          },
 
-            if (initResponse.ok) {
-              console.log('Deal Room initialized successfully');
-              // Fetch documents again after initialization
-              const newDocsResponse = await fetch('/api/deal-room/documents');
-              if (newDocsResponse.ok) {
-                docs = await newDocsResponse.json();
-              }
-            } else {
-              console.error('Failed to initialize Deal Room');
-            }
-          } catch (error) {
-            console.error('Error initializing Deal Room:', error);
-          } finally {
-            setIsInitializing(false);
+          // Email Documents
+          {
+            _id: 'intro-page',
+            title: '¾ Page Introduction',
+            description: 'Concise company introduction document formatted for email distribution to potential investors.',
+            category: 'email',
+            iconType: 'email',
+            isLocked: false,
+            sortOrder: 1,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          },
+          {
+            _id: 'bart-email',
+            title: '2 Paragraphs - Bart Email',
+            description: 'Email from Bart with a succinct two-paragraph overview of the company and investment opportunity.',
+            category: 'email',
+            iconType: 'email',
+            isLocked: false,
+            sortOrder: 2,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          },
+
+          // Market Research
+          {
+            _id: 'competitive-landscape',
+            title: 'Competitive Landscape',
+            description: 'In-depth analysis of the competitive environment, including direct and indirect competitors, market share, and Equihome\'s unique value proposition.',
+            category: 'market',
+            iconType: 'file',
+            isLocked: false,
+            sortOrder: 1,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          },
+          {
+            _id: 'residential-mortgage-market',
+            title: 'Residential Mortgage Market',
+            description: 'Comprehensive overview of the residential mortgage market, including trends, challenges, and opportunities. Includes market size and growth projections.',
+            category: 'market',
+            iconType: 'file',
+            isLocked: false,
+            sortOrder: 2,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          },
+
+          // Strategy Documents
+          {
+            _id: 'go-to-market',
+            title: 'Go to Market Strategy',
+            description: 'Detailed plan for market entry and expansion, including target customer segments, marketing channels, and partnership strategies.',
+            category: 'strategy',
+            iconType: 'file',
+            isLocked: false,
+            sortOrder: 1,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          },
+          {
+            _id: 'market-fit',
+            title: 'Market Fit Analysis',
+            description: 'Analysis of Equihome\'s product-market fit, including customer validation, feedback, and iteration strategy. Includes adoption metrics and projections.',
+            category: 'strategy',
+            iconType: 'file',
+            isLocked: false,
+            sortOrder: 2,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          },
+
+          // Technical Documents
+          {
+            _id: 'tech-architecture',
+            title: 'Technical Architecture',
+            description: 'Detailed overview of Equihome\'s technical architecture, including system design, infrastructure, and security measures.',
+            category: 'technical',
+            iconType: 'file',
+            isLocked: false,
+            sortOrder: 1,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          },
+          {
+            _id: 'api-docs',
+            title: 'API Documentation',
+            description: 'Comprehensive documentation of Equihome\'s APIs, including endpoints, data models, and integration guidelines.',
+            category: 'technical',
+            iconType: 'file',
+            isLocked: false,
+            sortOrder: 2,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          },
+          {
+            _id: 'security-overview',
+            title: 'Security Overview',
+            description: 'Detailed overview of Equihome\'s security measures, including data protection, compliance, and risk management.',
+            category: 'technical',
+            iconType: 'file',
+            isLocked: false,
+            sortOrder: 3,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          },
+
+          // Updated Documents (with bookmark)
+          {
+            _id: 'investment-thesis',
+            title: 'Investment Thesis - Current Draft',
+            description: 'Comprehensive analysis of Equihome\'s investment opportunity, market positioning, and growth strategy. Includes detailed financial projections and risk assessment.',
+            category: 'updated',
+            iconType: 'file',
+            bookmark: '15 April 2025',
+            isLocked: false,
+            sortOrder: 1,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          },
+          {
+            _id: 'blended-model',
+            title: 'Equihome Model - Blended Duration - $2m Raise',
+            description: 'Financial model with blended duration approach for the $2M seed round. Includes detailed cash flow projections, ROI analysis, and sensitivity testing.',
+            category: 'updated',
+            iconType: 'chart',
+            bookmark: '15 April 2025',
+            isLocked: false,
+            sortOrder: 2,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          },
+          {
+            _id: 'swot-analysis',
+            title: 'SWOT Analysis',
+            description: 'Detailed analysis of Equihome\'s strengths, weaknesses, opportunities, and threats in the current market landscape. Includes competitive positioning.',
+            category: 'updated',
+            iconType: 'file',
+            bookmark: '15 April 2025',
+            isLocked: false,
+            sortOrder: 3,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          },
+          {
+            _id: 'intro-deck-updated',
+            title: 'Introduction Deck - Updated',
+            description: 'Latest investor presentation deck with updated financials, team information, and market analysis. Includes executive summary and investment highlights.',
+            category: 'updated',
+            iconType: 'presentation',
+            bookmark: '15 April 2025',
+            isLocked: false,
+            sortOrder: 4,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
           }
-        }
+        ];
 
         // Set all documents
         setDocuments(docs);
