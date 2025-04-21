@@ -15,7 +15,11 @@ import {
   FaFilePowerpoint,
   FaFileWord,
   FaFileImage,
-  FaExternalLinkAlt
+  FaExternalLinkAlt,
+  FaInfoCircle,
+  FaPhone,
+  FaArrowRight,
+  FaUnlock
 } from 'react-icons/fa';
 
 interface Document {
@@ -410,15 +414,36 @@ const DealRoom = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-[#0B1121]">
       <GlobalHeader currentPage="deal-room" />
 
-      <div className="pt-[72px] bg-gradient-to-br from-sky-50 via-white to-indigo-50 min-h-screen">
+      <div className="pt-[72px] bg-gradient-to-br from-[#0B1121] via-[#0F172A] to-[#1E293B] min-h-screen">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
+          {/* Decorative elements */}
+          <div className="absolute top-0 left-0 right-0 overflow-hidden h-[500px] -z-10 opacity-20">
+            <div className="absolute top-[100px] left-[10%] w-[300px] h-[300px] bg-blue-500/30 rounded-full filter blur-[80px]"></div>
+            <div className="absolute top-[150px] right-[15%] w-[250px] h-[250px] bg-purple-500/20 rounded-full filter blur-[80px]"></div>
+            <div className="absolute top-[250px] left-[40%] w-[350px] h-[350px] bg-cyan-500/20 rounded-full filter blur-[100px]"></div>
+            <div className="grid grid-cols-12 gap-4 absolute inset-0 opacity-5">
+              {Array.from({ length: 12 }).map((_, i) => (
+                <div key={i} className="col-span-1 h-full border-r border-white/10"></div>
+              ))}
+              {Array.from({ length: 20 }).map((_, i) => (
+                <div key={i} className="col-span-12 w-full border-b border-white/10" style={{ top: `${i * 5}%` }}></div>
+              ))}
+            </div>
+          </div>
           <div className="mb-8 sm:mb-12">
-            <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Deal Room</h1>
-            <p className="text-lg sm:text-xl text-gray-600">
-              Access confidential financial documents and investment materials for the Equihome seed round.
+            <div className="flex items-center space-x-3 mb-2">
+              <div className="h-8 w-1 bg-gradient-to-b from-blue-500 to-cyan-400 rounded-full"></div>
+              <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">Equihome Deal Room</h1>
+            </div>
+            <div className="flex items-center space-x-2 mb-4">
+              <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+              <span className="text-sm font-medium text-gray-400">Seed Round - $2M Raise</span>
+            </div>
+            <p className="text-lg text-gray-400 max-w-3xl">
+              Welcome to the Equihome Partners Deal Room. This secure environment contains all due diligence materials for our $2M seed round. All documents are confidential and for qualified investors only.
             </p>
           </div>
 
@@ -429,7 +454,9 @@ const DealRoom = () => {
                 <button
                   key={categoryId}
                   onClick={() => setActiveCategory(categoryId)}
-                  className={`px-4 py-2 rounded-lg font-medium whitespace-nowrap transition-colors ${activeCategory === categoryId ? 'bg-sky-600 text-white' : 'bg-white text-gray-700 hover:bg-gray-100'}`}
+                  className={`px-4 py-2 rounded-lg font-medium whitespace-nowrap transition-colors ${activeCategory === categoryId
+                    ? 'bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-lg shadow-blue-500/20'
+                    : 'bg-gray-800/50 text-gray-300 hover:bg-gray-700/70 border border-gray-700'}`}
                 >
                   {categories[categoryId]?.name || categoryId}
                 </button>
@@ -439,41 +466,43 @@ const DealRoom = () => {
 
           {/* Updated Documents Section */}
           {documentsByCategory['updated'] && documentsByCategory['updated'].length > 0 && activeCategory !== 'updated' && (
-            <div className="mb-8">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-semibold text-gray-900 flex items-center">
-                  <span className="w-2 h-2 bg-red-500 rounded-full mr-2"></span>
-                  Updated Documents
-                  <span className="ml-2 text-sm font-normal text-gray-500">{documentsByCategory['updated'][0].bookmark}</span>
-                </h2>
+            <div className="mb-12">
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center">
+                  <div className="h-6 w-1 bg-gradient-to-b from-red-500 to-pink-500 rounded-full mr-3"></div>
+                  <h2 className="text-xl font-semibold text-white flex items-center">
+                    Recently Updated
+                    <span className="ml-3 px-2 py-0.5 bg-gray-800 text-gray-300 text-xs rounded-full border border-gray-700">{documentsByCategory['updated'][0].bookmark}</span>
+                  </h2>
+                </div>
                 <button
                   onClick={() => setActiveCategory('updated')}
-                  className="text-sm text-sky-600 hover:text-sky-700"
+                  className="text-sm text-blue-400 hover:text-blue-300 flex items-center"
                 >
-                  View All
+                  View All <FaArrowRight className="ml-1" />
                 </button>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                 {documentsByCategory['updated'].slice(0, 3).map((doc) => (
-                  <div key={doc._id} className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 hover:shadow-md transition-shadow">
+                  <div key={doc._id} className="bg-gray-800/50 backdrop-blur-sm rounded-xl border border-gray-700/50 p-5 hover:shadow-lg hover:shadow-blue-900/20 hover:border-blue-900/30 transition-all group">
                     <div className="flex items-start">
-                      <div className="w-10 h-10 rounded-lg bg-red-50 flex items-center justify-center mr-3">
+                      <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-red-500/20 to-pink-500/20 flex items-center justify-center mr-3 text-red-400 group-hover:text-red-300 transition-colors">
                         {getDocumentIcon(doc)}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h3 className="text-base font-semibold text-gray-900 mb-1 truncate">{doc.title}</h3>
-                        <p className="text-gray-600 text-xs mb-3 line-clamp-2">{doc.description}</p>
+                        <h3 className="text-base font-semibold text-white mb-1 truncate group-hover:text-blue-300 transition-colors">{doc.title}</h3>
+                        <p className="text-gray-400 text-xs mb-3 line-clamp-2">{doc.description}</p>
 
                         {doc.isLocked ? (
-                          <div className="flex items-center text-gray-400 text-xs">
+                          <div className="flex items-center text-gray-500 text-xs">
                             <FaLock className="mr-1" />
                             <span>Access Restricted</span>
                           </div>
                         ) : doc.externalUrl ? (
                           <button
                             onClick={() => handleDocumentAction(doc, 'open')}
-                            className="inline-flex items-center text-xs text-sky-600 hover:text-sky-700"
+                            className="inline-flex items-center text-xs text-blue-400 hover:text-blue-300 transition-colors"
                           >
                             <FaExternalLinkAlt className="mr-1" />
                             <span>Open Link</span>
@@ -482,14 +511,14 @@ const DealRoom = () => {
                           <div className="flex space-x-3">
                             <button
                               onClick={() => handleDocumentAction(doc, 'view')}
-                              className="inline-flex items-center text-xs text-sky-600 hover:text-sky-700"
+                              className="inline-flex items-center text-xs text-blue-400 hover:text-blue-300 transition-colors"
                             >
                               <FaFileAlt className="mr-1" />
                               <span>View</span>
                             </button>
                             <button
                               onClick={() => handleDocumentAction(doc, 'download')}
-                              className="inline-flex items-center text-xs text-sky-600 hover:text-sky-700"
+                              className="inline-flex items-center text-xs text-blue-400 hover:text-blue-300 transition-colors"
                             >
                               <FaDownload className="mr-1" />
                               <span>Download</span>
@@ -506,80 +535,126 @@ const DealRoom = () => {
 
           {/* Active Category Documents */}
           {activeCategory && documentsByCategory[activeCategory] && (
-            <div className="mb-8">
-              <div className="flex items-center mb-6">
-                <h2 className="text-2xl font-semibold text-gray-900">
+            <div className="mb-12">
+              <div className="flex items-center mb-8">
+                <div className="h-6 w-1 bg-gradient-to-b from-blue-500 to-cyan-400 rounded-full mr-3"></div>
+                <h2 className="text-2xl font-semibold text-white">
                   {categories[activeCategory]?.name || activeCategory}
                 </h2>
                 {documentsByCategory[activeCategory][0]?.bookmark && (
-                  <span className="ml-3 px-2 py-1 bg-gray-100 text-gray-700 text-sm rounded">
+                  <span className="ml-3 px-2 py-1 bg-gray-800 text-gray-300 text-sm rounded-md border border-gray-700">
                     {documentsByCategory[activeCategory][0].bookmark}
                   </span>
                 )}
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {documentsByCategory[activeCategory].map((doc) => (
-                  <div key={doc._id} className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
-                    <div className="flex items-start">
-                      <div className="w-12 h-12 rounded-lg bg-gray-50 flex items-center justify-center mr-4">
-                        {getDocumentIcon(doc)}
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-1">{doc.title}</h3>
-                        <p className="text-gray-600 text-sm mb-4">{doc.description}</p>
+                {documentsByCategory[activeCategory].map((doc) => {
+                  // Define document descriptions based on title
+                  let enhancedDescription = doc.description;
+                  if (doc.title === "Investment Thesis - Current Draft") {
+                    enhancedDescription = "Comprehensive analysis of Equihome's investment opportunity, market positioning, and growth strategy. Includes detailed financial projections and risk assessment.";
+                  } else if (doc.title === "Equihome Model - Blended Duration - $2m Raise") {
+                    enhancedDescription = "Financial model with blended duration approach for the $2M seed round. Includes detailed cash flow projections, ROI analysis, and sensitivity testing.";
+                  } else if (doc.title === "SWOT Analysis") {
+                    enhancedDescription = "Detailed analysis of Equihome's strengths, weaknesses, opportunities, and threats in the current market landscape. Includes competitive positioning.";
+                  } else if (doc.title === "Competitive Landscape") {
+                    enhancedDescription = "In-depth analysis of the competitive environment, including direct and indirect competitors, market share, and Equihome's unique value proposition.";
+                  } else if (doc.title === "Residential Mortgage Market") {
+                    enhancedDescription = "Comprehensive overview of the residential mortgage market, including trends, challenges, and opportunities. Includes market size and growth projections.";
+                  } else if (doc.title === "Go to Market Strategy") {
+                    enhancedDescription = "Detailed plan for market entry and expansion, including target customer segments, marketing channels, and partnership strategies.";
+                  } else if (doc.title === "Market Fit Analysis") {
+                    enhancedDescription = "Analysis of Equihome's product-market fit, including customer validation, feedback, and iteration strategy. Includes adoption metrics and projections.";
+                  } else if (doc.title === "Introduction Deck - Updated") {
+                    enhancedDescription = "Latest investor presentation deck with updated financials, team information, and market analysis. Includes executive summary and investment highlights.";
+                  }
 
-                        {doc.isLocked ? (
-                          <div className="flex items-center text-gray-400">
-                            <FaLock className="mr-2" />
-                            <span>Access Restricted</span>
+                  return (
+                    <div key={doc._id} className="bg-gray-800/50 backdrop-blur-sm rounded-xl border border-gray-700/50 p-6 hover:shadow-lg hover:shadow-blue-900/20 hover:border-blue-900/30 transition-all group">
+                      <div className="flex items-start">
+                        <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-500/10 to-cyan-500/10 flex items-center justify-center mr-4 text-blue-400 group-hover:text-blue-300 transition-colors">
+                          {getDocumentIcon(doc)}
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="text-lg font-semibold text-white mb-2 group-hover:text-blue-300 transition-colors">{doc.title}</h3>
+                          <p className="text-gray-400 text-sm mb-4 line-clamp-3">{enhancedDescription}</p>
+
+                          <div className="flex justify-between items-center">
+                            <div>
+                              {doc.isLocked ? (
+                                <div className="flex items-center text-gray-500">
+                                  <FaLock className="mr-2" />
+                                  <span>Access Restricted</span>
+                                </div>
+                              ) : doc.externalUrl ? (
+                                <button
+                                  onClick={() => handleDocumentAction(doc, 'open')}
+                                  className="inline-flex items-center text-blue-400 hover:text-blue-300 transition-colors"
+                                >
+                                  <FaExternalLinkAlt className="mr-2" />
+                                  <span>Open Link</span>
+                                </button>
+                              ) : (
+                                <div className="flex space-x-4">
+                                  <button
+                                    onClick={() => handleDocumentAction(doc, 'view')}
+                                    className="inline-flex items-center text-blue-400 hover:text-blue-300 transition-colors"
+                                  >
+                                    <FaFileAlt className="mr-2" />
+                                    <span>View</span>
+                                  </button>
+                                  <button
+                                    onClick={() => handleDocumentAction(doc, 'download')}
+                                    className="inline-flex items-center text-blue-400 hover:text-blue-300 transition-colors"
+                                  >
+                                    <FaDownload className="mr-2" />
+                                    <span>Download</span>
+                                  </button>
+                                </div>
+                              )}
+                            </div>
+                            <div className="text-xs text-gray-500">
+                              {doc.updatedAt ? new Date(doc.updatedAt).toLocaleDateString() : ''}
+                            </div>
                           </div>
-                        ) : doc.externalUrl ? (
-                          <button
-                            onClick={() => handleDocumentAction(doc, 'open')}
-                            className="inline-flex items-center text-sky-600 hover:text-sky-700"
-                          >
-                            <FaExternalLinkAlt className="mr-2" />
-                            <span>Open Link</span>
-                          </button>
-                        ) : (
-                          <div className="flex space-x-4">
-                            <button
-                              onClick={() => handleDocumentAction(doc, 'view')}
-                              className="inline-flex items-center text-sky-600 hover:text-sky-700"
-                            >
-                              <FaFileAlt className="mr-2" />
-                              <span>View</span>
-                            </button>
-                            <button
-                              onClick={() => handleDocumentAction(doc, 'download')}
-                              className="inline-flex items-center text-sky-600 hover:text-sky-700"
-                            >
-                              <FaDownload className="mr-2" />
-                              <span>Download</span>
-                            </button>
-                          </div>
-                        )}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           )}
 
-          <div className="bg-sky-50 rounded-xl p-6 border border-sky-100">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Need Additional Information?</h2>
-            <p className="text-gray-600 mb-4">
-              If you require any additional documents or have questions about the materials provided,
-              please don't hesitate to contact our team.
-            </p>
-            <a
-              href="mailto:sujay@equihome.com.au"
-              className="inline-flex items-center px-4 py-2 bg-sky-600 text-white rounded-lg hover:bg-sky-700 transition-colors"
-            >
-              Contact Investment Team
-            </a>
+          <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-8 border border-gray-700/50 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 rounded-full filter blur-3xl -mr-32 -mt-32 pointer-events-none"></div>
+            <div className="relative z-10">
+              <h2 className="text-xl font-semibold text-white mb-4 flex items-center">
+                <FaInfoCircle className="mr-2 text-blue-400" />
+                Need Additional Information?
+              </h2>
+              <p className="text-gray-400 mb-6 max-w-3xl">
+                If you require any additional documents or have questions about the materials provided,
+                please don't hesitate to contact our investment team. We're here to provide you with all the information you need to make an informed decision.
+              </p>
+              <div className="flex flex-wrap gap-4">
+                <a
+                  href="mailto:sujay@equihome.com.au"
+                  className="inline-flex items-center px-5 py-2.5 bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-lg hover:from-blue-700 hover:to-cyan-700 transition-colors shadow-lg shadow-blue-500/20"
+                >
+                  <FaEnvelope className="mr-2" />
+                  Contact Investment Team
+                </a>
+                <a
+                  href="tel:+61400000000"
+                  className="inline-flex items-center px-5 py-2.5 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors border border-gray-600"
+                >
+                  <FaPhone className="mr-2" />
+                  Schedule a Call
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       </div>
