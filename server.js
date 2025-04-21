@@ -765,6 +765,42 @@ app.post('/api/deal-room/initialize', async (req, res) => {
   }
 });
 
+// Access Requests API endpoints
+
+// Get all access requests
+app.get('/api/access-requests', async (req, res) => {
+  try {
+    // Connect to MongoDB
+    await connectToDatabase();
+
+    // Get all access requests
+    const accessRequests = await AccessRequest.find({}).sort({ createdAt: -1 });
+
+    res.status(200).json(accessRequests);
+  } catch (error) {
+    console.error('Error fetching access requests:', error);
+    res.status(500).json({ message: 'Failed to fetch access requests' });
+  }
+});
+
+// This endpoint was moved to line 304
+
+// Get Deal Room activity
+app.get('/api/deal-room-activity', async (req, res) => {
+  try {
+    // Connect to MongoDB
+    await connectToDatabase();
+
+    // Get all Deal Room activity
+    const activities = await DealRoomActivity.find({}).sort({ timestamp: -1 }).limit(100);
+
+    res.status(200).json(activities);
+  } catch (error) {
+    console.error('Error fetching Deal Room activity:', error);
+    res.status(500).json({ message: 'Failed to fetch Deal Room activity' });
+  }
+});
+
 // Admin API endpoints
 
 // Get metrics for admin dashboard
@@ -844,6 +880,25 @@ app.get('/api/admin/newsletter-subscribers', async (req, res) => {
     console.error('Error fetching newsletter subscribers:', error);
     res.status(500).json({ message: 'Failed to fetch newsletter subscribers' });
   }
+});
+
+// Serve static files from the React app
+const path = require('path');
+app.use(express.static(path.join(__dirname, 'dist')));
+
+// Log all routes that aren't found to help with debugging
+app.use((req, res, next) => {
+  const isApiRequest = req.path.startsWith('/api/');
+  if (isApiRequest) {
+    console.log(`API route not found: ${req.method} ${req.path}`);
+  }
+  next();
+});
+
+// Catch-all route to serve the React app
+app.get('*', (req, res) => {
+  console.log(`Serving React app for path: ${req.path}`);
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
 app.listen(port, () => {
