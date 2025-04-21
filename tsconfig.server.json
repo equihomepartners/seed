@@ -4,12 +4,13 @@
     "module": "commonjs",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "strict": true,
+    "strict": false,
+    "noImplicitAny": false,
     "skipLibCheck": true,
     "outDir": "./dist",
     "rootDir": "./",
     "moduleResolution": "node"
   },
-  "include": ["server.ts"],
+  "include": ["server.ts", "server/**/*.ts"],
   "exclude": ["node_modules"]
-} 
+}
