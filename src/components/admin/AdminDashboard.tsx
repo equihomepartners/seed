@@ -131,6 +131,8 @@ const AdminDashboard = () => {
     const requestId = request._id;
     const status = action === 'approve' ? 'approved' : 'denied';
 
+    console.log(`Updating access request: ${requestId} to ${status}`);
+
     try {
       // Update request status via API
       const response = await fetch(`/api/access-requests/${requestId}`, {
@@ -144,8 +146,19 @@ const AdminDashboard = () => {
         })
       });
 
+      // Get response text for error handling
+      const responseText = await response.text();
+      let responseData;
+      try {
+        responseData = JSON.parse(responseText);
+      } catch (e) {
+        console.error('Failed to parse response as JSON:', responseText);
+      }
+
       if (!response.ok) {
-        throw new Error('Failed to update access request');
+        const errorMessage = responseData?.message || 'Failed to update access request';
+        console.error(`Error updating access request: ${errorMessage}`);
+        throw new Error(errorMessage);
       }
 
       // Update local state
@@ -187,7 +200,7 @@ const AdminDashboard = () => {
       alert(`Access request ${status} for ${request.email}`);
     } catch (error) {
       console.error('Error updating access request:', error);
-      alert('Failed to update access request. Please try again.');
+      alert(`Failed to update access request: ${error instanceof Error ? error.message : 'Unknown error'}. Please try again.`);
     }
   };
 
@@ -215,11 +228,21 @@ const AdminDashboard = () => {
         })
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to grant access');
+      // Get response text for error handling
+      const responseText = await response.text();
+      let data;
+      try {
+        data = JSON.parse(responseText);
+      } catch (e) {
+        console.error('Failed to parse response as JSON:', responseText);
+        throw new Error('Failed to parse server response');
       }
 
-      const data = await response.json();
+      if (!response.ok) {
+        const errorMessage = data?.message || 'Failed to grant access';
+        console.error(`Error granting access: ${errorMessage}`);
+        throw new Error(errorMessage);
+      }
 
       // Update approvedUsers in localStorage for client-side checks
       const approvedUsers = JSON.parse(localStorage.getItem('approvedUsers') || '[]');
@@ -242,7 +265,7 @@ const AdminDashboard = () => {
       alert(`Access granted to ${manualEmail} for ${manualRequestType}`);
     } catch (error) {
       console.error('Error granting access:', error);
-      alert('Failed to grant access. Please try again.');
+      alert(`Failed to grant access: ${error instanceof Error ? error.message : 'Unknown error'}. Please try again.`);
     } finally {
       setIsGranting(false);
     }
@@ -266,8 +289,20 @@ const AdminDashboard = () => {
         })
       });
 
+      // Get response text for error handling
+      const responseText = await response.text();
+      let responseData;
+      try {
+        responseData = JSON.parse(responseText);
+      } catch (e) {
+        console.error('Failed to parse response as JSON:', responseText);
+        throw new Error('Failed to parse server response');
+      }
+
       if (!response.ok) {
-        throw new Error('Failed to revoke access');
+        const errorMessage = responseData?.message || 'Failed to revoke access';
+        console.error(`Error revoking access: ${errorMessage}`);
+        throw new Error(errorMessage);
       }
 
       // Update approvedUsers in localStorage
@@ -284,7 +319,7 @@ const AdminDashboard = () => {
       alert(`Access revoked from ${email} for ${requestType}`);
     } catch (error) {
       console.error('Error revoking access:', error);
-      alert('Failed to revoke access. Please try again.');
+      alert(`Failed to revoke access: ${error instanceof Error ? error.message : 'Unknown error'}. Please try again.`);
     }
   };
 

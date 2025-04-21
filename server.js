@@ -238,16 +238,27 @@ app.put('/api/access-requests/:id', async (req, res) => {
   const { id } = req.params;
   const { status, adminEmail } = req.body;
 
+  console.log(`Updating access request ${id} to status ${status} by ${adminEmail}`);
+
   try {
     // Connect to MongoDB
     await connectToDatabase();
+
+    // Validate MongoDB ObjectId
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      console.error(`Invalid ObjectId: ${id}`);
+      return res.status(400).json({ message: 'Invalid request ID format' });
+    }
 
     // Find the request
     const request = await AccessRequest.findById(id);
 
     if (!request) {
+      console.error(`Access request not found with ID: ${id}`);
       return res.status(404).json({ message: 'Access request not found' });
     }
+
+    console.log(`Found access request: ${request.email} for ${request.requestType}`);
 
     // Update status
     request.status = status;
@@ -266,7 +277,7 @@ app.put('/api/access-requests/:id', async (req, res) => {
     res.status(200).json({ message: `Access request ${status}`, request });
   } catch (error) {
     console.error('Error updating access request:', error);
-    res.status(500).json({ message: 'Failed to update access request' });
+    res.status(500).json({ message: `Failed to update access request: ${error.message}` });
   }
 });
 
