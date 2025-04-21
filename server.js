@@ -7,6 +7,10 @@ const mongoose = require('mongoose');
 
 dotenv.config();
 
+// Environment flag
+const isProduction = process.env.NODE_ENV === 'production';
+console.log(`Running in ${isProduction ? 'PRODUCTION' : 'DEVELOPMENT'} mode`);
+
 const app = express();
 const port = process.env.PORT || 3001;
 

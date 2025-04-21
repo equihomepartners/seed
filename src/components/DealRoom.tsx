@@ -191,25 +191,6 @@ const DealRoom = () => {
   useEffect(() => {
     const checkAccess = async () => {
       setIsLoading(true);
-
-      // DEVELOPMENT MODE: Skip access check
-      console.log('DEVELOPMENT MODE: Bypassing access check for Deal Room');
-      setHasAccess(true);
-
-      // Load documents
-      await loadDocuments();
-      setIsLoading(false);
-
-      // Track page view if user is logged in
-      const userEmail = localStorage.getItem('userEmail');
-      if (userEmail) {
-        trackActivity('view');
-      }
-
-      return;
-
-      // The code below is commented out for development purposes
-      /*
       const userEmail = localStorage.getItem('userEmail');
 
       if (!userEmail) {
@@ -289,7 +270,6 @@ const DealRoom = () => {
       } finally {
         setIsLoading(false);
       }
-      */
     };
 
     const loadDocuments = async () => {
@@ -471,9 +451,6 @@ const DealRoom = () => {
             timestamp: new Date().toISOString()
           })
         }).catch(err => console.error('Error tracking exit:', err));
-      } else if (hasAccess) {
-        // Development mode - no user email but still tracking
-        console.log('DEVELOPMENT MODE: User exited Deal Room');
       }
     };
   }, [navigate, hasAccess]);
