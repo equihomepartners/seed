@@ -433,7 +433,16 @@ const Launchpad = () => {
                       Enter Deal Room →
                     </div>
                   ) : (
-                    <div className="text-sky-500">Enter Deal Room →</div>
+                    <div className="flex flex-col space-y-2">
+                      <div className="text-sky-500">Enter Deal Room →</div>
+                      {/* Development Mode Direct Link */}
+                      <div
+                        className="text-xs text-green-600 font-medium cursor-pointer hover:underline bg-green-50 px-2 py-1 rounded inline-block"
+                        onClick={() => navigate('/deal-room')}
+                      >
+                        [DEV MODE] Direct Access
+                      </div>
+                    </div>
                   )}
                 </div>
               </div>
