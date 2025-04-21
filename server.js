@@ -87,10 +87,21 @@ const accessRequestSchema = new mongoose.Schema({
 const AccessRequest = mongoose.models.AccessRequest || mongoose.model('AccessRequest', accessRequestSchema);
 
 // Middleware
-app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175', 'http://localhost:5176', 'http://127.0.0.1:5173', 'http://127.0.0.1:5174', 'http://127.0.0.1:5175', 'http://127.0.0.1:5176'],
-  credentials: true
-}));
+if (isProduction) {
+  // In production, allow requests from any origin
+  app.use(cors({
+    origin: '*',
+    credentials: true
+  }));
+  console.log('CORS configured for production - allowing all origins');
+} else {
+  // In development, only allow requests from localhost
+  app.use(cors({
+    origin: ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175', 'http://localhost:5176', 'http://127.0.0.1:5173', 'http://127.0.0.1:5174', 'http://127.0.0.1:5175', 'http://127.0.0.1:5176'],
+    credentials: true
+  }));
+  console.log('CORS configured for development - allowing only localhost origins');
+}
 app.use(express.json());
 
 // Request logging middleware
@@ -751,6 +762,87 @@ app.post('/api/deal-room/initialize', async (req, res) => {
   } catch (error) {
     console.error('Error initializing Deal Room:', error);
     res.status(500).json({ message: 'Failed to initialize Deal Room' });
+  }
+});
+
+// Admin API endpoints
+
+// Get metrics for admin dashboard
+app.get('/api/admin/metrics', async (req, res) => {
+  try {
+    // Connect to MongoDB
+    await connectToDatabase();
+
+    // Get counts from various collections
+    const totalUsers = await AccessRequest.countDocuments();
+
+    // Count active users in the last 24 hours
+    const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    const activeUsers = await DealRoomActivity.countDocuments({
+      timestamp: { $gte: oneDayAgo }
+    });
+
+    // Count newsletter subscribers (mock data for now)
+    const newsletterSubscribers = 8; // Mock value
+
+    res.status(200).json({
+      totalUsers,
+      activeUsers,
+      newsletterSubscribers
+    });
+  } catch (error) {
+    console.error('Error fetching admin metrics:', error);
+    res.status(500).json({ message: 'Failed to fetch metrics' });
+  }
+});
+
+// Get user activity for admin dashboard
+app.get('/api/admin/user-activity', async (req, res) => {
+  try {
+    // Connect to MongoDB
+    await connectToDatabase();
+
+    // Get unique users with their last activity time
+    const activities = await DealRoomActivity.aggregate([
+      { $sort: { timestamp: -1 } },
+      { $group: {
+        _id: "$email",
+        email: { $first: "$email" },
+        name: { $first: "$name" },
+        lastActive: { $first: "$timestamp" }
+      }},
+      { $limit: 20 }
+    ]);
+
+    res.status(200).json(activities);
+  } catch (error) {
+    console.error('Error fetching user activity:', error);
+    res.status(500).json({ message: 'Failed to fetch user activity' });
+  }
+});
+
+// Get newsletter subscribers for admin dashboard
+app.get('/api/admin/newsletter-subscribers', async (req, res) => {
+  try {
+    // This is a mock endpoint for now
+    // In a real implementation, you would fetch from a newsletter subscribers collection
+
+    // Mock data
+    const subscribers = [
+      { _id: '1', email: 'subscriber1@example.com', subscribedAt: new Date().toISOString() },
+      { _id: '2', email: 'subscriber2@example.com', subscribedAt: new Date(Date.now() - 86400000).toISOString() },
+      { _id: '3', email: 'subscriber3@example.com', subscribedAt: new Date(Date.now() - 172800000).toISOString() },
+      { _id: '4', email: 'subscriber4@example.com', subscribedAt: new Date(Date.now() - 259200000).toISOString() },
+      { _id: '5', email: 'subscriber5@example.com', subscribedAt: new Date(Date.now() - 345600000).toISOString() },
+      { _id: '6', email: 'subscriber6@example.com', subscribedAt: new Date(Date.now() - 432000000).toISOString() },
+      { _id: '7', email: 'subscriber7@example.com', subscribedAt: new Date(Date.now() - 518400000).toISOString() },
+      { _id: '8', email: 'subscriber8@example.com', subscribedAt: new Date(Date.now() - 604800000).toISOString() }
+    ];
+
+    res.status(200).json(subscribers);
+  } catch (error) {
+    console.error('Error fetching newsletter subscribers:', error);
+    res.status(500).json({ message: 'Failed to fetch newsletter subscribers' });
   }
 });
 
