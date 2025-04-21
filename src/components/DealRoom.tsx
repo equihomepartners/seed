@@ -47,11 +47,32 @@ interface CategoryInfo {
 }
 
 const categories: Record<string, CategoryInfo> = {
-  main: {
-    id: 'main',
-    name: 'Due Diligence Documents',
-    description: 'Core due diligence documents for investors',
+  financial: {
+    id: 'financial',
+    name: 'Financial Documents',
+    description: 'Financial models and projections',
+    icon: <FaChartLine />,
+    color: 'green'
+  },
+  market: {
+    id: 'market',
+    name: 'Market Research',
+    description: 'Market analysis and research',
+    icon: <FaChartLine />,
+    color: 'purple'
+  },
+  strategy: {
+    id: 'strategy',
+    name: 'Strategy',
+    description: 'Business and go-to-market strategy',
     icon: <FaFileAlt />,
+    color: 'orange'
+  },
+  presentation: {
+    id: 'presentation',
+    name: 'Presentations',
+    description: 'Investor presentations and decks',
+    icon: <FaFilePowerpoint />,
     color: 'blue'
   },
   technical: {
@@ -277,13 +298,14 @@ const DealRoom = () => {
 
         // Hardcoded documents for development - only the specified cards
         const docs = [
-          // Main Documents
+          // Financial Documents
           {
             _id: 'investment-thesis',
             title: 'Investment Thesis - Current Draft',
             description: 'Comprehensive analysis of Equihome\'s investment opportunity, market positioning, and growth strategy. Includes detailed financial projections and risk assessment.',
-            category: 'main',
+            category: 'financial',
             iconType: 'file',
+            fileUrl: 'https://docs.google.com/document/d/1ZINj5uwwGToO91Rt5RO3tCq2VihzVj61ij_Mgd5vWfw/edit?pli=1&tab=t.0',
             isLocked: false,
             sortOrder: 1,
             createdAt: new Date().toISOString(),
@@ -291,10 +313,11 @@ const DealRoom = () => {
           },
           {
             _id: 'blended-model',
-            title: 'Equihome Model - Blended Duration - $2m Raise',
+            title: 'Equihome Model - Blended Duration - $2M Raise',
             description: 'Financial model with blended duration approach for the $2M seed round. Includes detailed cash flow projections, ROI analysis, and sensitivity testing.',
-            category: 'main',
+            category: 'financial',
             iconType: 'chart',
+            fileUrl: 'https://docs.google.com/spreadsheets/d/1fcOJNO83Dn5oufZzOmyaNuA-fUmnpIyz/edit?gid=677147657#gid=677147657',
             isLocked: false,
             sortOrder: 2,
             createdAt: new Date().toISOString(),
@@ -304,21 +327,25 @@ const DealRoom = () => {
             _id: 'swot-analysis',
             title: 'SWOT Analysis',
             description: 'Detailed analysis of Equihome\'s strengths, weaknesses, opportunities, and threats in the current market landscape. Includes competitive positioning.',
-            category: 'main',
+            category: 'strategy',
             iconType: 'file',
+            fileUrl: 'https://docs.google.com/document/d/1QIOrzpDtHREsxO0w_G3j7QPnoothfuZ7/edit',
             isLocked: false,
-            sortOrder: 3,
+            sortOrder: 1,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString()
           },
+
+          // Market Research
           {
             _id: 'competitive-landscape',
             title: 'Competitive Landscape',
             description: 'In-depth analysis of the competitive environment, including direct and indirect competitors, market share, and Equihome\'s unique value proposition.',
-            category: 'main',
+            category: 'market',
             iconType: 'file',
+            fileUrl: 'https://docs.google.com/document/d/1sTbbksPid0Xky3zkpTaU2upFL2-S_fdb/edit',
             isLocked: false,
-            sortOrder: 4,
+            sortOrder: 1,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString()
           },
@@ -326,21 +353,25 @@ const DealRoom = () => {
             _id: 'residential-mortgage-market',
             title: 'Residential Mortgage Market',
             description: 'Comprehensive overview of the residential mortgage market, including trends, challenges, and opportunities. Includes market size and growth projections.',
-            category: 'main',
+            category: 'market',
             iconType: 'file',
+            fileUrl: 'https://docs.google.com/document/d/1RqC5Z4plh94LB8h7QezV6h-gG-HEoMhG/edit',
             isLocked: false,
-            sortOrder: 5,
+            sortOrder: 2,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString()
           },
+
+          // Strategy Documents
           {
             _id: 'go-to-market',
             title: 'Go to Market Strategy',
             description: 'Detailed plan for market entry and expansion, including target customer segments, marketing channels, and partnership strategies.',
-            category: 'main',
+            category: 'strategy',
             iconType: 'file',
+            fileUrl: 'https://docs.google.com/document/d/1C3tl1crtrLS9uA_gO0tWw3x0mkXnUC47/edit',
             isLocked: false,
-            sortOrder: 6,
+            sortOrder: 2,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString()
           },
@@ -348,21 +379,25 @@ const DealRoom = () => {
             _id: 'market-fit',
             title: 'Market Fit Analysis',
             description: 'Analysis of Equihome\'s product-market fit, including customer validation, feedback, and iteration strategy. Includes adoption metrics and projections.',
-            category: 'main',
+            category: 'strategy',
             iconType: 'file',
+            fileUrl: 'https://docs.google.com/document/d/1CkihkwQ1jcCmvZBmxuk0wXBxNmLHkMGevtDmaySvGM0/edit?tab=t.0',
             isLocked: false,
-            sortOrder: 7,
+            sortOrder: 3,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString()
           },
+
+          // Presentation Documents
           {
             _id: 'intro-deck-updated',
             title: 'Introduction Deck - Updated',
             description: 'Latest investor presentation deck with updated financials, team information, and market analysis. Includes executive summary and investment highlights.',
-            category: 'main',
+            category: 'presentation',
             iconType: 'presentation',
+            fileUrl: 'https://drive.google.com/file/d/1288Q0aFLT7nMS7feQUOtAxCGVYRhVGAm/view?usp=drive_link',
             isLocked: false,
-            sortOrder: 8,
+            sortOrder: 1,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString()
           },
@@ -535,7 +570,7 @@ const DealRoom = () => {
                   let enhancedDescription = doc.description;
                   if (doc.title === "Investment Thesis - Current Draft") {
                     enhancedDescription = "Comprehensive analysis of Equihome's investment opportunity, market positioning, and growth strategy. Includes detailed financial projections and risk assessment.";
-                  } else if (doc.title === "Equihome Model - Blended Duration - $2m Raise") {
+                  } else if (doc.title === "Equihome Model - Blended Duration - $2M Raise") {
                     enhancedDescription = "Financial model with blended duration approach for the $2M seed round. Includes detailed cash flow projections, ROI analysis, and sensitivity testing.";
                   } else if (doc.title === "SWOT Analysis") {
                     enhancedDescription = "Detailed analysis of Equihome's strengths, weaknesses, opportunities, and threats in the current market landscape. Includes competitive positioning.";
