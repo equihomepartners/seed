@@ -321,92 +321,23 @@ const Launchpad = () => {
                       </div>
                     </div>
                   ) : !hasDealRoomAccess ? (
-                    // Request access overlay if user doesn't have access
+                    // DEVELOPMENT MODE: Show a simplified overlay with direct access
                     <div
-                      className="absolute inset-0 bg-gradient-to-br from-sky-600/60 to-indigo-600/60 backdrop-blur-[0.5px] rounded-xl flex items-center justify-center cursor-pointer transition-all hover:from-sky-700/70 hover:to-indigo-700/70 group"
-                      onClick={async () => {
-                        if (isRequestingAccess) return; // Prevent multiple clicks
-
-                        const userEmail = localStorage.getItem('userEmail');
-                        if (!userEmail) {
-                          alert('Please log in to request access.');
-                          return;
-                        }
-
-                        // Set loading state
-                        setIsRequestingAccess(true);
-
-                        // Prepare request data
-                        const requestData = {
-                          email: userEmail,
-                          name: localStorage.getItem('userName') || 'Investor',
-                          requestType: 'dealRoom'
-                        };
-
-                        try {
-                          // Send API request
-                          const response = await fetch('/api/request-access', {
-                            method: 'POST',
-                            headers: {
-                              'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify(requestData)
-                          });
-
-                          const data = await response.json();
-
-                          if (response.ok) {
-                            // Store request in localStorage for tracking
-                            const existingRequests = JSON.parse(localStorage.getItem('accessRequests') || '[]');
-                            existingRequests.push({
-                              ...requestData,
-                              timestamp: new Date().toISOString(),
-                              status: 'pending',
-                              requestId: data.requestId
-                            });
-                            localStorage.setItem('accessRequests', JSON.stringify(existingRequests));
-
-                            // Show success message
-                            alert('Your access request has been sent to sujay@equihome.com.au. You will be notified when access is granted.');
-                          } else {
-                            throw new Error(data.message || 'Failed to send request');
-                          }
-                        } catch (error) {
-                          console.error('Error sending access request:', error);
-
-                          // Fallback to client-side simulation if API fails
-                          const existingRequests = JSON.parse(localStorage.getItem('accessRequests') || '[]');
-                          existingRequests.push({
-                            ...requestData,
-                            timestamp: new Date().toISOString(),
-                            status: 'pending'
-                          });
-                          localStorage.setItem('accessRequests', JSON.stringify(existingRequests));
-
-                          alert('Your access request has been recorded. You will be notified when access is granted.');
-                        } finally {
-                          // Reset loading state
-                          setIsRequestingAccess(false);
-                        }
-                      }}
+                      className="absolute inset-0 bg-gradient-to-br from-green-600/40 to-green-700/40 backdrop-blur-[0.5px] rounded-xl flex items-center justify-center cursor-pointer transition-all hover:from-green-700/50 hover:to-green-800/50 group"
+                      onClick={() => navigate('/deal-room')}
                     >
-                      <div className="flex flex-col items-center text-center px-6 py-6 transform transition-transform group-hover:scale-105 bg-gradient-to-br from-sky-800/40 to-indigo-800/40 rounded-lg backdrop-blur-md">
+                      <div className="flex flex-col items-center text-center px-6 py-6 transform transition-transform group-hover:scale-105 bg-gradient-to-br from-green-800/30 to-green-900/30 rounded-lg backdrop-blur-md">
                         <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center mb-3">
-                          {isRequestingAccess ? (
-                            <div className="animate-spin rounded-full h-6 w-6 border-t-2 border-b-2 border-white"></div>
-                          ) : (
-                            <FaKey className="text-2xl text-white" />
-                          )}
+                          <FaUnlock className="text-2xl text-white" />
                         </div>
                         <span className="text-white font-bold text-lg mb-1">
-                          {isRequestingAccess ? 'Sending Request...' : 'Request Access'}
+                          DEVELOPMENT MODE
                         </span>
-                        <span className="text-white/90 text-sm mb-3">Get exclusive access to our deal room</span>
+                        <span className="text-white/90 text-sm mb-3">Direct access to Deal Room</span>
                         <button
-                          className={`px-5 py-1.5 bg-white rounded-full font-medium transition-colors shadow-lg text-sm ${isRequestingAccess ? 'opacity-70 cursor-not-allowed' : 'text-sky-600 hover:bg-sky-50'}`}
-                          disabled={isRequestingAccess}
+                          className="px-5 py-1.5 bg-white rounded-full font-medium transition-colors shadow-lg text-sm text-green-600 hover:bg-green-50"
                         >
-                          {isRequestingAccess ? 'Processing...' : 'Request Now'}
+                          Enter Now
                         </button>
                       </div>
                     </div>
@@ -433,15 +364,11 @@ const Launchpad = () => {
                       Enter Deal Room →
                     </div>
                   ) : (
-                    <div className="flex flex-col space-y-2">
-                      <div className="text-sky-500">Enter Deal Room →</div>
-                      {/* Development Mode Direct Link */}
-                      <div
-                        className="text-xs text-green-600 font-medium cursor-pointer hover:underline bg-green-50 px-2 py-1 rounded inline-block"
-                        onClick={() => navigate('/deal-room')}
-                      >
-                        [DEV MODE] Direct Access
-                      </div>
+                    <div
+                      className="text-green-600 font-medium cursor-pointer hover:underline"
+                      onClick={() => navigate('/deal-room')}
+                    >
+                      [DEV] Enter Deal Room →
                     </div>
                   )}
                 </div>
