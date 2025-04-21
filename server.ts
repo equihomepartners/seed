@@ -5,7 +5,6 @@ import { OpenAI } from 'openai'
 import * as nodemailer from 'nodemailer'
 import connectToDatabase from './server/db'
 import AccessRequest from './server/models/AccessRequest'
-import { ExpressRequest, ExpressResponse, ExpressNextFunction } from './server/types'
 
 dotenv.config()
 
@@ -39,21 +38,21 @@ app.use(cors({
 app.use(express.json())
 
 // Request logging middleware
-app.use((req: ExpressRequest, res: ExpressResponse, next: ExpressNextFunction) => {
+app.use((req, res, next) => {
   console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`)
   console.log('Request headers:', req.headers)
   next()
 })
 
 // Health check endpoint
-app.get('/health', (req: ExpressRequest, res: ExpressResponse) => {
+app.get('/health', (req, res) => {
   console.log('Health check request received')
   res.setHeader('Access-Control-Allow-Origin', '*')
   res.json({ status: 'ok', timestamp: new Date().toISOString() })
 })
 
 // OpenAI Chat endpoint
-app.post('/api/chat', async (req: ExpressRequest, res: ExpressResponse) => {
+app.post('/api/chat', async (req, res) => {
   try {
     console.log('Received chat request:', req.body)
     const { messages } = req.body
@@ -78,7 +77,7 @@ app.post('/api/chat', async (req: ExpressRequest, res: ExpressResponse) => {
 })
 
 // Email endpoint
-app.post('/api/schedule-call', async (req: ExpressRequest, res: ExpressResponse) => {
+app.post('/api/schedule-call', async (req, res) => {
   const { name, email, company, timePreference, message } = req.body
 
   try {
@@ -121,7 +120,7 @@ app.post('/api/schedule-call', async (req: ExpressRequest, res: ExpressResponse)
 })
 
 // Access Request endpoint
-app.post('/api/request-access', async (req: ExpressRequest, res: ExpressResponse) => {
+app.post('/api/request-access', async (req, res) => {
   const { name, email, requestType } = req.body
 
   try {
@@ -180,7 +179,7 @@ app.post('/api/request-access', async (req: ExpressRequest, res: ExpressResponse
 })
 
 // Get all access requests (admin only)
-app.get('/api/access-requests', async (req: ExpressRequest, res: ExpressResponse) => {
+app.get('/api/access-requests', async (req, res) => {
   try {
     // Connect to MongoDB
     await connectToDatabase()
@@ -196,7 +195,7 @@ app.get('/api/access-requests', async (req: ExpressRequest, res: ExpressResponse
 })
 
 // Update access request status (admin only)
-app.put('/api/access-requests/:id', async (req: ExpressRequest, res: ExpressResponse) => {
+app.put('/api/access-requests/:id', async (req, res) => {
   const { id } = req.params
   const { status, adminEmail } = req.body
 
@@ -261,7 +260,7 @@ app.put('/api/access-requests/:id', async (req: ExpressRequest, res: ExpressResp
 })
 
 // Check if user has access to a specific resource
-app.get('/api/check-access', async (req: ExpressRequest, res: ExpressResponse) => {
+app.get('/api/check-access', async (req, res) => {
   const { email, resourceType } = req.query
 
   if (!email || !resourceType) {
