@@ -131,12 +131,19 @@ const AdminDashboard = () => {
     const requestId = request._id;
     const status = action === 'approve' ? 'approved' : 'denied';
 
+    // Check if requestId is valid
+    if (!requestId) {
+      console.error('Invalid request ID: undefined or null');
+      alert('Error: This access request has an invalid ID. Please refresh the page and try again.');
+      return;
+    }
+
     console.log(`Updating access request: ${requestId} to ${status}`);
 
     try {
-      // Update request status via API
+      // Update request status via API - use POST instead of PUT to avoid proxy issues
       const response = await fetch(`/api/access-requests/${requestId}`, {
-        method: 'PUT',
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },

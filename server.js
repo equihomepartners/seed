@@ -233,12 +233,61 @@ app.get('/api/access-requests', async (req, res) => {
   }
 });
 
-// Update access request status (admin only)
-app.put('/api/access-requests/:id', async (req, res) => {
+// Update access request status (admin only) - Support both PUT and POST for compatibility
+app.post('/api/access-requests/:id', async (req, res) => {
   const { id } = req.params;
   const { status, adminEmail } = req.body;
 
   console.log(`Updating access request ${id} to status ${status} by ${adminEmail}`);
+
+  try {
+    // Connect to MongoDB
+    await connectToDatabase();
+
+    // Validate MongoDB ObjectId
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      console.error(`Invalid ObjectId: ${id}`);
+      return res.status(400).json({ message: 'Invalid request ID format' });
+    }
+
+    // Find the request
+    const request = await AccessRequest.findById(id);
+
+    if (!request) {
+      console.error(`Access request not found with ID: ${id}`);
+      return res.status(404).json({ message: 'Access request not found' });
+    }
+
+    console.log(`Found access request: ${request.email} for ${request.requestType}`);
+
+    // Update status
+    request.status = status;
+
+    if (status === 'approved') {
+      request.approvedAt = new Date();
+      request.approvedBy = adminEmail || 'admin';
+      console.log(`Access request from ${request.email} for ${request.requestType} has been approved by ${adminEmail || 'admin'}`);
+    } else if (status === 'denied') {
+      console.log(`Access request from ${request.email} for ${request.requestType} has been denied by ${adminEmail || 'admin'}`);
+    }
+
+    // Save changes
+    await request.save();
+
+    res.status(200).json({ message: `Access request ${status}`, request });
+  } catch (error) {
+    console.error('Error updating access request:', error);
+    res.status(500).json({ message: `Failed to update access request: ${error.message}` });
+  }
+});
+
+// Also support PUT for the same endpoint (for backward compatibility)
+app.put('/api/access-requests/:id', async (req, res) => {
+  // Forward to the POST handler
+  const { id } = req.params;
+  const { status, adminEmail } = req.body;
+
+  console.log(`PUT request forwarded to POST handler: Updating access request ${id} to status ${status} by ${adminEmail}`);
 
   try {
     // Connect to MongoDB
