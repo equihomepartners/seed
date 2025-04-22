@@ -246,20 +246,24 @@ const AdminDashboard = () => {
 
     try {
       // Use a direct API call with absolute URL to avoid proxy issues
-      const apiUrl = window.location.origin + '/api/grant-access';
+      const apiUrl = '/api/grant-access';
       console.log(`Sending grant access request to: ${apiUrl}`);
+
+      const requestData = {
+        email: manualEmail,
+        name: manualName,
+        requestType: manualRequestType,
+        adminEmail: localStorage.getItem('adminEmail')
+      };
+
+      console.log('Request data:', requestData);
 
       const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-          email: manualEmail,
-          name: manualName,
-          requestType: manualRequestType,
-          adminEmail: localStorage.getItem('adminEmail')
-        })
+        body: JSON.stringify(requestData)
       });
 
       // Get response text for error handling
@@ -271,7 +275,7 @@ const AdminDashboard = () => {
         data = JSON.parse(responseText);
       } catch (e) {
         console.error('Failed to parse response as JSON:', responseText);
-        throw new Error('Failed to parse server response');
+        throw new Error(`Failed to parse server response: ${responseText}`);
       }
 
       if (!response.ok) {

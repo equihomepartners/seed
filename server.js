@@ -387,15 +387,18 @@ app.get('/api/check-access', async (req, res) => {
 
 // Manually grant access to a user
 app.post('/api/grant-access', async (req, res) => {
+  console.log('Received grant access request:', req.body);
   const { email, name, requestType, adminEmail } = req.body;
 
   if (!email || !requestType) {
+    console.log('Missing required fields:', { email, requestType });
     return res.status(400).json({ message: 'Email and requestType are required' });
   }
 
   try {
     // Connect to MongoDB
     await connectToDatabase();
+    console.log('Connected to MongoDB');
 
     // Check if user already has a request
     let existingRequest = await AccessRequest.findOne({
@@ -404,6 +407,7 @@ app.post('/api/grant-access', async (req, res) => {
     });
 
     if (existingRequest) {
+      console.log(`Found existing request for ${email} with status ${existingRequest.status}`);
       // Update existing request
       existingRequest.status = 'approved';
       existingRequest.approvedAt = new Date();
@@ -414,6 +418,7 @@ app.post('/api/grant-access', async (req, res) => {
       return res.status(200).json({ message: 'Access granted to existing request', request: existingRequest });
     }
 
+    console.log(`Creating new access request for ${email}`);
     // Create new access request with approved status
     const newRequest = new AccessRequest({
       email,
@@ -433,7 +438,7 @@ app.post('/api/grant-access', async (req, res) => {
     res.status(200).json({ message: 'Access granted successfully', request: newRequest });
   } catch (error) {
     console.error('Error granting access:', error);
-    res.status(500).json({ message: 'Failed to grant access' });
+    res.status(500).json({ message: `Failed to grant access: ${error.message}` });
   }
 });
 
