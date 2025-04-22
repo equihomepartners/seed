@@ -7,7 +7,7 @@ interface Metrics {
   newsletterSubscribers: number;
 }
 
-const API_URL = import.meta.env.VITE_API_URL || 'https://equihome-seed-api-pnk9i.ondigitalocean.app/api';
+// API URL is provided by Vite's define plugin
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
