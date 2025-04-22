@@ -30,9 +30,9 @@ const AdminDashboard = () => {
       setLoading(true);
       setError('');
 
-      // Use API URL from environment or fallback to relative paths
-      const apiBaseUrl = import.meta.env.VITE_API_URL || '';
-      console.log(`Using API base URL: ${apiBaseUrl || 'relative paths'} for API calls`);
+      // Use API URL from environment
+      const apiBaseUrl = import.meta.env.VITE_API_URL;
+      console.log(`Using API base URL: ${apiBaseUrl} for API calls`);
 
       // Fetch data from API
       const [metricsRes, activitiesRes, subscribersRes, accessRequestsRes, dealRoomActivitiesRes] = await Promise.all([
@@ -160,8 +160,8 @@ const AdminDashboard = () => {
     console.log(`Updating access request: ${requestId} to ${status}`);
 
     try {
-      // Use API URL from environment or fallback to relative paths
-      const apiBaseUrl = import.meta.env.VITE_API_URL || '';
+      // Use API URL from environment
+      const apiBaseUrl = import.meta.env.VITE_API_URL;
       const apiUrl = `${apiBaseUrl}/api/access-requests/${requestId}`;
       console.log(`Sending access request update to: ${apiUrl}`);
 
@@ -253,8 +253,8 @@ const AdminDashboard = () => {
     setIsGranting(true);
 
     try {
-      // Use API URL from environment or fallback to relative paths
-      const apiBaseUrl = import.meta.env.VITE_API_URL || '';
+      // Use API URL from environment
+      const apiBaseUrl = import.meta.env.VITE_API_URL;
       const apiUrl = `${apiBaseUrl}/api/grant-access`;
       console.log(`Sending grant access request to: ${apiUrl}`);
 
@@ -332,8 +332,8 @@ const AdminDashboard = () => {
     }
 
     try {
-      // Use API URL from environment or fallback to relative paths
-      const apiBaseUrl = import.meta.env.VITE_API_URL || '';
+      // Use API URL from environment
+      const apiBaseUrl = import.meta.env.VITE_API_URL;
       const apiUrl = `${apiBaseUrl}/api/revoke-access`;
       console.log(`Sending revoke access request to: ${apiUrl}`);
 

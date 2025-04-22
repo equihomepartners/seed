@@ -4,6 +4,9 @@ import dotenv from 'dotenv'
 
 dotenv.config()
 
+// Define production API URL
+const productionApiUrl = 'https://equihome-seed-api-pnk9i.ondigitalocean.app'
+
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
@@ -23,5 +26,11 @@ export default defineConfig({
         rewrite: (path) => path,
       },
     },
+  },
+  define: {
+    // Provide the API URL as a global variable
+    'import.meta.env.VITE_API_URL': JSON.stringify(process.env.NODE_ENV === 'production'
+      ? productionApiUrl
+      : 'http://localhost:3001')
   }
 })
