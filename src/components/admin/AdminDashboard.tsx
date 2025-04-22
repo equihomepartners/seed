@@ -30,29 +30,29 @@ const AdminDashboard = () => {
       setLoading(true);
       setError('');
 
-      // Use absolute URLs to avoid proxy issues
-      const origin = window.location.origin;
-      console.log(`Using origin: ${origin} for API calls`);
+      // Use API URL from environment or fallback to relative paths
+      const apiBaseUrl = import.meta.env.VITE_API_URL || '';
+      console.log(`Using API base URL: ${apiBaseUrl || 'relative paths'} for API calls`);
 
       // Fetch data from API
       const [metricsRes, activitiesRes, subscribersRes, accessRequestsRes, dealRoomActivitiesRes] = await Promise.all([
-        fetch(`${origin}/api/admin/metrics`).catch((err) => {
+        fetch(`${apiBaseUrl}/api/admin/metrics`).catch((err) => {
           console.error('Error fetching metrics:', err);
           return { ok: false };
         }),
-        fetch(`${origin}/api/admin/user-activity`).catch((err) => {
+        fetch(`${apiBaseUrl}/api/admin/user-activity`).catch((err) => {
           console.error('Error fetching user activity:', err);
           return { ok: false };
         }),
-        fetch(`${origin}/api/admin/newsletter-subscribers`).catch((err) => {
+        fetch(`${apiBaseUrl}/api/admin/newsletter-subscribers`).catch((err) => {
           console.error('Error fetching newsletter subscribers:', err);
           return { ok: false };
         }),
-        fetch(`${origin}/api/access-requests`).catch((err) => {
+        fetch(`${apiBaseUrl}/api/access-requests`).catch((err) => {
           console.error('Error fetching access requests:', err);
           return { ok: false };
         }),
-        fetch(`${origin}/api/deal-room-activity`).catch((err) => {
+        fetch(`${apiBaseUrl}/api/deal-room-activity`).catch((err) => {
           console.error('Error fetching deal room activity:', err);
           return { ok: false };
         })
@@ -160,8 +160,9 @@ const AdminDashboard = () => {
     console.log(`Updating access request: ${requestId} to ${status}`);
 
     try {
-      // Use a direct API call with absolute URL to avoid proxy issues
-      const apiUrl = window.location.origin + `/api/access-requests/${requestId}`;
+      // Use API URL from environment or fallback to relative paths
+      const apiBaseUrl = import.meta.env.VITE_API_URL || '';
+      const apiUrl = `${apiBaseUrl}/api/access-requests/${requestId}`;
       console.log(`Sending access request update to: ${apiUrl}`);
 
       // Update request status via API - use POST instead of PUT to avoid proxy issues
@@ -180,9 +181,16 @@ const AdminDashboard = () => {
       const responseText = await response.text();
       let responseData;
       try {
+        // Check if the response is HTML (contains HTML tags)
+        if (responseText.includes('<html>') || responseText.includes('<!DOCTYPE html>')) {
+          console.error('Server returned HTML instead of JSON:', responseText);
+          throw new Error('Server returned HTML instead of JSON. This might be due to a proxy or CORS issue.');
+        }
+
         responseData = JSON.parse(responseText);
       } catch (e) {
         console.error('Failed to parse response as JSON:', responseText);
+        throw new Error(`Failed to parse server response: ${responseText.substring(0, 100)}${responseText.length > 100 ? '...' : ''}`);
       }
 
       if (!response.ok) {
@@ -245,8 +253,9 @@ const AdminDashboard = () => {
     setIsGranting(true);
 
     try {
-      // Use a direct API call with absolute URL to avoid proxy issues
-      const apiUrl = '/api/grant-access';
+      // Use API URL from environment or fallback to relative paths
+      const apiBaseUrl = import.meta.env.VITE_API_URL || '';
+      const apiUrl = `${apiBaseUrl}/api/grant-access`;
       console.log(`Sending grant access request to: ${apiUrl}`);
 
       const requestData = {
@@ -272,10 +281,16 @@ const AdminDashboard = () => {
 
       let data;
       try {
+        // Check if the response is HTML (contains HTML tags)
+        if (responseText.includes('<html>') || responseText.includes('<!DOCTYPE html>')) {
+          console.error('Server returned HTML instead of JSON:', responseText);
+          throw new Error('Server returned HTML instead of JSON. This might be due to a proxy or CORS issue.');
+        }
+
         data = JSON.parse(responseText);
       } catch (e) {
         console.error('Failed to parse response as JSON:', responseText);
-        throw new Error(`Failed to parse server response: ${responseText}`);
+        throw new Error(`Failed to parse server response: ${responseText.substring(0, 100)}${responseText.length > 100 ? '...' : ''}`);
       }
 
       if (!response.ok) {
@@ -317,8 +332,9 @@ const AdminDashboard = () => {
     }
 
     try {
-      // Use a direct API call with absolute URL to avoid proxy issues
-      const apiUrl = window.location.origin + '/api/revoke-access';
+      // Use API URL from environment or fallback to relative paths
+      const apiBaseUrl = import.meta.env.VITE_API_URL || '';
+      const apiUrl = `${apiBaseUrl}/api/revoke-access`;
       console.log(`Sending revoke access request to: ${apiUrl}`);
 
       const response = await fetch(apiUrl, {
@@ -339,10 +355,16 @@ const AdminDashboard = () => {
 
       let responseData;
       try {
+        // Check if the response is HTML (contains HTML tags)
+        if (responseText.includes('<html>') || responseText.includes('<!DOCTYPE html>')) {
+          console.error('Server returned HTML instead of JSON:', responseText);
+          throw new Error('Server returned HTML instead of JSON. This might be due to a proxy or CORS issue.');
+        }
+
         responseData = JSON.parse(responseText);
       } catch (e) {
         console.error('Failed to parse response as JSON:', responseText);
-        throw new Error('Failed to parse server response');
+        throw new Error(`Failed to parse server response: ${responseText.substring(0, 100)}${responseText.length > 100 ? '...' : ''}`);
       }
 
       if (!response.ok) {

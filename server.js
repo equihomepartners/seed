@@ -880,8 +880,8 @@ app.get('/api/admin/metrics', async (req, res) => {
       timestamp: { $gte: oneDayAgo }
     });
 
-    // Count newsletter subscribers (mock data for now)
-    const newsletterSubscribers = 8; // Mock value
+    // Count active newsletter subscribers
+    const newsletterSubscribers = await NewsletterSubscriber.countDocuments({ active: true });
 
     res.status(200).json({
       totalUsers,

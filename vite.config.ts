@@ -14,6 +14,7 @@ export default defineConfig({
     emptyOutDir: true,
   },
   server: {
+    port: 5174,
     proxy: {
       '/api': {
         target: process.env.VITE_API_URL || 'https://equihome-seed-api-pnk9i.ondigitalocean.app',
