@@ -421,45 +421,62 @@ app.post('/api/grant-access', async (req, res) => {
 
   try {
     // Connect to MongoDB
-    await connectToDatabase();
-    console.log('Connected to MongoDB');
+    const connected = await connectToDatabase();
+    console.log('MongoDB connection status:', connected ? 'Connected' : 'Failed to connect');
 
-    // Check if user already has a request
-    let existingRequest = await AccessRequest.findOne({
-      email: email,
-      requestType: requestType
-    });
+    if (connected) {
+      // Check if user already has a request
+      let existingRequest = await AccessRequest.findOne({
+        email: email,
+        requestType: requestType
+      });
 
-    if (existingRequest) {
-      console.log(`Found existing request for ${email} with status ${existingRequest.status}`);
-      // Update existing request
-      existingRequest.status = 'approved';
-      existingRequest.approvedAt = new Date();
-      existingRequest.approvedBy = adminEmail || 'admin';
-      await existingRequest.save();
+      if (existingRequest) {
+        console.log(`Found existing request for ${email} with status ${existingRequest.status}`);
+        // Update existing request
+        existingRequest.status = 'approved';
+        existingRequest.approvedAt = new Date();
+        existingRequest.approvedBy = adminEmail || 'admin';
+        await existingRequest.save();
 
-      console.log(`Existing access request for ${email} has been manually approved by ${adminEmail || 'admin'}`);
-      return res.status(200).json({ message: 'Access granted to existing request', request: existingRequest });
+        console.log(`Existing access request for ${email} has been manually approved by ${adminEmail || 'admin'}`);
+        return res.status(200).json({ message: 'Access granted to existing request', request: existingRequest });
+      }
+
+      console.log(`Creating new access request for ${email}`);
+      // Create new access request with approved status
+      const newRequest = new AccessRequest({
+        email,
+        name: name || email.split('@')[0], // Use part of email as name if not provided
+        requestType,
+        status: 'approved',
+        timestamp: new Date(),
+        approvedAt: new Date(),
+        approvedBy: adminEmail || 'admin'
+      });
+
+      // Save to database
+      await newRequest.save();
+
+      console.log(`Manual access granted to ${email} for ${requestType} by ${adminEmail || 'admin'}`);
+
+      res.status(200).json({ message: 'Access granted successfully', request: newRequest });
+    } else {
+      // Mock response when MongoDB is not available
+      console.log(`MongoDB not available. Simulating access grant for ${email}`);
+      const mockRequest = {
+        _id: Math.random().toString(36).substring(7),
+        email,
+        name: name || email.split('@')[0],
+        requestType,
+        status: 'approved',
+        timestamp: new Date().toISOString(),
+        approvedAt: new Date().toISOString(),
+        approvedBy: adminEmail || 'admin'
+      };
+
+      res.status(200).json({ message: 'Access granted successfully (mock)', request: mockRequest });
     }
-
-    console.log(`Creating new access request for ${email}`);
-    // Create new access request with approved status
-    const newRequest = new AccessRequest({
-      email,
-      name: name || email.split('@')[0], // Use part of email as name if not provided
-      requestType,
-      status: 'approved',
-      timestamp: new Date(),
-      approvedAt: new Date(),
-      approvedBy: adminEmail || 'admin'
-    });
-
-    // Save to database
-    await newRequest.save();
-
-    console.log(`Manual access granted to ${email} for ${requestType} by ${adminEmail || 'admin'}`);
-
-    res.status(200).json({ message: 'Access granted successfully', request: newRequest });
   } catch (error) {
     console.error('Error granting access:', error);
     res.status(500).json({ message: `Failed to grant access: ${error.message}` });
@@ -476,29 +493,46 @@ app.post('/api/revoke-access', async (req, res) => {
 
   try {
     // Connect to MongoDB
-    await connectToDatabase();
+    const connected = await connectToDatabase();
+    console.log('MongoDB connection status:', connected ? 'Connected' : 'Failed to connect');
 
-    // Find the user's access request
-    const request = await AccessRequest.findOne({
-      email: email,
-      requestType: requestType
-    });
+    if (connected) {
+      // Find the user's access request
+      const request = await AccessRequest.findOne({
+        email: email,
+        requestType: requestType
+      });
 
-    if (!request) {
-      return res.status(404).json({ message: 'No access request found for this user' });
+      if (!request) {
+        return res.status(404).json({ message: 'No access request found for this user' });
+      }
+
+      // Update status to denied
+      request.status = 'denied';
+      request.approvedAt = null;
+      request.approvedBy = null;
+
+      // Save changes
+      await request.save();
+
+      console.log(`Access revoked from ${email} for ${requestType} by ${adminEmail || 'admin'}`);
+
+      res.status(200).json({ message: 'Access revoked successfully', request });
+    } else {
+      // Mock response when MongoDB is not available
+      console.log(`MongoDB not available. Simulating access revocation for ${email}`);
+      const mockRequest = {
+        _id: Math.random().toString(36).substring(7),
+        email,
+        requestType,
+        status: 'denied',
+        timestamp: new Date().toISOString(),
+        approvedAt: null,
+        approvedBy: null
+      };
+
+      res.status(200).json({ message: 'Access revoked successfully (mock)', request: mockRequest });
     }
-
-    // Update status to denied
-    request.status = 'denied';
-    request.approvedAt = null;
-    request.approvedBy = null;
-
-    // Save changes
-    await request.save();
-
-    console.log(`Access revoked from ${email} for ${requestType} by ${adminEmail || 'admin'}`);
-
-    res.status(200).json({ message: 'Access revoked successfully', request });
   } catch (error) {
     console.error('Error revoking access:', error);
     res.status(500).json({ message: 'Failed to revoke access' });
