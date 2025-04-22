@@ -46,6 +46,31 @@ const connectToDatabase = async () => {
 const DealRoomActivity = require('./server/models/DealRoomActivity');
 const DealRoomDocument = require('./server/models/DealRoomDocument');
 
+// Define NewsletterSubscriber model
+const newsletterSubscriberSchema = new mongoose.Schema({
+  email: {
+    type: String,
+    required: true,
+    trim: true,
+    lowercase: true,
+    unique: true
+  },
+  name: {
+    type: String,
+    trim: true
+  },
+  subscribedAt: {
+    type: Date,
+    default: Date.now
+  },
+  active: {
+    type: Boolean,
+    default: true
+  }
+});
+
+const NewsletterSubscriber = mongoose.models.NewsletterSubscriber || mongoose.model('NewsletterSubscriber', newsletterSubscriberSchema);
+
 // Define AccessRequest model
 const accessRequestSchema = new mongoose.Schema({
   email: {
@@ -889,23 +914,117 @@ app.get('/api/admin/user-activity', async (req, res) => {
   }
 });
 
+// Subscribe to newsletter
+app.post('/api/newsletter-subscribe', async (req, res) => {
+  const { email, name } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ message: 'Email is required' });
+  }
+
+  try {
+    // Connect to MongoDB
+    await connectToDatabase();
+
+    // Check if email already exists
+    const existingSubscriber = await NewsletterSubscriber.findOne({ email });
+
+    if (existingSubscriber) {
+      // If subscriber exists but is inactive, reactivate them
+      if (!existingSubscriber.active) {
+        existingSubscriber.active = true;
+        await existingSubscriber.save();
+        return res.status(200).json({ message: 'Subscription reactivated successfully' });
+      }
+
+      // Already subscribed and active
+      return res.status(200).json({ message: 'Already subscribed' });
+    }
+
+    // Create new subscriber
+    const newSubscriber = new NewsletterSubscriber({
+      email,
+      name,
+      subscribedAt: new Date(),
+      active: true
+    });
+
+    // Save to database
+    await newSubscriber.save();
+
+    console.log(`New newsletter subscriber: ${email}`);
+
+    res.status(201).json({ message: 'Subscribed successfully' });
+  } catch (error) {
+    console.error('Error subscribing to newsletter:', error);
+    res.status(500).json({ message: 'Failed to subscribe' });
+  }
+});
+
+// Unsubscribe from newsletter
+app.post('/api/newsletter-unsubscribe', async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ message: 'Email is required' });
+  }
+
+  try {
+    // Connect to MongoDB
+    await connectToDatabase();
+
+    // Find subscriber
+    const subscriber = await NewsletterSubscriber.findOne({ email });
+
+    if (!subscriber) {
+      return res.status(404).json({ message: 'Email not found in subscribers list' });
+    }
+
+    // Set as inactive (soft delete)
+    subscriber.active = false;
+    await subscriber.save();
+
+    console.log(`Newsletter unsubscribe: ${email}`);
+
+    res.status(200).json({ message: 'Unsubscribed successfully' });
+  } catch (error) {
+    console.error('Error unsubscribing from newsletter:', error);
+    res.status(500).json({ message: 'Failed to unsubscribe' });
+  }
+});
+
 // Get newsletter subscribers for admin dashboard
 app.get('/api/admin/newsletter-subscribers', async (req, res) => {
   try {
-    // This is a mock endpoint for now
-    // In a real implementation, you would fetch from a newsletter subscribers collection
+    // Connect to MongoDB
+    await connectToDatabase();
 
-    // Mock data
-    const subscribers = [
-      { _id: '1', email: 'subscriber1@example.com', subscribedAt: new Date().toISOString() },
-      { _id: '2', email: 'subscriber2@example.com', subscribedAt: new Date(Date.now() - 86400000).toISOString() },
-      { _id: '3', email: 'subscriber3@example.com', subscribedAt: new Date(Date.now() - 172800000).toISOString() },
-      { _id: '4', email: 'subscriber4@example.com', subscribedAt: new Date(Date.now() - 259200000).toISOString() },
-      { _id: '5', email: 'subscriber5@example.com', subscribedAt: new Date(Date.now() - 345600000).toISOString() },
-      { _id: '6', email: 'subscriber6@example.com', subscribedAt: new Date(Date.now() - 432000000).toISOString() },
-      { _id: '7', email: 'subscriber7@example.com', subscribedAt: new Date(Date.now() - 518400000).toISOString() },
-      { _id: '8', email: 'subscriber8@example.com', subscribedAt: new Date(Date.now() - 604800000).toISOString() }
-    ];
+    // Check if we have any subscribers in the database
+    const subscriberCount = await NewsletterSubscriber.countDocuments();
+
+    // If no subscribers exist, create some sample data
+    if (subscriberCount === 0) {
+      console.log('No newsletter subscribers found, creating sample data');
+
+      // Sample data
+      const sampleSubscribers = [
+        { email: 'subscriber1@example.com', name: 'Subscriber One', subscribedAt: new Date() },
+        { email: 'subscriber2@example.com', name: 'Subscriber Two', subscribedAt: new Date(Date.now() - 86400000) },
+        { email: 'subscriber3@example.com', name: 'Subscriber Three', subscribedAt: new Date(Date.now() - 172800000) },
+        { email: 'subscriber4@example.com', name: 'Subscriber Four', subscribedAt: new Date(Date.now() - 259200000) },
+        { email: 'subscriber5@example.com', name: 'Subscriber Five', subscribedAt: new Date(Date.now() - 345600000) },
+        { email: 'subscriber6@example.com', name: 'Subscriber Six', subscribedAt: new Date(Date.now() - 432000000) },
+        { email: 'subscriber7@example.com', name: 'Subscriber Seven', subscribedAt: new Date(Date.now() - 518400000) },
+        { email: 'subscriber8@example.com', name: 'Subscriber Eight', subscribedAt: new Date(Date.now() - 604800000) }
+      ];
+
+      // Insert sample data
+      await NewsletterSubscriber.insertMany(sampleSubscribers);
+      console.log('Sample newsletter subscribers created');
+    }
+
+    // Get all active subscribers, sorted by subscribedAt (newest first)
+    const subscribers = await NewsletterSubscriber.find({ active: true }).sort({ subscribedAt: -1 });
 
     res.status(200).json(subscribers);
   } catch (error) {
