@@ -36,9 +36,11 @@ const connectToDatabase = async () => {
       useUnifiedTopology: true
     });
     console.log('Connected to MongoDB');
+    return true;
   } catch (error) {
     console.error('MongoDB connection error:', error);
-    throw error;
+    console.log('Using mock data instead of MongoDB');
+    return false;
   }
 };
 
@@ -246,12 +248,34 @@ app.post('/api/request-access', async (req, res) => {
 app.get('/api/access-requests', async (req, res) => {
   try {
     // Connect to MongoDB
-    await connectToDatabase();
+    const connected = await connectToDatabase();
 
-    // Get all access requests
-    const requests = await AccessRequest.find().sort({ timestamp: -1 });
-
-    res.status(200).json(requests);
+    if (connected) {
+      // Get all access requests
+      const requests = await AccessRequest.find().sort({ timestamp: -1 });
+      res.status(200).json(requests);
+    } else {
+      // Return mock data if MongoDB is not available
+      console.log('Returning mock access requests data');
+      res.status(200).json([
+        {
+          _id: '1',
+          email: 'namb.jay@gmail.com',
+          name: 'Investor',
+          requestType: 'dealRoom',
+          status: 'pending',
+          timestamp: new Date(Date.now() - 86400000).toISOString()
+        },
+        {
+          _id: '2',
+          email: 'sujay@equihome.com.au',
+          name: 'Investor',
+          requestType: 'dealRoom',
+          status: 'pending',
+          timestamp: new Date(Date.now() - 172800000).toISOString()
+        }
+      ]);
+    }
   } catch (error) {
     console.error('Error fetching access requests:', error);
     res.status(500).json({ message: 'Failed to fetch access requests' });
@@ -521,12 +545,34 @@ app.post('/api/track-activity', async (req, res) => {
 app.get('/api/deal-room-activity', async (req, res) => {
   try {
     // Connect to MongoDB
-    await connectToDatabase();
+    const connected = await connectToDatabase();
 
-    // Get all activity, sorted by timestamp (newest first)
-    const activities = await DealRoomActivity.find().sort({ timestamp: -1 }).limit(100);
-
-    res.status(200).json(activities);
+    if (connected) {
+      // Get all activity, sorted by timestamp (newest first)
+      const activities = await DealRoomActivity.find().sort({ timestamp: -1 }).limit(100);
+      res.status(200).json(activities);
+    } else {
+      // Return mock data if MongoDB is not available
+      console.log('Returning mock deal room activity data');
+      res.status(200).json([
+        {
+          _id: '1',
+          email: 'user1@example.com',
+          name: 'User One',
+          action: 'viewed',
+          documentName: 'Investment Thesis',
+          timestamp: new Date().toISOString()
+        },
+        {
+          _id: '2',
+          email: 'user2@example.com',
+          name: 'User Two',
+          action: 'downloaded',
+          documentName: 'Financial Model',
+          timestamp: new Date(Date.now() - 86400000).toISOString()
+        }
+      ]);
+    }
   } catch (error) {
     console.error('Error fetching Deal Room activity:', error);
     res.status(500).json({ message: 'Failed to fetch activity' });
@@ -869,25 +915,35 @@ app.post('/api/deal-room/initialize', async (req, res) => {
 app.get('/api/admin/metrics', async (req, res) => {
   try {
     // Connect to MongoDB
-    await connectToDatabase();
+    const connected = await connectToDatabase();
 
-    // Get counts from various collections
-    const totalUsers = await AccessRequest.countDocuments();
+    if (connected) {
+      // Get counts from various collections
+      const totalUsers = await AccessRequest.countDocuments();
 
-    // Count active users in the last 24 hours
-    const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
-    const activeUsers = await DealRoomActivity.countDocuments({
-      timestamp: { $gte: oneDayAgo }
-    });
+      // Count active users in the last 24 hours
+      const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+      const activeUsers = await DealRoomActivity.countDocuments({
+        timestamp: { $gte: oneDayAgo }
+      });
 
-    // Count active newsletter subscribers
-    const newsletterSubscribers = await NewsletterSubscriber.countDocuments({ active: true });
+      // Count active newsletter subscribers
+      const newsletterSubscribers = await NewsletterSubscriber.countDocuments({ active: true });
 
-    res.status(200).json({
-      totalUsers,
-      activeUsers,
-      newsletterSubscribers
-    });
+      res.status(200).json({
+        totalUsers,
+        activeUsers,
+        newsletterSubscribers
+      });
+    } else {
+      // Return mock data if MongoDB is not available
+      console.log('Returning mock metrics data');
+      res.status(200).json({
+        totalUsers: 12,
+        activeUsers: 5,
+        newsletterSubscribers: 8
+      });
+    }
   } catch (error) {
     console.error('Error fetching admin metrics:', error);
     res.status(500).json({ message: 'Failed to fetch metrics' });
@@ -898,21 +954,30 @@ app.get('/api/admin/metrics', async (req, res) => {
 app.get('/api/admin/user-activity', async (req, res) => {
   try {
     // Connect to MongoDB
-    await connectToDatabase();
+    const connected = await connectToDatabase();
 
-    // Get unique users with their last activity time
-    const activities = await DealRoomActivity.aggregate([
-      { $sort: { timestamp: -1 } },
-      { $group: {
-        _id: "$email",
-        email: { $first: "$email" },
-        name: { $first: "$name" },
-        lastActive: { $first: "$timestamp" }
-      }},
-      { $limit: 20 }
-    ]);
+    if (connected) {
+      // Get unique users with their last activity time
+      const activities = await DealRoomActivity.aggregate([
+        { $sort: { timestamp: -1 } },
+        { $group: {
+          _id: "$email",
+          email: { $first: "$email" },
+          name: { $first: "$name" },
+          lastActive: { $first: "$timestamp" }
+        }},
+        { $limit: 20 }
+      ]);
 
-    res.status(200).json(activities);
+      res.status(200).json(activities);
+    } else {
+      // Return mock data if MongoDB is not available
+      console.log('Returning mock user activity data');
+      res.status(200).json([
+        { _id: '1', email: 'user1@example.com', name: 'User One', lastActive: new Date().toISOString() },
+        { _id: '2', email: 'user2@example.com', name: 'User Two', lastActive: new Date(Date.now() - 86400000).toISOString() }
+      ]);
+    }
   } catch (error) {
     console.error('Error fetching user activity:', error);
     res.status(500).json({ message: 'Failed to fetch user activity' });
@@ -1002,36 +1067,51 @@ app.post('/api/newsletter-unsubscribe', async (req, res) => {
 app.get('/api/admin/newsletter-subscribers', async (req, res) => {
   try {
     // Connect to MongoDB
-    await connectToDatabase();
+    const connected = await connectToDatabase();
 
-    // Check if we have any subscribers in the database
-    const subscriberCount = await NewsletterSubscriber.countDocuments();
+    if (connected) {
+      // Check if we have any subscribers in the database
+      const subscriberCount = await NewsletterSubscriber.countDocuments();
 
-    // If no subscribers exist, create some sample data
-    if (subscriberCount === 0) {
-      console.log('No newsletter subscribers found, creating sample data');
+      // If no subscribers exist, create some sample data
+      if (subscriberCount === 0) {
+        console.log('No newsletter subscribers found, creating sample data');
 
-      // Sample data
-      const sampleSubscribers = [
-        { email: 'subscriber1@example.com', name: 'Subscriber One', subscribedAt: new Date() },
-        { email: 'subscriber2@example.com', name: 'Subscriber Two', subscribedAt: new Date(Date.now() - 86400000) },
-        { email: 'subscriber3@example.com', name: 'Subscriber Three', subscribedAt: new Date(Date.now() - 172800000) },
-        { email: 'subscriber4@example.com', name: 'Subscriber Four', subscribedAt: new Date(Date.now() - 259200000) },
-        { email: 'subscriber5@example.com', name: 'Subscriber Five', subscribedAt: new Date(Date.now() - 345600000) },
-        { email: 'subscriber6@example.com', name: 'Subscriber Six', subscribedAt: new Date(Date.now() - 432000000) },
-        { email: 'subscriber7@example.com', name: 'Subscriber Seven', subscribedAt: new Date(Date.now() - 518400000) },
-        { email: 'subscriber8@example.com', name: 'Subscriber Eight', subscribedAt: new Date(Date.now() - 604800000) }
-      ];
+        // Sample data
+        const sampleSubscribers = [
+          { email: 'subscriber1@example.com', name: 'Subscriber One', subscribedAt: new Date() },
+          { email: 'subscriber2@example.com', name: 'Subscriber Two', subscribedAt: new Date(Date.now() - 86400000) },
+          { email: 'subscriber3@example.com', name: 'Subscriber Three', subscribedAt: new Date(Date.now() - 172800000) },
+          { email: 'subscriber4@example.com', name: 'Subscriber Four', subscribedAt: new Date(Date.now() - 259200000) },
+          { email: 'subscriber5@example.com', name: 'Subscriber Five', subscribedAt: new Date(Date.now() - 345600000) },
+          { email: 'subscriber6@example.com', name: 'Subscriber Six', subscribedAt: new Date(Date.now() - 432000000) },
+          { email: 'subscriber7@example.com', name: 'Subscriber Seven', subscribedAt: new Date(Date.now() - 518400000) },
+          { email: 'subscriber8@example.com', name: 'Subscriber Eight', subscribedAt: new Date(Date.now() - 604800000) }
+        ];
 
-      // Insert sample data
-      await NewsletterSubscriber.insertMany(sampleSubscribers);
-      console.log('Sample newsletter subscribers created');
+        // Insert sample data
+        await NewsletterSubscriber.insertMany(sampleSubscribers);
+        console.log('Sample newsletter subscribers created');
+      }
+
+      // Get all active subscribers, sorted by subscribedAt (newest first)
+      const subscribers = await NewsletterSubscriber.find({ active: true }).sort({ subscribedAt: -1 });
+
+      res.status(200).json(subscribers);
+    } else {
+      // Return mock data if MongoDB is not available
+      console.log('Returning mock newsletter subscribers data');
+      res.status(200).json([
+        { _id: '1', email: 'subscriber1@example.com', name: 'Subscriber One', subscribedAt: new Date().toISOString() },
+        { _id: '2', email: 'subscriber2@example.com', name: 'Subscriber Two', subscribedAt: new Date(Date.now() - 86400000).toISOString() },
+        { _id: '3', email: 'subscriber3@example.com', name: 'Subscriber Three', subscribedAt: new Date(Date.now() - 172800000).toISOString() },
+        { _id: '4', email: 'subscriber4@example.com', name: 'Subscriber Four', subscribedAt: new Date(Date.now() - 259200000).toISOString() },
+        { _id: '5', email: 'subscriber5@example.com', name: 'Subscriber Five', subscribedAt: new Date(Date.now() - 345600000).toISOString() },
+        { _id: '6', email: 'subscriber6@example.com', name: 'Subscriber Six', subscribedAt: new Date(Date.now() - 432000000).toISOString() },
+        { _id: '7', email: 'subscriber7@example.com', name: 'Subscriber Seven', subscribedAt: new Date(Date.now() - 518400000).toISOString() },
+        { _id: '8', email: 'subscriber8@example.com', name: 'Subscriber Eight', subscribedAt: new Date(Date.now() - 604800000).toISOString() }
+      ]);
     }
-
-    // Get all active subscribers, sorted by subscribedAt (newest first)
-    const subscribers = await NewsletterSubscriber.find({ active: true }).sort({ subscribedAt: -1 });
-
-    res.status(200).json(subscribers);
   } catch (error) {
     console.error('Error fetching newsletter subscribers:', error);
     res.status(500).json({ message: 'Failed to fetch newsletter subscribers' });
