@@ -44,6 +44,10 @@ app.get('/api/health', (req: Request, res: Response) => {
 app.use('/api/admin', adminRoutes);
 app.use('/api/track', trackingRoutes);
 
+// Also mount routes without the /api prefix for compatibility with frontend
+app.use('/admin', adminRoutes);
+app.use('/track', trackingRoutes);
+
 // Get all access requests
 app.get('/api/access-requests', async (req: Request, res: Response) => {
   try {
