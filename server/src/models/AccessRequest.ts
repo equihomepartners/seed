@@ -6,8 +6,8 @@ export interface IAccessRequest extends Document {
   requestType: 'dealRoom' | 'portfolioOS' | 'techDemo';
   status: 'pending' | 'approved' | 'denied';
   timestamp: Date;
-  approvedAt?: Date;
-  approvedBy?: string;
+  approvedAt?: Date | null;
+  approvedBy?: string | null;
 }
 
 const AccessRequestSchema = new Schema({

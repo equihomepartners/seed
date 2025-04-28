@@ -221,8 +221,8 @@ app.post('/api/revoke-access', async (req: Request, res: Response) => {
 
     // Update status to denied
     request.status = 'denied';
-    request.approvedAt = null;
-    request.approvedBy = null;
+    request.approvedAt = undefined;
+    request.approvedBy = undefined;
 
     // Save changes
     await request.save();
