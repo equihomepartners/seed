@@ -499,10 +499,10 @@ const DealRoom = () => {
             </div>
             <div className="flex items-center space-x-2 mb-4">
               <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-              <span className="text-sm font-medium text-gray-400">Seed Round - $2M Raise</span>
+              <span className="text-sm font-medium text-gray-400">Seed Round - $5M Raise</span>
             </div>
             <p className="text-lg text-gray-400 max-w-3xl">
-              Welcome to the Equihome Partners Deal Room. This secure environment contains all due diligence materials for our $2M seed round. All documents are confidential and for qualified investors only.
+              Welcome to the Equihome Partners Deal Room. This secure environment contains all due diligence materials for our $5M seed round. All documents are confidential and for qualified investors only.
             </p>
           </div>
 
@@ -546,8 +546,8 @@ const DealRoom = () => {
                   let enhancedDescription = doc.description;
                   if (doc.title === "Investment Thesis - Current Draft") {
                     enhancedDescription = "Comprehensive analysis of Equihome's investment opportunity, market positioning, and growth strategy. Includes detailed financial projections and risk assessment.";
-                  } else if (doc.title === "Equihome Model - Blended Duration - $2M Raise") {
-                    enhancedDescription = "Financial model with blended duration approach for the $2M seed round. Includes detailed cash flow projections, ROI analysis, and sensitivity testing.";
+                  } else if (doc.title === "Fund Financial Model - $5M Raise") {
+                    enhancedDescription = "Financial model with detailed projections for the $5M raise. Includes cash flow projections, ROI analysis, and sensitivity testing.";
                   } else if (doc.title === "SWOT Analysis") {
                     enhancedDescription = "Detailed analysis of Equihome's strengths, weaknesses, opportunities, and threats in the current market landscape. Includes competitive positioning.";
                   } else if (doc.title === "Competitive Landscape") {
