@@ -244,7 +244,7 @@ const Launchpad = () => {
                   transition={{ duration: 0.6, delay: 0.2 }}
                   className="text-xl text-gray-600 leading-relaxed"
                 >
-                  Your guided investment portal to explore our $2M seed round opportunity. Access our business pitch, portfolio technology, and schedule private discussions with our team.
+                  Your guided investment portal to explore our $5M seed round opportunity. Access our business pitch, portfolio technology, and schedule private discussions with our team.
                 </motion.p>
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}

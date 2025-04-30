@@ -10,7 +10,7 @@ const InvestmentBreakdownCard = () => {
     {
       period: 'Q4 2024 - Q1 2025',
       title: 'Seed Round',
-      description: 'Initial capital raise of $2M',
+      description: 'Initial capital raise of $5M',
       details: [
         'Platform development completion',
         'Key team expansion',
@@ -190,7 +190,7 @@ const InvestmentBreakdownCard = () => {
         className="bg-[#111827] rounded-2xl overflow-hidden shadow-xl border border-blue-500/20"
       >
         {/* Preview Card */}
-        <div 
+        <div
           className="p-10 cursor-pointer hover:bg-blue-500/10 transition-all duration-300 group relative"
           onClick={() => setIsExpanded(!isExpanded)}
         >
@@ -244,27 +244,27 @@ const InvestmentBreakdownCard = () => {
                 <FaCalendar className="mr-3 text-blue-400" />
                 Company Growth Timeline
               </h4>
-              
+
               <div className="relative">
                 {/* Horizontal Timeline Line */}
                 <div className="absolute top-12 left-0 right-0 h-0.5 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500" />
-                
+
                 {/* Timeline Items */}
                 <div className="grid grid-cols-5 gap-4 relative">
                   {companyTimeline.map((phase, index) => (
                     <div key={index} className="relative pt-8">
                       {/* Timeline Node */}
                       <div className="absolute top-10 left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 border-2 border-white" />
-                      
+
                       {/* Content Card */}
-                      <div 
+                      <div
                         className="bg-[#1a2234] rounded-xl p-4 hover:bg-[#1e2738] transition-colors cursor-pointer group relative"
                         onClick={() => {/* Add click handler if needed */}}
                       >
                         <div className="text-purple-400 text-xs mb-1">{phase.period}</div>
                         <div className="font-semibold text-white text-sm mb-1">{phase.title}</div>
                         <div className="text-blue-400 text-xs font-medium mb-2">{phase.description}</div>
-                        
+
                         {/* Hover Details */}
                         <div className="absolute left-1/2 top-full mt-2 -translate-x-1/2 w-64 bg-[#1a2234] rounded-lg p-4 shadow-xl border border-blue-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-10">
                           <div className="space-y-2">
@@ -396,7 +396,7 @@ const InvestmentBreakdownCard = () => {
                       <FaInfoCircle className="text-blue-400 mt-1 flex-shrink-0" />
                       <div className="space-y-2">
                         <p className="text-sm text-gray-300">
-                          Terms are customized for strategic investors and can be expedited for committed partners. 
+                          Terms are customized for strategic investors and can be expedited for committed partners.
                           All returns are projections based on our current business model and market conditions.
                         </p>
                         <p className="text-sm text-gray-300">
@@ -422,4 +422,4 @@ const InvestmentBreakdownCard = () => {
   );
 };
 
-export default InvestmentBreakdownCard; 
+export default InvestmentBreakdownCard;

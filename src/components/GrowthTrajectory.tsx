@@ -35,7 +35,7 @@ const GrowthTrajectory = () => {
       items: [
         {
           title: "Seed Round",
-          description: "$2M operational capital raise"
+          description: "$5M operational capital raise"
         },
         {
           title: "Team Expansion",
@@ -121,11 +121,11 @@ const GrowthTrajectory = () => {
                   phase.status === "Projected Exit Year" ? 'ring-2 ring-sky-500/50' : ''
                 }`}>
                   <div className={`absolute inset-0 bg-gradient-to-br ${
-                    phase.status === "Projected Exit Year" 
-                      ? 'from-sky-50 to-transparent' 
+                    phase.status === "Projected Exit Year"
+                      ? 'from-sky-50 to-transparent'
                       : 'from-sky-50 to-transparent'
                   } opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
-                  
+
                   <div className="relative z-10">
                     <div className="flex items-center justify-between mb-8">
                       <div className="space-y-1">
@@ -191,4 +191,4 @@ const GrowthTrajectory = () => {
   )
 }
 
-export default GrowthTrajectory 
+export default GrowthTrajectory

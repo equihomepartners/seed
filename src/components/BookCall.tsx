@@ -53,7 +53,7 @@ const BookCall: React.FC = () => {
       if (e.data.event === 'calendly.event_scheduled') {
         // Get the scheduled date from the event
         const scheduledDate = new Date(e.data.payload.event.start_time).toISOString()
-        
+
         // Track that a call has been scheduled with the actual date
         const currentProgress = JSON.parse(localStorage.getItem('investorProgress') || '{}')
         const updatedProgress = {
@@ -84,7 +84,7 @@ const BookCall: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setStep(2)
-    
+
     // Store the form data
     localStorage.setItem('bookingData', JSON.stringify(formData))
     // Remove the progress tracking from here since we'll do it when the call is actually scheduled
@@ -100,7 +100,7 @@ const BookCall: React.FC = () => {
   return (
     <div className="min-h-screen bg-white">
       <GlobalHeader currentPage="book-call" />
-      
+
       {/* Main Content */}
       <div className="pt-[72px] pb-16 px-6">
         <AnimatePresence mode="wait">
@@ -113,7 +113,7 @@ const BookCall: React.FC = () => {
               className="max-w-6xl mx-auto"
             >
               <div className="text-center mb-12">
-                <motion.h1 
+                <motion.h1
                   className="text-4xl font-light text-gray-900 mb-4"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -121,7 +121,7 @@ const BookCall: React.FC = () => {
                 >
                   Schedule Your Investment Discussion
                 </motion.h1>
-                <motion.p 
+                <motion.p
                   className="text-xl text-gray-600 max-w-2xl mx-auto"
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -153,7 +153,7 @@ const BookCall: React.FC = () => {
                     <div className="space-y-4">
                       <div className="flex items-center justify-between p-3 bg-white rounded-lg border border-sky-100">
                         <span className="text-gray-600">Round Size</span>
-                        <span className="text-gray-900 font-medium">$2M</span>
+                        <span className="text-gray-900 font-medium">$5M</span>
                       </div>
                       <div className="flex items-center justify-between p-3 bg-white rounded-lg border border-sky-100">
                         <span className="text-gray-600">Minimum Investment</span>
@@ -329,4 +329,4 @@ const BookCall: React.FC = () => {
   )
 }
 
-export default BookCall 
+export default BookCall

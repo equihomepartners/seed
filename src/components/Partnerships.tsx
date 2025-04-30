@@ -39,13 +39,13 @@ const Partnerships = () => {
           transition={{ duration: 0.8 }}
           className="text-center mb-40"
         >
-          <h2 className="text-6xl font-bold mb-6">$2M Operational Investment</h2>
+          <h2 className="text-6xl font-bold mb-6">$5M Operational Investment</h2>
           <p className="text-2xl text-gray-300 mb-24">
             Join us in building the future of home equity investment
           </p>
 
           <h3 className="text-4xl font-bold mb-16">Investment Highlights</h3>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 max-w-5xl mx-auto mb-32">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -172,4 +172,4 @@ const Partnerships = () => {
   )
 }
 
-export default Partnerships 
+export default Partnerships

@@ -32,7 +32,7 @@ TWO DISTINCT OPPORTUNITIES:
 1. Operational Company (Equihome Partners)
    - Building Australia's leading fund manager
    - Value through technology and scale
-   - Current $2M raise to grow the business
+   - Current $5M raise to grow the business
 
 2. Fund Investment (Institutional Only)
    - Returns from mortgages and property upside
@@ -44,12 +44,12 @@ INVESTMENT STRUCTURE:
   • Most common startup investment vehicle in US
   • $50,000 minimum
   • 18-26x+ potential ROI
-  
+
 - Convertible Note
   • $100,000 minimum
   • 8% interest rate
   • 15-22x+ potential ROI
-  
+
 - Direct Equity
   • $250,000 minimum
   • Immediate shareholder rights
@@ -186,9 +186,9 @@ const ChatBot = () => {
               <FaTimes className="text-gray-400 text-lg" />
             </button>
           </div>
-          
+
           <div className="relative">
-            <div 
+            <div
               className="absolute inset-0 pointer-events-none"
               style={{
                 backgroundImage: 'url("/Equihome Logo.png")',
@@ -198,8 +198,8 @@ const ChatBot = () => {
                 opacity: 0.03
               }}
             />
-            <div 
-              className="h-[500px] overflow-y-auto p-6 bg-gradient-to-b from-gray-50 to-white relative" 
+            <div
+              className="h-[500px] overflow-y-auto p-6 bg-gradient-to-b from-gray-50 to-white relative"
               ref={messagesEndRef}
             >
               {messages.map((message, index) => (
@@ -253,7 +253,7 @@ const ChatBot = () => {
               )}
             </div>
           </div>
-          
+
           <div className="p-6 border-t border-gray-100">
             <form onSubmit={handleSubmit} className="relative">
               <input
@@ -277,4 +277,4 @@ const ChatBot = () => {
   )
 }
 
-export default ChatBot 
+export default ChatBot

@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion'
 import { useInView } from 'react-intersection-observer'
-import { FaChartLine, FaShieldAlt, FaHome, FaChartBar, FaMapMarkerAlt, FaChartPie, 
+import { FaChartLine, FaShieldAlt, FaHome, FaChartBar, FaMapMarkerAlt, FaChartPie,
          FaArrowUp, FaArrowDown, FaInfoCircle, FaGlobeAmericas, FaSearchLocation,
          FaHandHoldingUsd, FaPercentage, FaHistory, FaLock, FaUnlock, FaBrain } from 'react-icons/fa'
 import GlobalHeader from './GlobalHeader'
@@ -42,7 +42,7 @@ const PortfolioOS: React.FC = () => {
   }
 
   // Calculate progress percentage
-  const totalRound = 2000000 // $2M
+  const totalRound = 5000000 // $5M
   const currentRaised = 700000 // $700K
   const progressPercentage = (currentRaised / totalRound) * 100
 
@@ -55,7 +55,7 @@ const PortfolioOS: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#020817] via-[#041434] to-[#061C4C]" ref={ref}>
       <GlobalHeader currentPage="portfolio-os" />
-      
+
       {/* Main Content */}
       <div className="pt-[72px]">
         <div className="max-w-7xl mx-auto px-8">
@@ -610,7 +610,7 @@ const PortfolioOS: React.FC = () => {
               </h2>
               <div className="h-px flex-grow mx-8 bg-gradient-to-r from-blue-500/20 to-transparent" />
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {/* Market Map */}
               <div className="bg-gradient-to-br from-[#020817] to-[#041434] rounded-2xl border border-blue-500/30 p-8 shadow-[0_8px_32px_rgba(0,0,0,0.4)] hover:shadow-[0_16px_48px_rgba(0,0,0,0.5)] transition-all duration-300 hover:border-cyan-500/30">
@@ -625,7 +625,7 @@ const PortfolioOS: React.FC = () => {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="aspect-video bg-[#020817] rounded-xl p-4 relative overflow-hidden">
                   {/* Placeholder gradient map */}
                   <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/10 via-purple-500/10 to-pink-500/10" />
@@ -1170,4 +1170,4 @@ const PortfolioOS: React.FC = () => {
   )
 }
 
-export default PortfolioOS 
+export default PortfolioOS

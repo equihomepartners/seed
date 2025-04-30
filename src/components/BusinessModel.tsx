@@ -12,31 +12,31 @@ const BusinessModel = () => {
   const [activeSection, setActiveSection] = useState<string | null>(null)
 
   const valueDrivers = [
-    { 
+    {
       title: "AUM Growth",
       value: "$2B+ target",
       icon: <FaChartLine />,
       description: "Aggressive but achievable growth trajectory"
     },
-    { 
+    {
       title: "Revenue Scaling",
       value: "125% YoY",
       icon: <FaMoneyBillWave />,
       description: "Strong revenue growth from multiple streams"
     },
-    { 
+    {
       title: "Technology Platform",
       value: "Proprietary",
       icon: <FaCogs />,
       description: "Scalable investment management system"
     },
-    { 
+    {
       title: "Market Position",
       value: "Category Leader",
       icon: <FaRocket />,
       description: "Less than 1% of $5.5T market opportunity"
     },
-    { 
+    {
       title: "Brand",
       value: "Industry Leaders",
       icon: <FaUsers />,
@@ -82,7 +82,7 @@ const BusinessModel = () => {
               </div>
               <h3 className="text-2xl font-bold text-gray-900">Operations Company</h3>
             </div>
-            <p className="text-sky-600 mb-2">$2M early-stage equity investment opportunity</p>
+            <p className="text-sky-600 mb-2">$5M early-stage equity investment opportunity</p>
             {/* Key Metrics */}
             <div className="space-y-6">
               <div className="fintech-card p-6">
@@ -123,7 +123,7 @@ const BusinessModel = () => {
 
               <div className="bg-sky-50 rounded-xl p-6 border border-sky-200">
                 <h4 className="text-lg font-bold text-gray-900 mb-2">Current Raise</h4>
-                <div className="text-2xl font-bold text-sky-600">$2M Operational Capital</div>
+                <div className="text-2xl font-bold text-sky-600">$5M Operational Capital</div>
                 <p className="text-gray-600 mt-2">Funding platform development and team expansion</p>
               </div>
             </div>
@@ -244,4 +244,4 @@ const BusinessModel = () => {
   )
 }
 
-export default BusinessModel 
+export default BusinessModel
