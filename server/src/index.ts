@@ -2,11 +2,20 @@ import express, { Request, Response, NextFunction } from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import fs from 'fs';
+import path from 'path';
+import { promisify } from 'util';
+import axios from 'axios';
+import { exec } from 'child_process';
 import adminRoutes from './routes/admin';
 import trackingRoutes from './routes/tracking';
 import { AccessRequest } from './models/AccessRequest';
 import { DealRoomActivity } from './models/DealRoomActivity';
 import { DealRoomDocument } from './models/DealRoomDocument';
+
+const execPromise = promisify(exec);
+const mkdirPromise = promisify(fs.mkdir);
+const unlinkPromise = promisify(fs.unlink);
 
 dotenv.config();
 
@@ -417,6 +426,95 @@ app.get('/api/deal-room-documents', async (req: Request, res: Response) => {
   } catch (error) {
     console.error('Error fetching Deal Room documents:', error);
     res.status(500).json({ message: 'Failed to fetch documents' });
+  }
+});
+
+// Convert document to PDF
+app.get('/api/convert-to-pdf', async (req: Request, res: Response) => {
+  const { url } = req.query;
+
+  if (!url) {
+    return res.status(400).json({ error: 'URL parameter is required' });
+  }
+
+  try {
+    // Create temp directory if it doesn't exist
+    const tempDir = path.join(__dirname, '../temp');
+    await mkdirPromise(tempDir, { recursive: true });
+
+    // Generate unique filenames
+    const timestamp = Date.now();
+    const inputFilePath = path.join(tempDir, `input_${timestamp}`);
+    const outputFilePath = path.join(tempDir, `output_${timestamp}.pdf`);
+
+    console.log(`Converting document from URL: ${url}`);
+
+    // Download the file
+    const response = await axios({
+      method: 'GET',
+      url: url as string,
+      responseType: 'stream'
+    });
+
+    // Determine file extension from Content-Type or URL
+    let fileExtension = '.docx';
+    const contentType = response.headers['content-type'];
+    if (contentType) {
+      if (contentType.includes('spreadsheetml') || contentType.includes('excel')) {
+        fileExtension = '.xlsx';
+      } else if (contentType.includes('presentationml') || contentType.includes('powerpoint')) {
+        fileExtension = '.pptx';
+      }
+    } else if ((url as string).toLowerCase().endsWith('.xlsx')) {
+      fileExtension = '.xlsx';
+    } else if ((url as string).toLowerCase().endsWith('.pptx')) {
+      fileExtension = '.pptx';
+    }
+
+    // If it's already a PDF, just return the URL
+    if (contentType?.includes('application/pdf') || (url as string).toLowerCase().endsWith('.pdf')) {
+      return res.json({ pdfUrl: url });
+    }
+
+    const inputFilePathWithExt = `${inputFilePath}${fileExtension}`;
+
+    // Save the file
+    const writer = fs.createWriteStream(inputFilePathWithExt);
+    response.data.pipe(writer);
+
+    await new Promise((resolve, reject) => {
+      writer.on('finish', resolve);
+      writer.on('error', reject);
+    });
+
+    // Convert to PDF using LibreOffice
+    const command = `soffice --headless --convert-to pdf --outdir "${tempDir}" "${inputFilePathWithExt}"`;
+    await execPromise(command);
+
+    // Check if PDF was created
+    if (!fs.existsSync(outputFilePath)) {
+      throw new Error('PDF conversion failed');
+    }
+
+    // Serve the PDF file
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', 'inline');
+
+    const pdfStream = fs.createReadStream(outputFilePath);
+    pdfStream.pipe(res);
+
+    // Clean up temp files after sending
+    pdfStream.on('end', async () => {
+      try {
+        await unlinkPromise(inputFilePathWithExt);
+        await unlinkPromise(outputFilePath);
+      } catch (err) {
+        console.error('Error cleaning up temp files:', err);
+      }
+    });
+  } catch (error) {
+    console.error('Error converting document to PDF:', error);
+    res.status(500).json({ error: 'Failed to convert document to PDF' });
   }
 });
 

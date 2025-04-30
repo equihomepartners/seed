@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import GlobalHeader from './GlobalHeader';
+import PDFViewer from './PDFViewer';
 import {
   FaFileAlt,
   FaDownload,
@@ -19,7 +20,8 @@ import {
   FaInfoCircle,
   FaPhone,
   FaArrowRight,
-  FaUnlock
+  FaUnlock,
+  FaSpinner
 } from 'react-icons/fa';
 
 interface Document {
@@ -29,6 +31,7 @@ interface Document {
   category: string;
   fileUrl?: string;
   externalUrl?: string;
+  pdfUrl?: string;
   iconType: string;
   isLocked: boolean;
   sortOrder: number;
@@ -92,6 +95,8 @@ const DealRoom = () => {
   const [documentsByCategory, setDocumentsByCategory] = useState<Record<string, Document[]>>({});
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [isInitializing, setIsInitializing] = useState(false);
+  const [selectedPdf, setSelectedPdf] = useState<{ url: string; title: string } | null>(null);
+  const [isConvertingToPdf, setIsConvertingToPdf] = useState(false);
 
   // Track user activity in the Deal Room
   const trackActivity = async (action: string, documentId?: string, documentName?: string) => {
@@ -120,7 +125,7 @@ const DealRoom = () => {
   };
 
   // Handle document download/view
-  const handleDocumentAction = (doc: Document, action: 'view' | 'download' | 'open') => {
+  const handleDocumentAction = async (doc: Document, action: 'view' | 'download' | 'open') => {
     // Track the activity
     trackActivity(action, doc._id, doc.title);
 
@@ -130,7 +135,6 @@ const DealRoom = () => {
       return;
     }
 
-    // In a real app, this would either download the file or open it in a viewer
     if (action === 'download') {
       if (doc.fileUrl) {
         // If we have a real file URL, use it
@@ -141,8 +145,66 @@ const DealRoom = () => {
       }
     } else if (action === 'view') {
       if (doc.fileUrl) {
-        // If we have a real file URL, open it in a new tab
-        window.open(doc.fileUrl, '_blank');
+        // Check if it's a Word document or similar that needs conversion
+        const fileUrl = doc.fileUrl.toLowerCase();
+        const needsConversion =
+          fileUrl.endsWith('.doc') ||
+          fileUrl.endsWith('.docx') ||
+          fileUrl.endsWith('.xlsx') ||
+          fileUrl.endsWith('.xls') ||
+          fileUrl.endsWith('.ppt') ||
+          fileUrl.endsWith('.pptx');
+
+        if (fileUrl.endsWith('.pdf') || doc.pdfUrl) {
+          // If it's already a PDF or we have a cached PDF URL, show it directly
+          setSelectedPdf({
+            url: doc.pdfUrl || doc.fileUrl!,
+            title: doc.title
+          });
+        } else if (needsConversion) {
+          try {
+            setIsConvertingToPdf(true);
+            // Call the conversion API
+            const response = await fetch(`/api/convert-to-pdf?url=${encodeURIComponent(doc.fileUrl)}`);
+
+            if (!response.ok) {
+              throw new Error('Failed to convert document');
+            }
+
+            const blob = await response.blob();
+            const pdfUrl = URL.createObjectURL(blob);
+
+            // Cache the PDF URL for future use
+            const updatedDoc = { ...doc, pdfUrl };
+            setDocuments(prevDocs =>
+              prevDocs.map(d => d._id === doc._id ? updatedDoc : d)
+            );
+
+            // Update in the category mapping as well
+            if (doc.category) {
+              setDocumentsByCategory(prev => {
+                const categoryDocs = [...(prev[doc.category] || [])];
+                const docIndex = categoryDocs.findIndex(d => d._id === doc._id);
+                if (docIndex >= 0) {
+                  categoryDocs[docIndex] = updatedDoc;
+                }
+                return { ...prev, [doc.category]: categoryDocs };
+              });
+            }
+
+            // Show the PDF
+            setSelectedPdf({ url: pdfUrl, title: doc.title });
+          } catch (error) {
+            console.error('Error converting document:', error);
+            alert('Failed to convert document to PDF. Opening in a new tab instead.');
+            window.open(doc.fileUrl, '_blank');
+          } finally {
+            setIsConvertingToPdf(false);
+          }
+        } else {
+          // For other file types, open in a new tab
+          window.open(doc.fileUrl, '_blank');
+        }
       } else {
         // Placeholder for demo
         alert(`Viewing ${doc.title}...`);
@@ -476,6 +538,25 @@ const DealRoom = () => {
   return (
     <div className="min-h-screen bg-[#0B1121]">
       <GlobalHeader currentPage="deal-room" />
+
+      {/* PDF Viewer Modal */}
+      {selectedPdf && (
+        <PDFViewer
+          pdfUrl={selectedPdf.url}
+          title={selectedPdf.title}
+          onClose={() => setSelectedPdf(null)}
+        />
+      )}
+
+      {/* Loading overlay for PDF conversion */}
+      {isConvertingToPdf && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75">
+          <div className="text-center">
+            <FaSpinner className="animate-spin text-blue-500 text-4xl mx-auto mb-4" />
+            <p className="text-white text-lg">Converting document to PDF...</p>
+          </div>
+        </div>
+      )}
 
       <div className="pt-[72px] bg-gradient-to-br from-[#0B1121] via-[#0F172A] to-[#1E293B] min-h-screen">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
