@@ -214,6 +214,17 @@ const DealRoom = () => {
         return;
       }
 
+      // Hardcoded permanent access for specific users
+      const permanentAccessUsers = ['taurian@equihome.com.au', 'namb.jay@gmail.com', 'vmenon1309@yahoo.co.uk'];
+      if (permanentAccessUsers.includes(userEmail)) {
+        console.log('Granting permanent access to deal room');
+        setHasAccess(true);
+        await loadDocuments();
+        setIsLoading(false);
+        trackActivity('view');
+        return;
+      }
+
       try {
         // First check localStorage for offline functionality
         const approvedUsers = JSON.parse(localStorage.getItem('approvedUsers') || '[]');

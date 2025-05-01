@@ -44,6 +44,15 @@ const Launchpad = () => {
         return;
       }
 
+      // Hardcoded permanent access for specific users
+      const permanentAccessUsers = ['taurian@equihome.com.au', 'namb.jay@gmail.com', 'vmenon1309@yahoo.co.uk'];
+      if (permanentAccessUsers.includes(userEmail)) {
+        console.log('Granting permanent access to deal room from launchpad');
+        setHasDealRoomAccess(true);
+        setIsCheckingAccess(false);
+        return;
+      }
+
       try {
         // First check localStorage for offline functionality
         const approvedUsers = JSON.parse(localStorage.getItem('approvedUsers') || '[]');

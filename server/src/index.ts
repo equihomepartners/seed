@@ -250,14 +250,15 @@ app.get('/api/check-access', async (req: Request, res: Response) => {
     return res.status(400).json({ message: 'Email and resourceType are required' });
   }
 
-  // Hardcoded access for specific users
-  const hardcodedUsers = ['taurian@equihome.com.au', 'namb.jay@gmail.com', 'sujay@equihome.com.au'];
+  // Hardcoded access for specific users - permanent global access regardless of IP
+  const hardcodedUsers = ['taurian@equihome.com.au', 'namb.jay@gmail.com', 'vmenon1309@yahoo.co.uk'];
   if (hardcodedUsers.includes(email as string) && resourceType === 'dealRoom') {
-    console.log(`Granting hardcoded access to ${email} for ${resourceType}`);
+    console.log(`Granting permanent global access to ${email} for ${resourceType}`);
     return res.status(200).json({
       hasAccess: true,
       since: new Date().toISOString(),
-      hardcoded: true
+      hardcoded: true,
+      permanent: true
     });
   }
 
@@ -278,11 +279,12 @@ app.get('/api/check-access', async (req: Request, res: Response) => {
     console.error('Error checking access:', error);
     // Even if there's a database error, grant access to hardcoded users as a fallback
     if (hardcodedUsers.includes(email as string) && resourceType === 'dealRoom') {
-      console.log(`Granting hardcoded access to ${email} for ${resourceType} after DB error`);
+      console.log(`Granting permanent global access to ${email} for ${resourceType} after DB error`);
       return res.status(200).json({
         hasAccess: true,
         since: new Date().toISOString(),
         hardcoded: true,
+        permanent: true,
         fallback: true
       });
     }
