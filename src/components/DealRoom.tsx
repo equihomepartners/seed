@@ -230,7 +230,7 @@ const DealRoom = () => {
       }
 
       // Hardcoded permanent access for specific users
-      const permanentAccessUsers = ['taurian@equihome.com.au', 'namb.jay@gmail.com', 'vmenon1309@yahoo.co.uk'];
+      const permanentAccessUsers = ['taurian@equihome.com.au', 'namb.jay@gmail.com', 'vmenon1309@yahoo.co.uk', 'ian@equihome.com.au'];
       if (permanentAccessUsers.includes(userEmail)) {
         console.log('Granting permanent access to deal room');
         setHasAccess(true);

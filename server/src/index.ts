@@ -251,7 +251,7 @@ app.get('/api/check-access', async (req: Request, res: Response) => {
   }
 
   // Hardcoded access for specific users - permanent global access regardless of IP
-  const hardcodedUsers = ['taurian@equihome.com.au', 'namb.jay@gmail.com', 'vmenon1309@yahoo.co.uk'];
+  const hardcodedUsers = ['taurian@equihome.com.au', 'namb.jay@gmail.com', 'vmenon1309@yahoo.co.uk', 'ian@equihome.com.au'];
   if (hardcodedUsers.includes(email as string) && resourceType === 'dealRoom') {
     console.log(`Granting permanent global access to ${email} for ${resourceType}`);
     return res.status(200).json({
