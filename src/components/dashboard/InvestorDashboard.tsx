@@ -46,7 +46,7 @@ interface StepProgress {
 
 const InvestorDashboard = () => {
   const location = useLocation()
-  
+
   // Initialize progress from localStorage or default values
   const [stepProgress, setStepProgress] = useState<StepProgress>(() => {
     const saved = localStorage.getItem('investorProgress')
@@ -66,7 +66,7 @@ const InvestorDashboard = () => {
   const [showSettings, setShowSettings] = useState(false)
   const [showNotifications, setShowNotifications] = useState(false)
   const [emailNotifications, setEmailNotifications] = useState(true)
-  
+
   // User profile state
   const [profile, setProfile] = useState({
     email: localStorage.getItem('userEmail') || 'Unknown User',
@@ -319,9 +319,9 @@ const InvestorDashboard = () => {
                   <h4 className="font-medium text-white">Need Help?</h4>
                 </div>
                 <ul className="text-sm text-gray-400 space-y-2">
-                  <li>• Chat with our AI assistant Simon 24/7</li>
                   <li>• Book a call with our investment team</li>
                   <li>• Access our comprehensive FAQ section</li>
+                  <li>• Email us at support@equihome.com.au</li>
                 </ul>
               </div>
             </div>
@@ -470,7 +470,7 @@ const InvestorDashboard = () => {
     const scheduledDate = stepProgress.scheduledCallDate
 
     return (
-      <Link 
+      <Link
         to={route}
         className="flex items-center space-x-2 text-sm hover:bg-[#1a2234] p-2 rounded-lg transition-colors cursor-pointer group"
       >
@@ -502,7 +502,7 @@ const InvestorDashboard = () => {
   return (
     <div className="min-h-screen bg-[#0B1121]">
       <GlobalHeader currentPage="dashboard" />
-      
+
       {/* Fundraising Progress Bar */}
       <div className="fixed top-[72px] left-0 right-0 bg-[#0a0f1a]/80 backdrop-blur-sm border-b border-blue-500/10 z-40">
         <div className="max-w-7xl mx-auto px-8 py-6">
@@ -511,7 +511,7 @@ const InvestorDashboard = () => {
             <div className="text-white font-medium">$0.6M raised of $5M</div>
           </div>
           <div className="relative h-1.5 bg-[#1a2234] rounded-full overflow-hidden">
-            <div 
+            <div
               className="absolute top-0 left-0 h-full bg-gradient-to-r from-blue-500 to-blue-400 rounded-full transition-all duration-500"
               style={{ width: '12%' }}
             />
@@ -732,23 +732,15 @@ const InvestorDashboard = () => {
                 </div>
               </div>
               <div className="space-y-3">
-                <button 
-                  onClick={() => window.Tawk_API?.toggle()} 
-                  className="w-full p-3 rounded-lg bg-[#0a0f1a] text-gray-300 hover:text-white transition-colors text-left"
-                >
-                  <div className="flex items-center justify-between">
-                    <span>Chat with Simon</span>
-                    <FaArrowRight className="text-blue-400" />
-                  </div>
-                </button>
+
                 <Link to="/book-call" className="block p-3 rounded-lg bg-[#0a0f1a] text-gray-300 hover:text-white transition-colors">
                   <div className="flex items-center justify-between">
                     <span>Schedule a Call</span>
                     <FaArrowRight className="text-blue-400" />
                   </div>
                 </Link>
-                <a 
-                  href="mailto:sujay@equihome.com.au" 
+                <a
+                  href="mailto:sujay@equihome.com.au"
                   className="block p-3 rounded-lg bg-[#0a0f1a] text-gray-300 hover:text-white transition-colors"
                 >
                   <div className="flex items-center justify-between">
@@ -811,4 +803,4 @@ const InvestorDashboard = () => {
   )
 }
 
-export default InvestorDashboard 
+export default InvestorDashboard

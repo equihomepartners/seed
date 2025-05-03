@@ -6,13 +6,13 @@ import BookCall from './components/BookCall'
 import BusinessInfo from './components/BusinessInfo'
 import PortfolioOS from './components/PortfolioOS'
 import InvestorDashboard from './components/dashboard/InvestorDashboard'
-import ChatBot from './components/ChatBot'
 import Pitch from './components/Pitch'
 import InterestRegistration from './components/forms/InterestRegistration'
 import AdminDashboard from './components/admin/AdminDashboard'
 import AdminSignIn from './components/admin/AdminSignIn'
 import WebinarRegistration from './components/WebinarRegistration'
 import DealRoom from './components/DealRoom'
+import TechDemoViewer from './components/TechDemoViewer'
 import PageTracker from './components/PageTracker'
 
 function App() {
@@ -167,9 +167,18 @@ function App() {
             )
           }
         />
+        <Route
+          path="/tech-demo"
+          element={
+            isAuthenticated ? (
+              <TechDemoViewer />
+            ) : (
+              <Navigate to="/" replace />
+            )
+          }
+        />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-      {isAuthenticated && <ChatBot />}
     </Router>
   )
 }

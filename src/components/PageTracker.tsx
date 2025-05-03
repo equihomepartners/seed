@@ -24,43 +24,95 @@ const PageTracker = () => {
     const email = localStorage.getItem('userEmail') || 'anonymous'
     const progress = JSON.parse(localStorage.getItem('investorProgress') || '{}')
 
-    console.log('Syncing progress...', { userId, email, progress })
+    // Only log in development mode
+    if (import.meta.env.DEV) {
+      console.log('Syncing progress...', { userId, email, progress })
+    }
 
     try {
-      // Track activity
-      console.log('Sending activity tracking request...')
-      await axios.post(`${API_URL}/track/activity`, {
-        userId,
-        email,
-        page: location.pathname.substring(1) || 'home'
-      })
-      console.log('Activity tracking successful')
+      // Try to track activity via API endpoint first
+      try {
+        if (import.meta.env.DEV) {
+          console.log('Trying API endpoint for activity tracking...')
+        }
+
+        await fetch('/api/track-activity', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            userId,
+            email,
+            page: location.pathname.substring(1) || 'home',
+            action: 'view'
+          })
+        })
+
+        if (import.meta.env.DEV) {
+          console.log('Activity tracking via API successful')
+        }
+      } catch (apiError) {
+        // If API endpoint fails, try the direct endpoint
+        if (import.meta.env.DEV) {
+          console.log('API endpoint failed, trying direct endpoint...')
+        }
+
+        try {
+          await axios.post(`${API_URL}/track/activity`, {
+            userId,
+            email,
+            page: location.pathname.substring(1) || 'home'
+          })
+
+          if (import.meta.env.DEV) {
+            console.log('Activity tracking via direct endpoint successful')
+          }
+        } catch (directError) {
+          // Silently fail if both endpoints fail
+          if (import.meta.env.DEV) {
+            console.log('Both activity tracking endpoints failed, continuing execution')
+          }
+        }
+      }
 
       // Update progress if user is logged in
       if (email !== 'anonymous') {
-        console.log('Updating user progress...')
-        await axios.post(`${API_URL}/track/progress`, {
-          userId,
-          progress
-        })
-        console.log('Progress update successful')
+        try {
+          if (import.meta.env.DEV) {
+            console.log('Updating user progress...')
+          }
+
+          await axios.post(`${API_URL}/track/progress`, {
+            userId,
+            progress
+          })
+
+          if (import.meta.env.DEV) {
+            console.log('Progress update successful')
+          }
+        } catch (progressError) {
+          // Silently fail if progress update fails
+          if (import.meta.env.DEV) {
+            console.log('Progress update failed, continuing execution')
+          }
+        }
       }
     } catch (error) {
-      console.error('Error syncing progress:', error)
-      if (axios.isAxiosError(error)) {
-        console.error('Axios error details:', {
-          status: error.response?.status,
-          data: error.response?.data,
-          config: error.config
-        })
+      // Silently fail - don't let tracking errors affect the user experience
+      if (import.meta.env.DEV) {
+        console.log('Activity tracking failed, but continuing execution')
       }
     }
   }
 
   useEffect(() => {
-    console.log('PageTracker mounted/updated', { pathname: location.pathname })
+    if (import.meta.env.DEV) {
+      console.log('PageTracker mounted/updated', { pathname: location.pathname })
+    }
+
     const startTime = Date.now()
-    
+
     // Track page view in localStorage
     const views = JSON.parse(localStorage.getItem('pageViews') || '[]')
     views.push({
@@ -70,14 +122,24 @@ const PageTracker = () => {
       timestamp: new Date().toISOString()
     })
     localStorage.setItem('pageViews', JSON.stringify(views))
-    console.log('Page view stored in localStorage')
 
-    // Sync with backend
-    syncProgress()
+    if (import.meta.env.DEV) {
+      console.log('Page view stored in localStorage')
+    }
+
+    // Sync with backend - but don't block on it
+    syncProgress().catch(() => {
+      if (import.meta.env.DEV) {
+        console.log('Error in syncProgress, but continuing execution')
+      }
+    })
 
     // Track duration on unmount
     return () => {
-      console.log('PageTracker unmounting')
+      if (import.meta.env.DEV) {
+        console.log('PageTracker unmounting')
+      }
+
       const duration = Math.floor((Date.now() - startTime) / 1000)
       const durations = JSON.parse(localStorage.getItem('pageDurations') || '[]')
       durations.push({
@@ -88,14 +150,21 @@ const PageTracker = () => {
         timestamp: new Date().toISOString()
       })
       localStorage.setItem('pageDurations', JSON.stringify(durations))
-      console.log('Page duration stored in localStorage')
-      
-      // Sync again on unmount
-      syncProgress()
+
+      if (import.meta.env.DEV) {
+        console.log('Page duration stored in localStorage')
+      }
+
+      // Sync again on unmount - but don't block on it
+      syncProgress().catch(() => {
+        if (import.meta.env.DEV) {
+          console.log('Error in syncProgress on unmount, but continuing execution')
+        }
+      })
     }
   }, [location.pathname])
 
   return null
 }
 
-export default PageTracker 
+export default PageTracker

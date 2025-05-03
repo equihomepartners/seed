@@ -4,6 +4,9 @@ const dotenv = require('dotenv');
 const { OpenAI } = require('openai');
 const nodemailer = require('nodemailer');
 const mongoose = require('mongoose');
+const path = require('path');
+const fs = require('fs');
+const { convertUrlDocumentToPdf } = require('./server/utils/documentConverter');
 
 dotenv.config();
 
@@ -1152,9 +1155,73 @@ app.get('/api/admin/newsletter-subscribers', async (req, res) => {
   }
 });
 
+// Document conversion endpoint
+app.post('/api/convert-document', async (req, res) => {
+  const { documentUrl, documentId } = req.body;
+
+  if (!documentUrl) {
+    return res.status(400).json({ message: 'Document URL is required' });
+  }
+
+  try {
+    // Check if the URL is for a Word document
+    const isWordDoc = documentUrl.toLowerCase().endsWith('.doc') ||
+                      documentUrl.toLowerCase().endsWith('.docx');
+
+    if (!isWordDoc) {
+      return res.status(400).json({ message: 'Only Word documents can be converted' });
+    }
+
+    console.log(`Converting document: ${documentUrl}`);
+
+    // Create the converted directory if it doesn't exist
+    const convertedDir = path.join(__dirname, 'public', 'converted');
+    if (!fs.existsSync(convertedDir)) {
+      fs.mkdirSync(convertedDir, { recursive: true });
+    }
+
+    // Convert the document
+    const outputPath = await convertUrlDocumentToPdf(documentUrl, convertedDir);
+
+    // Create a URL for the converted document
+    const pdfUrl = `/converted/${path.basename(outputPath)}`;
+
+    console.log(`Document converted successfully: ${pdfUrl}`);
+
+    // If a document ID was provided, update the document in the database
+    if (documentId) {
+      try {
+        await connectToDatabase();
+
+        const document = await DealRoomDocument.findById(documentId);
+
+        if (document) {
+          document.pdfUrl = pdfUrl;
+          document.updatedAt = new Date();
+          await document.save();
+
+          console.log(`Document ${documentId} updated with PDF URL: ${pdfUrl}`);
+        }
+      } catch (dbError) {
+        console.error('Error updating document in database:', dbError);
+        // Continue even if database update fails
+      }
+    }
+
+    res.status(200).json({
+      message: 'Document converted successfully',
+      pdfUrl
+    });
+  } catch (error) {
+    console.error('Error converting document:', error);
+    res.status(500).json({ message: 'Failed to convert document' });
+  }
+});
+
 // Serve static files from the React app
-const path = require('path');
 app.use(express.static(path.join(__dirname, 'dist')));
+// Serve converted files
+app.use('/converted', express.static(path.join(__dirname, 'public', 'converted')));
 
 // Log all routes that aren't found to help with debugging
 app.use((req, res, next) => {
@@ -1164,6 +1231,8 @@ app.use((req, res, next) => {
   }
   next();
 });
+
+
 
 // Catch-all route to serve the React app
 app.get('*', (req, res) => {

@@ -24,6 +24,10 @@ const DealRoomDocumentSchema = new mongoose.Schema({
     type: String,
     required: false
   },
+  pdfUrl: {
+    type: String,
+    required: false
+  },
   iconType: {
     type: String,
     required: true,
