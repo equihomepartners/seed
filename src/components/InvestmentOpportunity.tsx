@@ -47,11 +47,9 @@ const InvestmentOpportunity = () => {
             <div className="space-y-8">
               <div>
                 <div className="text-xl font-bold text-gray-900 mb-2">SAFE Convertible</div>
-                <div className="text-gray-600">$50,000 minimum investment</div>
               </div>
               <div>
                 <div className="text-xl font-bold text-gray-900 mb-2">Direct Equity</div>
-                <div className="text-gray-600">$250,000 minimum investment</div>
               </div>
             </div>
           </motion.div>
