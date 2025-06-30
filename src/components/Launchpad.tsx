@@ -45,7 +45,7 @@ const Launchpad = () => {
       }
 
       // Hardcoded permanent access for specific users
-      const permanentAccessUsers = ['taurian@equihome.com.au', 'namb.jay@gmail.com', 'vmenon1309@yahoo.co.uk', 'ian@equihome.com.au'];
+      const permanentAccessUsers = ['taurian@equihome.com.au', 'namb.jay@gmail.com', 'vmenon1309@yahoo.co.uk', 'ian@equihome.com.au', 'kaden@fundlaunchpartners.com', 'acquisitions@fundlaunchpartners.com'];
       if (permanentAccessUsers.includes(userEmail)) {
         console.log('Granting permanent access to deal room from launchpad');
         setHasDealRoomAccess(true);
