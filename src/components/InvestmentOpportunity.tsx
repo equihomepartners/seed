@@ -39,26 +39,19 @@ const InvestmentOpportunity = () => {
         <motion.div
           initial="initial"
           animate={inView ? "animate" : "initial"}
-          className="grid grid-cols-1 md:grid-cols-3 gap-8"
+          className="grid grid-cols-1 md:grid-cols-2 gap-8"
         >
           {/* Investment Terms */}
           <motion.div variants={fadeInUp} className="fintech-card p-8">
             <div className="text-2xl font-bold text-sky-600 mb-8">Investment Terms</div>
             <div className="space-y-8">
               <div>
-                <div className="text-xl font-bold text-gray-900 mb-2">SAFE Note</div>
+                <div className="text-xl font-bold text-gray-900 mb-2">SAFE Convertible</div>
                 <div className="text-gray-600">$50,000 minimum investment</div>
-                <div className="text-gray-600">18-26x+ potential ROI</div>
-              </div>
-              <div>
-                <div className="text-xl font-bold text-gray-900 mb-2">Convertible Note</div>
-                <div className="text-gray-600">$100,000 minimum investment</div>
-                <div className="text-gray-600">15-22x+ potential ROI</div>
               </div>
               <div>
                 <div className="text-xl font-bold text-gray-900 mb-2">Direct Equity</div>
                 <div className="text-gray-600">$250,000 minimum investment</div>
-                <div className="text-gray-600">8-18x+ potential ROI</div>
               </div>
             </div>
           </motion.div>
@@ -82,25 +75,10 @@ const InvestmentOpportunity = () => {
             </div>
           </motion.div>
 
-          {/* Returns & Reporting */}
-          <motion.div variants={fadeInUp} className="fintech-card p-8">
-            <div className="text-2xl font-bold text-sky-600 mb-8">Returns & Reporting</div>
-            <div className="space-y-8">
-              <div>
-                <div className="text-xl font-bold text-gray-900 mb-2">Dividends</div>
-                <div className="text-gray-600">Performance-based returns from operational cashflows</div>
-              </div>
-              <div>
-                <div className="text-xl font-bold text-gray-900 mb-2">Updates</div>
-                <div className="text-gray-600">Quarterly financial reports and metrics</div>
-              </div>
-            </div>
-          </motion.div>
-
           {/* Bottom CTA */}
-          <motion.div 
+          <motion.div
             variants={fadeInUp}
-            className="text-center pt-12 border-t border-gray-200/50 max-w-3xl mx-auto col-span-1 md:col-span-3"
+            className="text-center pt-12 border-t border-gray-200/50 max-w-3xl mx-auto col-span-1 md:col-span-2"
           >
             <div className="text-3xl font-bold text-sky-600 mb-4">
               Limited Investment Window
