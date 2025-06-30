@@ -35,7 +35,7 @@ const PortfolioOS: React.FC = () => {
 
   // Market metrics
   const marketMetrics = {
-    marketSize: '$5.5T',
+    marketSize: '$7T',
     annualGrowth: '8.5%',
     stabilityIndex: '92%',
     demandScore: '95%'

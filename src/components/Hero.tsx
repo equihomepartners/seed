@@ -17,7 +17,7 @@ const Hero = () => {
               className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-gray-900"
             >
               Unlocking Australia's<br />
-              <span className="text-sky-500">$5.5T</span> Home<br />
+              <span className="text-sky-500">$7T</span> Home<br />
               Equity Market
             </motion.h1>
 

@@ -34,7 +34,7 @@ const BusinessModel = () => {
       title: "Market Position",
       value: "Category Leader",
       icon: <FaRocket />,
-      description: "Less than 1% of $5.5T market opportunity"
+      description: "Less than 1% of $7T market opportunity"
     },
     {
       title: "Brand",

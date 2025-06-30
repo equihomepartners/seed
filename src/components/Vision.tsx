@@ -133,7 +133,7 @@ const Vision = () => {
           className="grid grid-cols-1 md:grid-cols-4 gap-8"
         >
           <div className="fintech-card p-6 text-center">
-            <div className="text-3xl font-bold text-sky-600 mb-2">$5.5T</div>
+            <div className="text-3xl font-bold text-sky-600 mb-2">$7T</div>
             <div className="text-sm text-gray-600">Total Market Size</div>
           </div>
           <div className="fintech-card p-6 text-center">
