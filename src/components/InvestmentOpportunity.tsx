@@ -49,6 +49,9 @@ const InvestmentOpportunity = () => {
                 <div className="text-xl font-bold text-gray-900 mb-2">SAFE Convertible</div>
               </div>
               <div>
+                <div className="text-xl font-bold text-gray-900 mb-2">Convertible</div>
+              </div>
+              <div>
                 <div className="text-xl font-bold text-gray-900 mb-2">Direct Equity</div>
               </div>
             </div>

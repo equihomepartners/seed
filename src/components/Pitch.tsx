@@ -9,7 +9,6 @@ import GrowthTrajectory from './GrowthTrajectory'
 import Team from './Team'
 import StrategicBacking from './StrategicBacking'
 import InvestmentOpportunity from './InvestmentOpportunity'
-import CurrentOptions from './CurrentOptions'
 import GlobalHeader from './GlobalHeader'
 import USModel from './USModel'
 import TechnologyPlatform from './TechnologyPlatform'
@@ -56,7 +55,6 @@ const Pitch = () => {
         <Team />
         <StrategicBacking />
         <InvestmentOpportunity />
-        <CurrentOptions />
       </div>
     </div>
   )
