@@ -87,8 +87,8 @@ const categories: Record<string, CategoryInfo> = {
   },
   techdemo: {
     id: 'techdemo',
-    name: 'Tech Demo',
-    description: 'Technology demonstration and platform capabilities',
+    name: 'Case Study (Tech)',
+    description: 'Real work case study on a real transaction',
     icon: <FaGlobe />,
     color: 'cyan'
   }
@@ -318,14 +318,14 @@ const DealRoom = () => {
 
         // Hardcoded documents for development - only the specified cards
         const docs = [
-          // Tech Demo - Featured at the top
+          // Case Study (Tech) - Featured at the top
           {
             _id: 'tech-demo',
-            title: 'Equihome Platform Demo',
-            description: 'Interactive demonstration of the Equihome platform, showcasing the underwriting system, traffic light system, and portfolio management capabilities.',
+            title: 'Case Study (Tech)',
+            description: 'Real work case study on a real transaction that took place in 2019 and transacted 2023. This is a case study as if we underwrote that loan, this is a below market loan in a green suburb that we typically might not invest in. The case study walks you through how our technology assesses the deal at a high level from a unit to portfolio level risk lens.',
             category: 'techdemo',
             iconType: 'web',
-            externalUrl: '/tech-demo',
+            externalUrl: 'https://equihomepartners.github.io/case-study/',
             isLocked: false,
             sortOrder: 1,
             createdAt: new Date().toISOString(),
@@ -566,7 +566,7 @@ const DealRoom = () => {
                         : 'bg-gray-800/50 text-gray-300 hover:bg-gray-700/70 border border-gray-700'
                   }`}
                 >
-                  {categoryId === 'techdemo' ? '✨ Tech Demo' : categories[categoryId]?.name || categoryId}
+                  {categoryId === 'techdemo' ? '✨ Case Study (Tech)' : categories[categoryId]?.name || categoryId}
                 </button>
               ))}
             </div>
@@ -580,7 +580,7 @@ const DealRoom = () => {
               <div className="flex items-center mb-8">
                 <div className="h-6 w-1 bg-gradient-to-b from-blue-500 to-cyan-400 rounded-full mr-3"></div>
                 <h2 className={`text-2xl font-semibold ${activeCategory === 'techdemo' ? 'bg-gradient-to-r from-cyan-300 to-blue-300 bg-clip-text text-transparent' : 'text-white'}`}>
-                  {activeCategory === 'techdemo' ? '✨ Tech Demo' : categories[activeCategory]?.name || activeCategory}
+                  {activeCategory === 'techdemo' ? '✨ Case Study (Tech)' : categories[activeCategory]?.name || activeCategory}
                 </h2>
                 {documentsByCategory[activeCategory][0]?.bookmark && (
                   <span className="ml-3 px-2 py-1 bg-gray-800 text-gray-300 text-sm rounded-md border border-gray-700">
