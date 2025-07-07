@@ -230,7 +230,7 @@ const DealRoom = () => {
       }
 
       // Hardcoded permanent access for specific users
-      const permanentAccessUsers = ['taurian@equihome.com.au', 'namb.jay@gmail.com', 'vmenon1309@yahoo.co.uk', 'ian@equihome.com.au', 'kaden@fundlaunchpartners.com', 'acquisitions@fundlaunchpartners.com'];
+      const permanentAccessUsers = ['taurian@equihome.com.au', 'namb.jay@gmail.com', 'vmenon1309@yahoo.co.uk', 'ian@equihome.com.au', 'kaden@fundlaunchpartners.com', 'acquisitions@fundlaunchpartners.com', 'andrea@maincharactercapital.com'];
       if (permanentAccessUsers.includes(userEmail)) {
         console.log('Granting permanent access to deal room');
         setHasAccess(true);
@@ -469,6 +469,18 @@ const DealRoom = () => {
             fileUrl: 'https://drive.google.com/file/d/1nr4vDrORZoUECFH2PvKDNCg6az_HOg8t/view?usp=sharing',
             isLocked: false,
             sortOrder: 3,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          },
+          {
+            _id: 'simple-introduction-deck',
+            title: 'Simple Introduction Deck',
+            description: 'Simple introduction deck highlighting Equihome, the problem, and solution.',
+            category: 'marketing',
+            iconType: 'file',
+            fileUrl: 'https://drive.google.com/file/d/1cqlt46gyWXOUqGGBn-TsNcmfw83u1UHT/view?usp=sharing',
+            isLocked: false,
+            sortOrder: 4,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString()
           }
