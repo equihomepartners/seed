@@ -346,11 +346,11 @@ const DealRoom = () => {
           },
           {
             _id: 'fund-financial-model',
-            title: 'Fund Financial Model - $5M Raise',
+            title: 'Full Financial Model - $5M Raise',
             description: 'Financial model with detailed projections for the $5M raise. Includes cash flow projections, ROI analysis, and sensitivity testing.',
             category: 'financial',
             iconType: 'chart',
-            fileUrl: 'https://docs.google.com/spreadsheets/d/1nbKcF4uYvYz3TcT3ibvVIFsoMMtRHH2R/edit?usp=sharing&ouid=114976098274719191879&rtpof=true&sd=true',
+            fileUrl: 'https://docs.google.com/spreadsheets/d/1gnTgM65loefh437uMM0PfjK4Fj1EZTtk/edit?usp=sharing&ouid=114976098274719191879&rtpof=true&sd=true',
             isLocked: false,
             sortOrder: 2,
             createdAt: new Date().toISOString(),
@@ -645,7 +645,7 @@ const DealRoom = () => {
                   let enhancedDescription = doc.description;
                   if (doc.title === "Investment Thesis") {
                     enhancedDescription = "Comprehensive analysis of Equihome's investment opportunity, market positioning, and growth strategy. Includes detailed financial projections and risk assessment.";
-                  } else if (doc.title === "Fund Financial Model - $5M Raise") {
+                  } else if (doc.title === "Full Financial Model - $5M Raise") {
                     enhancedDescription = "Financial model with detailed projections for the $5M raise. Includes cash flow projections, ROI analysis, and sensitivity testing.";
                   } else if (doc.title === "SWOT Analysis") {
                     enhancedDescription = "Detailed analysis of Equihome's strengths, weaknesses, opportunities, and threats in the current market landscape. Includes competitive positioning.";
