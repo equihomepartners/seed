@@ -91,6 +91,13 @@ const categories: Record<string, CategoryInfo> = {
     description: 'Real work case study on a real transaction',
     icon: <FaGlobe />,
     color: 'cyan'
+  },
+  marketing: {
+    id: 'marketing',
+    name: 'Marketing Material',
+    description: 'Marketing materials and investor presentations',
+    icon: <FaFileAlt />,
+    color: 'purple'
   }
 };
 
@@ -424,6 +431,44 @@ const DealRoom = () => {
             fileUrl: 'https://drive.google.com/file/d/1v4a5iWvUNLvLBkdKPTNBo6COWhVkLpbV/view?usp=sharing',
             isLocked: false,
             sortOrder: 1,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          },
+
+          // Marketing Material
+          {
+            _id: 'finance-pack',
+            title: 'Finance Pack',
+            description: 'Outlines Financials and sensitivity testing for a $500m base case fund for our two products and investor returns (no terms structured and is based on negotiation).',
+            category: 'marketing',
+            iconType: 'file',
+            fileUrl: 'https://drive.google.com/file/d/18VBEeORSQ_IzIBBqSV0oLsc5eTu2KOr_/view?usp=sharing',
+            isLocked: false,
+            sortOrder: 1,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          },
+          {
+            _id: 'one-pager',
+            title: 'One Pager',
+            description: 'One pager highlighting the overall business, investor opportunity, asset class, economics.',
+            category: 'marketing',
+            iconType: 'file',
+            fileUrl: 'https://drive.google.com/file/d/1yf7x9NHqbGkfDhu0ZKeufsanalwU_Er7/view?usp=sharing',
+            isLocked: false,
+            sortOrder: 2,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          },
+          {
+            _id: 'market-tech-overview',
+            title: 'Market and Tech Overview',
+            description: 'Market and tech overview presentation summarizing the Australian market and how we leverage technology.',
+            category: 'marketing',
+            iconType: 'file',
+            fileUrl: 'https://drive.google.com/file/d/1nr4vDrORZoUECFH2PvKDNCg6az_HOg8t/view?usp=sharing',
+            isLocked: false,
+            sortOrder: 3,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString()
           }
