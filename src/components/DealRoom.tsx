@@ -135,13 +135,6 @@ const DealRoom = () => {
     // Track the activity
     trackActivity(action, doc._id, doc.title);
 
-    // Special handling for Tech Demo
-    if (doc._id === 'tech-demo' && action === 'open') {
-      // Navigate to the tech demo viewer
-      navigate('/tech-demo');
-      return;
-    }
-
     // Handle external URLs
     if (doc.externalUrl && action === 'open') {
       window.open(doc.externalUrl, '_blank');
@@ -334,7 +327,7 @@ const DealRoom = () => {
           // Financial Documents
           {
             _id: 'investment-thesis',
-            title: 'Investment Thesis - Current Draft',
+            title: 'Investment Thesis',
             description: 'Comprehensive analysis of Equihome\'s investment opportunity, market positioning, and growth strategy. Includes detailed financial projections and risk assessment.',
             category: 'financial',
             iconType: 'file',
@@ -593,7 +586,7 @@ const DealRoom = () => {
                 {documentsByCategory[activeCategory].map((doc) => {
                   // Define document descriptions based on title
                   let enhancedDescription = doc.description;
-                  if (doc.title === "Investment Thesis - Current Draft") {
+                  if (doc.title === "Investment Thesis") {
                     enhancedDescription = "Comprehensive analysis of Equihome's investment opportunity, market positioning, and growth strategy. Includes detailed financial projections and risk assessment.";
                   } else if (doc.title === "Fund Financial Model - $5M Raise") {
                     enhancedDescription = "Financial model with detailed projections for the $5M raise. Includes cash flow projections, ROI analysis, and sensitivity testing.";
