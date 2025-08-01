@@ -85,13 +85,6 @@ const categories: Record<string, CategoryInfo> = {
     icon: <FaFileAlt />,
     color: 'gray'
   },
-  techdemo: {
-    id: 'techdemo',
-    name: 'Case Study (Tech)',
-    description: 'Real work case study on a real transaction',
-    icon: <FaGlobe />,
-    color: 'cyan'
-  },
   marketing: {
     id: 'marketing',
     name: 'Marketing Material',
@@ -318,19 +311,6 @@ const DealRoom = () => {
 
         // Hardcoded documents for development - only the specified cards
         const docs = [
-          // Case Study (Tech) - Featured at the top
-          {
-            _id: 'tech-demo',
-            title: 'Case Study (Tech)',
-            description: 'Real work case study on a real transaction that took place in 2019 and transacted 2023. This is a case study as if we underwrote that loan, this is a below market loan in a green suburb that we typically might not invest in. The case study walks you through how our technology assesses the deal at a high level from a unit to portfolio level risk lens.',
-            category: 'techdemo',
-            iconType: 'web',
-            externalUrl: 'https://equihomepartners.github.io/case-study/',
-            isLocked: false,
-            sortOrder: 1,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-          },
           // Financial Documents
           {
             _id: 'investment-thesis',
@@ -347,11 +327,11 @@ const DealRoom = () => {
           {
             _id: 'fund-financial-model',
             title: 'Full Financial Model - $5M Raise',
-            description: 'Financial model with detailed projections for the $5M raise. Includes cash flow projections, ROI analysis, and sensitivity testing.',
+            description: 'Financial model with detailed projections for the $5M raise. Includes cash flow projections, ROI analysis, and sensitivity testing. (Currently being updated)',
             category: 'financial',
             iconType: 'chart',
             fileUrl: 'https://docs.google.com/spreadsheets/d/1gnTgM65loefh437uMM0PfjK4Fj1EZTtk/edit?usp=sharing&ouid=114976098274719191879&rtpof=true&sd=true',
-            isLocked: false,
+            isLocked: true,
             sortOrder: 2,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString()
@@ -501,13 +481,9 @@ const DealRoom = () => {
 
         setDocumentsByCategory(byCategory);
 
-        // Set active category to Tech Demo if available, otherwise the first one
+        // Set active category to the first one available
         if (!activeCategory && Object.keys(byCategory).length > 0) {
-          if (byCategory['techdemo']) {
-            setActiveCategory('techdemo');
-          } else {
-            setActiveCategory(Object.keys(byCategory)[0]);
-          }
+          setActiveCategory(Object.keys(byCategory)[0]);
         }
       } catch (error) {
         console.error('Error loading documents:', error);
@@ -607,16 +583,12 @@ const DealRoom = () => {
                   key={categoryId}
                   onClick={() => setActiveCategory(categoryId)}
                   className={`px-4 py-2 rounded-lg font-medium whitespace-nowrap transition-colors ${
-                    categoryId === 'techdemo'
-                      ? activeCategory === categoryId
-                        ? 'bg-gradient-to-r from-cyan-600 to-blue-600 text-white shadow-lg shadow-cyan-500/30 border border-cyan-400/50'
-                        : 'bg-gradient-to-r from-cyan-900/30 to-blue-900/30 text-cyan-100 hover:from-cyan-800/40 hover:to-blue-800/40 border border-cyan-500/30'
-                      : activeCategory === categoryId
-                        ? 'bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-lg shadow-blue-500/20'
-                        : 'bg-gray-800/50 text-gray-300 hover:bg-gray-700/70 border border-gray-700'
+                    activeCategory === categoryId
+                      ? 'bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-lg shadow-blue-500/20'
+                      : 'bg-gray-800/50 text-gray-300 hover:bg-gray-700/70 border border-gray-700'
                   }`}
                 >
-                  {categoryId === 'techdemo' ? '✨ Case Study (Tech)' : categories[categoryId]?.name || categoryId}
+                  {categories[categoryId]?.name || categoryId}
                 </button>
               ))}
             </div>
@@ -629,8 +601,8 @@ const DealRoom = () => {
             <div className="mb-12">
               <div className="flex items-center mb-8">
                 <div className="h-6 w-1 bg-gradient-to-b from-blue-500 to-cyan-400 rounded-full mr-3"></div>
-                <h2 className={`text-2xl font-semibold ${activeCategory === 'techdemo' ? 'bg-gradient-to-r from-cyan-300 to-blue-300 bg-clip-text text-transparent' : 'text-white'}`}>
-                  {activeCategory === 'techdemo' ? '✨ Case Study (Tech)' : categories[activeCategory]?.name || activeCategory}
+                <h2 className="text-2xl font-semibold text-white">
+                  {categories[activeCategory]?.name || activeCategory}
                 </h2>
                 {documentsByCategory[activeCategory][0]?.bookmark && (
                   <span className="ml-3 px-2 py-1 bg-gray-800 text-gray-300 text-sm rounded-md border border-gray-700">
@@ -661,27 +633,27 @@ const DealRoom = () => {
                     enhancedDescription = "Latest investor presentation deck with updated financials, team information, and market analysis. Includes executive summary and investment highlights.";
                   }
 
-                  // Special styling for Tech Demo card
-                  const isTechDemo = doc.category === 'techdemo';
+                  // Special styling for locked documents
+                  const isLocked = doc.isLocked;
 
                   return (
                     <div
                       key={doc._id}
-                      className={`${isTechDemo
-                        ? 'bg-gradient-to-br from-blue-900/60 to-cyan-900/60 backdrop-blur-sm rounded-xl border border-cyan-500/50 p-6 hover:shadow-lg hover:shadow-cyan-500/30 hover:border-cyan-400/50 transition-all group'
+                      className={`${isLocked
+                        ? 'bg-gray-800/30 backdrop-blur-sm rounded-xl border border-gray-600/30 p-6 opacity-60 transition-all group cursor-not-allowed'
                         : 'bg-gray-800/50 backdrop-blur-sm rounded-xl border border-gray-700/50 p-6 hover:shadow-lg hover:shadow-blue-900/20 hover:border-blue-900/30 transition-all group'
                       }`}
                     >
                       <div className="flex items-start">
-                        <div className={`w-12 h-12 rounded-lg ${isTechDemo
-                          ? 'bg-gradient-to-br from-cyan-500/20 to-blue-500/20 flex items-center justify-center mr-4 text-cyan-400 group-hover:text-cyan-300 transition-colors'
+                        <div className={`w-12 h-12 rounded-lg ${isLocked
+                          ? 'bg-gradient-to-br from-gray-500/10 to-gray-600/10 flex items-center justify-center mr-4 text-gray-500 transition-colors'
                           : 'bg-gradient-to-br from-blue-500/10 to-cyan-500/10 flex items-center justify-center mr-4 text-blue-400 group-hover:text-blue-300 transition-colors'
                         }`}>
                           {getDocumentIcon(doc)}
                         </div>
                         <div className="flex-1">
-                          <h3 className={`text-lg font-semibold mb-2 ${isTechDemo
-                            ? 'text-cyan-100 group-hover:text-cyan-200 transition-colors'
+                          <h3 className={`text-lg font-semibold mb-2 ${isLocked
+                            ? 'text-gray-400 transition-colors'
                             : 'text-white group-hover:text-blue-300 transition-colors'
                           }`}>{doc.title}</h3>
                           <p className="text-gray-400 text-sm mb-4 line-clamp-3">{enhancedDescription}</p>
@@ -691,7 +663,7 @@ const DealRoom = () => {
                               {doc.isLocked ? (
                                 <div className="flex items-center text-gray-500">
                                   <FaLock className="mr-2" />
-                                  <span>Access Restricted</span>
+                                  <span>Currently Being Updated</span>
                                 </div>
                               ) : doc.externalUrl ? (
                                 <button
