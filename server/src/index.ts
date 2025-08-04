@@ -295,29 +295,30 @@ app.get('/api/check-access', async (req: Request, res: Response) => {
 // Get all Deal Room activity (for admin dashboard)
 app.get('/api/deal-room-activity', async (req: Request, res: Response) => {
   try {
-    // Return mock data for now to avoid 404 errors
-    console.log('Returning mock deal room activity data');
-    res.status(200).json([
-      {
-        _id: '1',
-        email: 'user1@example.com',
-        name: 'User One',
-        action: 'view',
-        documentName: 'Investment Thesis',
-        timestamp: new Date().toISOString()
-      },
-      {
-        _id: '2',
-        email: 'user2@example.com',
-        name: 'User Two',
-        action: 'download',
-        documentName: 'Financial Model',
-        timestamp: new Date(Date.now() - 86400000).toISOString()
-      }
-    ]);
+    // Check MongoDB connection
+    if (mongoose.connection.readyState !== 1) {
+      console.error('MongoDB not connected for deal room activity fetch. Connection state:', mongoose.connection.readyState);
+      return res.status(503).json({ 
+        error: 'Database connection unavailable',
+        connectionState: mongoose.connection.readyState 
+      });
+    }
+
+    // Fetch real activity data from MongoDB
+    const activities = await DealRoomActivity.find({})
+      .sort({ timestamp: -1 })  // Most recent first
+      .limit(100)               // Limit to last 100 activities
+      .lean();                  // Return plain objects for better performance
+
+    console.log(`✅ Retrieved ${activities.length} deal room activities from database`);
+    
+    res.status(200).json(activities);
   } catch (error) {
-    console.error('Error fetching Deal Room activity:', error);
-    res.status(500).json({ message: 'Failed to fetch activity' });
+    console.error('❌ Error fetching Deal Room activity:', error);
+    res.status(500).json({ 
+      message: 'Failed to fetch activity',
+      error: error instanceof Error ? error.message : 'Unknown error'
+    });
   }
 });
 
@@ -331,8 +332,45 @@ app.post('/api/track-activity', async (req: Request, res: Response) => {
     return res.status(400).json({ message: 'Email and action are required' });
   }
 
-  // Just return success for now
-  return res.status(200).json({ success: true, message: 'Activity tracked successfully' });
+  try {
+    // Check MongoDB connection
+    if (mongoose.connection.readyState !== 1) {
+      console.error('MongoDB not connected. Connection state:', mongoose.connection.readyState);
+      return res.status(503).json({ 
+        success: false, 
+        error: 'Database connection unavailable',
+        connectionState: mongoose.connection.readyState 
+      });
+    }
+
+    // Create new activity record
+    const activity = new DealRoomActivity({
+      email: email.toLowerCase().trim(),
+      name: name || email.split('@')[0],
+      action,
+      documentId,
+      documentName,
+      timestamp: new Date(),
+      ipAddress: req.headers['x-forwarded-for'] || req.connection.remoteAddress,
+      userAgent: req.headers['user-agent']
+    });
+
+    const savedActivity = await activity.save();
+    console.log(`✅ Activity tracked successfully: ${email} ${action} ${documentName || ''} (ID: ${savedActivity._id})`);
+    
+    res.status(200).json({ 
+      success: true, 
+      message: 'Activity tracked successfully',
+      activityId: savedActivity._id
+    });
+  } catch (error) {
+    console.error('❌ Error tracking activity:', error);
+    res.status(500).json({ 
+      success: false,
+      error: 'Error tracking activity',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
 });
 
 

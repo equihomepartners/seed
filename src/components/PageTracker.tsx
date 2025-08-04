@@ -36,7 +36,7 @@ const PageTracker = () => {
           console.log('Trying API endpoint for activity tracking...')
         }
 
-        await fetch('/api/track-activity', {
+        const response = await fetch('/api/track-activity', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -49,30 +49,48 @@ const PageTracker = () => {
           })
         })
 
+        const result = await response.json()
+        
+        if (!response.ok || !result.success) {
+          throw new Error(`API tracking failed: ${result.error || result.message || 'Unknown error'}`)
+        }
+
         if (import.meta.env.DEV) {
-          console.log('Activity tracking via API successful')
+          console.log('✅ Activity tracking via API successful:', result)
         }
       } catch (apiError) {
+        console.error('❌ API endpoint failed:', apiError)
+        
         // If API endpoint fails, try the direct endpoint
         if (import.meta.env.DEV) {
-          console.log('API endpoint failed, trying direct endpoint...')
+          console.log('Trying direct endpoint as fallback...')
         }
 
         try {
-          await axios.post(`${API_URL}/track/activity`, {
+          const fallbackResponse = await axios.post(`${API_URL}/track/activity`, {
             userId,
             email,
             page: location.pathname.substring(1) || 'home'
           })
 
           if (import.meta.env.DEV) {
-            console.log('Activity tracking via direct endpoint successful')
+            console.log('✅ Activity tracking via direct endpoint successful:', fallbackResponse.data)
           }
         } catch (directError) {
-          // Silently fail if both endpoints fail
-          if (import.meta.env.DEV) {
-            console.log('Both activity tracking endpoints failed, continuing execution')
-          }
+          console.error('❌ Both tracking endpoints failed:', {
+            apiError: apiError instanceof Error ? apiError.message : apiError,
+            directError: directError instanceof Error ? directError.message : directError
+          })
+          
+          // Store failure info for debugging
+          localStorage.setItem('trackingErrors', JSON.stringify({
+            timestamp: new Date().toISOString(),
+            apiError: apiError instanceof Error ? apiError.message : String(apiError),
+            directError: directError instanceof Error ? directError.message : String(directError),
+            userId,
+            email,
+            page: location.pathname
+          }))
         }
       }
 

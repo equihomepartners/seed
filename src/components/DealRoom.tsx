@@ -112,7 +112,7 @@ const DealRoom = () => {
     if (!userEmail) return;
 
     try {
-      await fetch('/api/track-activity', {
+      const response = await fetch('/api/track-activity', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -125,8 +125,33 @@ const DealRoom = () => {
           documentName
         })
       });
+
+      const result = await response.json();
+      
+      if (!response.ok || !result.success) {
+        throw new Error(`Deal room tracking failed: ${result.error || result.message || 'Unknown error'}`);
+      }
+
+      if (import.meta.env.DEV) {
+        console.log('✅ Deal room activity tracked:', { action, documentName, result });
+      }
     } catch (error) {
-      console.error('Error tracking activity:', error);
+      console.error('❌ Error tracking deal room activity:', error);
+      
+      // Store error for debugging in development
+      if (import.meta.env.DEV) {
+        const errorInfo = {
+          timestamp: new Date().toISOString(),
+          error: error instanceof Error ? error.message : String(error),
+          userEmail,
+          action,
+          documentName
+        };
+        
+        const existingErrors = JSON.parse(localStorage.getItem('dealRoomTrackingErrors') || '[]');
+        existingErrors.push(errorInfo);
+        localStorage.setItem('dealRoomTrackingErrors', JSON.stringify(existingErrors.slice(-10))); // Keep last 10 errors
+      }
     }
   };
 
