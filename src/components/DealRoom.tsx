@@ -327,11 +327,11 @@ const DealRoom = () => {
           {
             _id: 'fund-financial-model',
             title: 'Full Financial Model - $5M Raise',
-            description: 'Financial model with detailed projections for the $5M raise. Includes cash flow projections, ROI analysis, and sensitivity testing. (Currently being updated)',
+            description: 'Financial model with detailed projections for the $5M raise. Includes cash flow projections, ROI analysis, and sensitivity testing.',
             category: 'financial',
             iconType: 'chart',
-            fileUrl: 'https://docs.google.com/spreadsheets/d/1gnTgM65loefh437uMM0PfjK4Fj1EZTtk/edit?usp=sharing&ouid=114976098274719191879&rtpof=true&sd=true',
-            isLocked: true,
+            fileUrl: 'https://docs.google.com/spreadsheets/d/1n_KmwcijBxl_7chNTngO4GzMlmS4aENU/edit?usp=sharing&ouid=114976098274719191879&rtpof=true&sd=true',
+            isLocked: false,
             sortOrder: 2,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString()
