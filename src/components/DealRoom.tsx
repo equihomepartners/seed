@@ -85,13 +85,6 @@ const categories: Record<string, CategoryInfo> = {
     icon: <FaFileAlt />,
     color: 'gray'
   },
-  marketing: {
-    id: 'marketing',
-    name: 'Marketing Material',
-    description: 'Marketing materials and investor presentations',
-    icon: <FaFileAlt />,
-    color: 'purple'
-  }
 };
 
 const DealRoom = () => {
@@ -399,6 +392,18 @@ const DealRoom = () => {
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString()
           },
+          {
+            _id: 'market-tech-overview',
+            title: 'Market and Tech Overview',
+            description: 'Market and tech overview presentation summarizing the Australian market and how we leverage technology.',
+            category: 'market',
+            iconType: 'file',
+            fileUrl: 'https://drive.google.com/file/d/1nr4vDrORZoUECFH2PvKDNCg6az_HOg8t/view?usp=sharing',
+            isLocked: false,
+            sortOrder: 3,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          },
 
           // Strategy Documents
           {
@@ -440,55 +445,6 @@ const DealRoom = () => {
             updatedAt: new Date().toISOString()
           },
 
-          // Marketing Material
-          {
-            _id: 'finance-pack',
-            title: 'Finance Pack',
-            description: 'Outlines Financials and sensitivity testing for a $500m base case fund for our two products and investor returns (no terms structured and is based on negotiation).',
-            category: 'marketing',
-            iconType: 'file',
-            fileUrl: 'https://drive.google.com/file/d/18VBEeORSQ_IzIBBqSV0oLsc5eTu2KOr_/view?usp=sharing',
-            isLocked: false,
-            sortOrder: 1,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-          },
-          {
-            _id: 'one-pager',
-            title: 'One Pager',
-            description: 'One pager highlighting the overall business, investor opportunity, asset class, economics.',
-            category: 'marketing',
-            iconType: 'file',
-            fileUrl: 'https://drive.google.com/file/d/1yf7x9NHqbGkfDhu0ZKeufsanalwU_Er7/view?usp=sharing',
-            isLocked: false,
-            sortOrder: 2,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-          },
-          {
-            _id: 'market-tech-overview',
-            title: 'Market and Tech Overview',
-            description: 'Market and tech overview presentation summarizing the Australian market and how we leverage technology.',
-            category: 'marketing',
-            iconType: 'file',
-            fileUrl: 'https://drive.google.com/file/d/1nr4vDrORZoUECFH2PvKDNCg6az_HOg8t/view?usp=sharing',
-            isLocked: false,
-            sortOrder: 3,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-          },
-          {
-            _id: 'simple-introduction-deck',
-            title: 'Simple Introduction Deck',
-            description: 'Simple introduction deck highlighting Equihome, the problem, and solution.',
-            category: 'marketing',
-            iconType: 'file',
-            fileUrl: 'https://drive.google.com/file/d/1cqlt46gyWXOUqGGBn-TsNcmfw83u1UHT/view?usp=sharing',
-            isLocked: false,
-            sortOrder: 4,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-          }
         ];
 
         // Set all documents
